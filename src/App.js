@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function App() {
   return (
-    <div className="w-screen h-screen overflow-hidden flex flex-col justify-center items-center bg-gray-800">
+    <div className="sm:w-screen w-11/12 sm:mx-0 mx-auto sm:h-screen sm:mt-0 mt-40 overflow-hidden flex flex-col justify-center items-center bg-gray-800">
       <div className="sm:text-6xl text-2xl font-extrabold tracking-widest font-sans flex">
         <div className="text-blue-300">Kinesis</div>
         <div className="opacity-0 mx-1">.</div>
