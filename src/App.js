@@ -13,7 +13,7 @@ export default function App() {
         <br />
         <div className="flex justify-center sm:mt-2 mt-4 text-blue-300 sm:text-lg text-sm">
           Planned Release Date:
-          <p className="ml-2 text-green-300">15 November 2020</p>
+          <p className="ml-2 text-green-300">30 November 2020</p>
         </div>
       </div>
     </div>
