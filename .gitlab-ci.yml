@@ -1,5 +1,5 @@
-#stages:
-#  - deploy
+stages:
+  - deploy
 
 deploy:
   stage: deploy
