@@ -85,13 +85,8 @@ export default function LoginForm() {
     e.preventDefault();
     updateRegisterInput(3, e.target.value);
 
-    if (e.target.value.length === 0) {
-      updateValidity(3, false);
-      updateError(3, '');
-      return;
-    } else {
-      updateValidity(3, true);
-    }
+    let passError = '';
+    let passValidity = false;
 
     const lowercase = new RegExp('^(?=.*[a-z])');
     const uppercase = new RegExp('^(?=.*[A-Z])');
@@ -99,46 +94,38 @@ export default function LoginForm() {
     const symbol = new RegExp('^(?=.*[!@#$%^&*])');
 
     if (!lowercase.test(e.target.value)) {
-      updateError(
-        3,
-        'Should contain at least 1 lowercase alphabetical character'
-      );
-      updateValidity(3, false);
+      passError = 'Should contain at least 1 lowercase alphabetical character';
     } else if (!uppercase.test(e.target.value)) {
-      updateError(
-        3,
-        'Should contain at least 1 upppercase alphabetical character'
-      );
-      updateValidity(3, false);
+      passError = 'Should contain at least 1 upppercase alphabetical character';
     } else if (!number.test(e.target.value)) {
-      updateError(3, 'Should contain at least 1 numerical character');
-      updateValidity(3, false);
+      passError = 'Should contain at least 1 numerical character';
     } else if (!symbol.test(e.target.value)) {
-      updateError(3, 'Should contain at least 1 symbol');
-      updateValidity(3, false);
+      passError = 'Should contain at least 1 symbol';
     } else if (e.target.value.length < 8) {
-      updateError(3, 'Should be at least 8 characters long');
-      updateValidity(3, false);
+      passError = 'Should be at least 8 characters long';
     } else {
-      updateError(3, '');
+      passValidity = true;
     }
 
-    // setTimeout(() => {
-    //   if (registerInputs[4].length === 0) {
-    //     updateValidity(4, false);
-    //     updateError(4, '');
-    //     return;
-    //   } else {
-    //     updateValidity(4, true);
-    //   }
+    if (e.target.value.length === 0) {
+      passValidity = false;
+      passError = '';
+    }
 
-    //   if (registerInputs[4] !== registerInputs[5]) {
-    //     updateError(4, "Doesn't match previously entered password");
-    //     updateValidity(4, false);
-    //   } else {
-    //     updateError(4, '');
-    //   }
-    // }, 500);
+    let passCheckError =
+      registerInputs[4] !== e.target.value
+        ? "Doesn't match previously entered password"
+        : '';
+    passCheckError = registerInputs[4].length > 0 ? passCheckError : '';
+
+    const update = [
+      ...validity.splice(0, 3),
+      passValidity,
+      registerInputs[4] === e.target.value && registerInputs[4].length > 0,
+    ];
+    setValidity(update);
+
+    setError([...error.splice(0, 3), passError, passCheckError]);
   };
 
   const setPasswordCheck = (e) => {
