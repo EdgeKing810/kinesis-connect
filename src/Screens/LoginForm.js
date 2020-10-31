@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
 
 import background from '../Assets/images/4048243.jpg';
 import logo from '../Assets/images/logo.png';
+import { LocalContext } from '../Context';
 
 export default function LoginForm() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -11,6 +13,8 @@ export default function LoginForm() {
   const [registerInputs, setRegisterInputs] = useState(['', '', '', '', '']);
   const [validity, setValidity] = useState([false, false, false, false, false]);
   const [error, setError] = useState(['', '', '', '', '']);
+
+  const { APIURL } = useContext(LocalContext);
 
   const setName = (e) => {
     e.preventDefault();
@@ -205,6 +209,20 @@ export default function LoginForm() {
     );
   };
 
+  const submitLogin = (e) => {
+    e.preventDefault();
+
+    const data = {
+      username: loginInputs[0],
+      password: loginInputs[1],
+    };
+
+    axios
+      .post(`${APIURL}/api/user/login`, data)
+      .then((res) => console.log(res.message, res.data))
+      .catch((e) => console.log(e));
+  };
+
   const classes = {
     input: 'w-full p-2 text-gray-100 bg-gray-700 rounded-lg mt-2',
   };
@@ -240,8 +258,8 @@ export default function LoginForm() {
             ? 'hover:bg-blue-600 focus:bg-blue-600'
             : 'opacity-50'
         } text-gray-300 sm:w-1/3 w-full mt-4 mb-2`}
-        onClick={() =>
-          loginInputs.every((v) => v.length > 0) ? alert('valid') : null
+        onClick={(e) =>
+          loginInputs.every((v) => v.length > 0) ? submitLogin(e) : null
         }
       >
         Let's Go!
