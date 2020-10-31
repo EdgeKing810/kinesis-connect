@@ -14,6 +14,10 @@ export default function App() {
         <Route exact path="/login">
           <LoginForm />
         </Route>
+
+        <Route exact path="/feed">
+          <div>feed</div>
+        </Route>
       </Switch>
     </div>
   );

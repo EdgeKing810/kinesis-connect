@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
 
+import { LocalContext } from '../Context';
+
 import background from '../Assets/images/4048243.jpg';
 import logo from '../Assets/images/logo.png';
-import { LocalContext } from '../Context';
+import { useHistory } from 'react-router-dom';
 
 export default function LoginForm() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -14,7 +16,12 @@ export default function LoginForm() {
   const [validity, setValidity] = useState([false, false, false, false, false]);
   const [error, setError] = useState(['', '', '', '', '']);
 
-  const { APIURL } = useContext(LocalContext);
+  const [submit, setSubmit] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('Submitting...');
+  const [submitError, setSubmitError] = useState(false);
+
+  const { APIURL, setLooggedInUser } = useContext(LocalContext);
+  const history = useHistory();
 
   const setName = (e) => {
     e.preventDefault();
@@ -199,15 +206,35 @@ export default function LoginForm() {
   const submitLogin = (e) => {
     e.preventDefault();
 
+    setLoginInputs(['', '']);
+    setSubmit(true);
+
     const data = {
       username: loginInputs[0],
       password: loginInputs[1],
     };
 
-    axios
-      .post(`${APIURL}/api/user/login`, data)
-      .then((res) => console.log(res.message, res.data))
-      .catch((e) => console.log(e));
+    axios.post(`${APIURL}/api/user/login`, data).then((res) => {
+      if (res.data.error === 0) {
+        setLooggedInUser(res.data);
+
+        setSubmitMessage('Logging in...');
+        setSubmitError(false);
+      } else {
+        setSubmitMessage(res.data.message);
+        setSubmitError(true);
+      }
+
+      setTimeout(() => {
+        if (res.data.error === 0) {
+          history.push('/feed');
+        }
+
+        setSubmit(false);
+        setSubmitMessage('Submitting...');
+        setSubmitError(false);
+      }, 1000);
+    });
   };
 
   const classes = {
@@ -257,7 +284,7 @@ export default function LoginForm() {
           className="underline text-blue-400 sm:mb-0 mb-4"
           onClick={() => setIsRegistering(true)}
         >
-          Make One Now!
+          Create One Now!
         </button>
       </div>
     </div>
@@ -330,6 +357,23 @@ export default function LoginForm() {
     </div>
   );
 
+  const errorMessage = (
+    <div className="w-5/6 mx-auto flex flex-col justify-between items-center">
+      <div
+        className={`tracking-wide sm:text-2xl text-xl sm:my-0 my-4 text-center flex items-center text-${
+          submitError ? 'red' : 'green'
+        }-400`}
+      >
+        {submitMessage}
+        {/* <div
+          className={`ri-${
+            submitError ? 'close' : 'checkbox'
+          }-circle-line sm:ml-2 sm:text-4xl text-2xl`}
+        ></div> */}
+      </div>
+    </div>
+  );
+
   return (
     <div className="w-screen h-screen overflow-hidden flex justify-center items-center">
       <img
@@ -349,7 +393,7 @@ export default function LoginForm() {
           />
         </div>
         <div className="h-full sm:w-1/2 w-full bg-gray-800 rounded-r-lg sm:border-l-4 sm:border-gray-600 flex flex-col justify-center">
-          {isRegistering ? Register : Login}
+          {submit ? errorMessage : isRegistering ? Register : Login}
         </div>
       </div>
     </div>
