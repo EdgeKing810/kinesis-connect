@@ -22,7 +22,7 @@ export default function LoginForm() {
       updateValidity(0, true);
     }
 
-    if (!/^[a-zA-Z ]+$/.test(e.target.value)) {
+    if (!/^[a-zA-Z ]+$/.test(e.target.value) && e.target.value.length > 0) {
       updateError(0, 'Should contain only alphabets');
       updateValidity(0, false);
     } else {
@@ -30,6 +30,51 @@ export default function LoginForm() {
     }
 
     updateRegisterInput(0, e.target.value);
+  };
+
+  const setUsername = (e) => {
+    e.preventDefault();
+
+    if (e.target.value.length === 0) {
+      updateValidity(1, false);
+      updateError(1, '');
+    } else {
+      updateValidity(1, true);
+    }
+
+    if (!/^[a-zA-Z0-9]+$/.test(e.target.value) && e.target.value.length > 0) {
+      updateError(1, 'Should not contain symbols or spaces');
+      updateValidity(1, false);
+    } else {
+      updateError(1, '');
+    }
+
+    updateRegisterInput(1, e.target.value);
+  };
+
+  const setEmail = (e) => {
+    e.preventDefault();
+
+    if (e.target.value.length === 0) {
+      updateValidity(2, false);
+      updateError(2, '');
+    } else {
+      updateValidity(2, true);
+    }
+
+    if (
+      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        e.target.value
+      ) &&
+      e.target.value.length > 0
+    ) {
+      updateError(2, 'Invalid Email Address');
+      updateValidity(2, false);
+    } else {
+      updateError(2, '');
+    }
+
+    updateRegisterInput(2, e.target.value);
   };
 
   const updateRegisterInput = (index, val) => {
@@ -74,7 +119,7 @@ export default function LoginForm() {
     }
 
     return (
-      <ul className="w-5/6 mx-auto p-2 text-red-400 my-1 list-disc">
+      <ul className="w-5/6 mx-auto p-2 text-red-400 mt-1 list-disc">
         <li className="sm:text-sm text-xs">{error[index]}</li>
       </ul>
     );
@@ -150,22 +195,30 @@ export default function LoginForm() {
         type="text"
         placeholder="Enter Username..."
         className={classes.input}
+        value={registerInputs[1]}
+        onChange={(e) => setUsername(e)}
       />
+      {showError(1)}
       <input
         type="email"
         placeholder="Enter Email Address..."
         className={classes.input}
+        value={registerInputs[2]}
+        onChange={(e) => setEmail(e)}
       />
+      {showError(2)}
       <input
         type="password"
         placeholder="Enter Password..."
         className={classes.input}
       />
+      {showError(3)}
       <input
         type="password"
         placeholder="Enter Password Again..."
         className={classes.input}
       />
+      {showError(4)}
       <button
         className={`p-2 rounded-lg bg-gray-900 uppercase tracking-wide font-bold text-lg ${
           validity.every((v) => v)
