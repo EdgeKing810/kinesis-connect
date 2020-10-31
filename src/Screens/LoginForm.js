@@ -20,7 +20,7 @@ export default function LoginForm() {
   const [submitMessage, setSubmitMessage] = useState('Submitting...');
   const [submitError, setSubmitError] = useState(false);
 
-  const { APIURL, setLooggedInUser } = useContext(LocalContext);
+  const { APIURL, setLoggedInUser } = useContext(LocalContext);
   const history = useHistory();
 
   const setName = (e) => {
@@ -206,17 +206,17 @@ export default function LoginForm() {
   const submitLogin = (e) => {
     e.preventDefault();
 
-    setLoginInputs(['', '']);
-    setSubmit(true);
-
     const data = {
       username: loginInputs[0],
       password: loginInputs[1],
     };
 
+    setLoginInputs(['', '']);
+    setSubmit(true);
+
     axios.post(`${APIURL}/api/user/login`, data).then((res) => {
       if (res.data.error === 0) {
-        setLooggedInUser(res.data);
+        setLoggedInUser(res.data);
 
         setSubmitMessage('Logging in...');
         setSubmitError(false);
@@ -226,14 +226,50 @@ export default function LoginForm() {
       }
 
       setTimeout(() => {
-        if (res.data.error === 0) {
-          history.push('/feed');
-        }
-
         setSubmit(false);
         setSubmitMessage('Submitting...');
         setSubmitError(false);
+
+        if (res.data.error === 0) {
+          history.push('/feed');
+        }
       }, 1000);
+    });
+  };
+
+  const submitRegister = (e) => {
+    e.preventDefault();
+
+    const data = {
+      name: registerInputs[0],
+      username: registerInputs[1],
+      email: registerInputs[2],
+      password: registerInputs[3],
+    };
+
+    setRegisterInputs(['', '', '', '', '']);
+    setValidity([false, false, false, false, false]);
+    setError(['', '', '', '', '']);
+    setSubmit(true);
+
+    axios.post(`${APIURL}/api/user/register`, data).then((res) => {
+      if (res.data.error === 0) {
+        setSubmitMessage(
+          'Registered! Check your mails to activate your account.'
+        );
+        setSubmitError(false);
+      } else {
+        setSubmitMessage(res.data.message);
+        setSubmitError(true);
+      }
+
+      setTimeout(() => {
+        setSubmit(false);
+        setSubmitMessage('Submitting...');
+        setSubmitError(false);
+
+        setIsRegistering(false);
+      }, 2000);
     });
   };
 
@@ -341,7 +377,7 @@ export default function LoginForm() {
             ? 'hover:bg-blue-600 focus:bg-blue-600'
             : 'opacity-50'
         } text-gray-300 sm:w-1/3 w-full my-4`}
-        onClick={() => (validity.every((v) => v) ? alert('valid') : null)}
+        onClick={(e) => (validity.every((v) => v) ? submitRegister(e) : null)}
       >
         Create!
       </button>
