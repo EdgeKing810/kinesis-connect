@@ -14,67 +14,147 @@ export default function LoginForm() {
 
   const setName = (e) => {
     e.preventDefault();
+    updateRegisterInput(0, e.target.value);
 
     if (e.target.value.length === 0) {
       updateValidity(0, false);
       updateError(0, '');
+      return;
     } else {
       updateValidity(0, true);
     }
 
-    if (!/^[a-zA-Z ]+$/.test(e.target.value) && e.target.value.length > 0) {
+    if (!/^[a-zA-Z ]+$/.test(e.target.value)) {
       updateError(0, 'Should contain only alphabets');
       updateValidity(0, false);
     } else {
       updateError(0, '');
     }
-
-    updateRegisterInput(0, e.target.value);
   };
 
   const setUsername = (e) => {
     e.preventDefault();
+    updateRegisterInput(1, e.target.value);
 
     if (e.target.value.length === 0) {
       updateValidity(1, false);
       updateError(1, '');
+      return;
     } else {
       updateValidity(1, true);
     }
 
-    if (!/^[a-zA-Z0-9]+$/.test(e.target.value) && e.target.value.length > 0) {
+    if (!/^[a-zA-Z0-9]+$/.test(e.target.value)) {
       updateError(1, 'Should not contain symbols or spaces');
       updateValidity(1, false);
     } else {
       updateError(1, '');
     }
-
-    updateRegisterInput(1, e.target.value);
   };
 
   const setEmail = (e) => {
     e.preventDefault();
+    updateRegisterInput(2, e.target.value);
 
     if (e.target.value.length === 0) {
       updateValidity(2, false);
       updateError(2, '');
+      return;
     } else {
       updateValidity(2, true);
     }
 
     if (
+      // eslint-disable-next-line
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         e.target.value
-      ) &&
-      e.target.value.length > 0
+      )
     ) {
       updateError(2, 'Invalid Email Address');
       updateValidity(2, false);
     } else {
       updateError(2, '');
     }
+  };
 
-    updateRegisterInput(2, e.target.value);
+  const setPassword = (e) => {
+    e.preventDefault();
+    updateRegisterInput(3, e.target.value);
+
+    if (e.target.value.length === 0) {
+      updateValidity(3, false);
+      updateError(3, '');
+      return;
+    } else {
+      updateValidity(3, true);
+    }
+
+    const lowercase = new RegExp('^(?=.*[a-z])');
+    const uppercase = new RegExp('^(?=.*[A-Z])');
+    const number = new RegExp('^(?=.*[0-9])');
+    const symbol = new RegExp('^(?=.*[!@#$%^&*])');
+
+    if (!lowercase.test(e.target.value)) {
+      updateError(
+        3,
+        'Should contain at least 1 lowercase alphabetical character'
+      );
+      updateValidity(3, false);
+    } else if (!uppercase.test(e.target.value)) {
+      updateError(
+        3,
+        'Should contain at least 1 upppercase alphabetical character'
+      );
+      updateValidity(3, false);
+    } else if (!number.test(e.target.value)) {
+      updateError(3, 'Should contain at least 1 numerical character');
+      updateValidity(3, false);
+    } else if (!symbol.test(e.target.value)) {
+      updateError(3, 'Should contain at least 1 symbol');
+      updateValidity(3, false);
+    } else if (e.target.value.length < 8) {
+      updateError(3, 'Should be at least 8 characters long');
+      updateValidity(3, false);
+    } else {
+      updateError(3, '');
+    }
+
+    // setTimeout(() => {
+    //   if (registerInputs[4].length === 0) {
+    //     updateValidity(4, false);
+    //     updateError(4, '');
+    //     return;
+    //   } else {
+    //     updateValidity(4, true);
+    //   }
+
+    //   if (registerInputs[4] !== registerInputs[5]) {
+    //     updateError(4, "Doesn't match previously entered password");
+    //     updateValidity(4, false);
+    //   } else {
+    //     updateError(4, '');
+    //   }
+    // }, 500);
+  };
+
+  const setPasswordCheck = (e) => {
+    e.preventDefault();
+    updateRegisterInput(4, e.target.value);
+
+    if (e.target.value.length === 0) {
+      updateValidity(4, false);
+      updateError(4, '');
+      return;
+    } else {
+      updateValidity(4, true);
+    }
+
+    if (e.target.value !== registerInputs[3]) {
+      updateError(4, "Doesn't match previously entered password");
+      updateValidity(4, false);
+    } else {
+      updateError(4, '');
+    }
   };
 
   const updateRegisterInput = (index, val) => {
@@ -211,12 +291,16 @@ export default function LoginForm() {
         type="password"
         placeholder="Enter Password..."
         className={classes.input}
+        value={registerInputs[3]}
+        onChange={(e) => setPassword(e)}
       />
       {showError(3)}
       <input
         type="password"
         placeholder="Enter Password Again..."
         className={classes.input}
+        value={registerInputs[4]}
+        onChange={(e) => setPasswordCheck(e)}
       />
       {showError(4)}
       <button
