@@ -283,6 +283,8 @@ module.exports = {
         '"Courier New"',
         'monospace',
       ],
+      open: ['Open Sans', 'sans'],
+      rale: ['Raleway', 'sans'],
     },
     fontSize: {
       xs: '0.75rem',
