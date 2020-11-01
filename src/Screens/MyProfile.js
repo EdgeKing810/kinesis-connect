@@ -20,7 +20,6 @@ export default function MyProfile() {
   const {
     APIURL,
     UPLOADSURL,
-    loggedInUser,
     profile,
     setProfile,
     myPosts,
