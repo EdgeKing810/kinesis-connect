@@ -33,57 +33,55 @@ export default function MyProfile() {
   };
 
   useEffect(() => {
-    if (loggedInUser.uid === undefined) {
-      // console.log(JSON.parse(localStorage.getItem('_userData')));
-      if (!localStorage.getItem('_userData')) {
-        setError('You need to login first to view this page.');
-        setTimeout(() => history.push('/'), 500);
-      } else {
-        const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
+    // console.log(JSON.parse(localStorage.getItem('_userData')));
+    if (!localStorage.getItem('_userData')) {
+      setError('You need to login first to view this page.');
+      setTimeout(() => history.push('/'), 500);
+    } else {
+      const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
 
-        const data = {
-          uid,
-          profileID: uid,
-        };
+      const data = {
+        uid,
+        profileID: uid,
+      };
 
-        axios
-          .post(`${APIURL}/api/profile/fetch`, data, {
-            headers: { Authorization: `Bearer ${jwt}` },
-          })
-          .then((res) => {
-            if (res.data.error !== 0) {
-              setError(res.data.message);
-              setTimeout(() => history.push('/'), 500);
-            } else {
-              setError('');
-              setProfile({ ...res.data, jwt: jwt });
+      axios
+        .post(`${APIURL}/api/profile/fetch`, data, {
+          headers: { Authorization: `Bearer ${jwt}` },
+        })
+        .then((res) => {
+          if (res.data.error !== 0) {
+            setError(res.data.message);
+            setTimeout(() => history.push('/'), 500);
+          } else {
+            setError('');
+            setProfile({ ...res.data, jwt: jwt });
 
-              axios
-                .post(
-                  `${APIURL}/api/posts/get`,
-                  { uid },
-                  {
-                    headers: { Authorization: `Bearer ${jwt}` },
-                  }
-                )
-                .then((response) => {
-                  if (response.data.error === 0) {
-                    setMyPosts(response.data.posts);
-                  } else {
-                    setMyPosts([]);
-                  }
-                })
-                .then(() => {
-                  setModifiedValues([
-                    res.data.name,
-                    res.data.username,
-                    '',
-                    res.data.bio,
-                  ]);
-                });
-            }
-          });
-      }
+            axios
+              .post(
+                `${APIURL}/api/posts/get`,
+                { uid },
+                {
+                  headers: { Authorization: `Bearer ${jwt}` },
+                }
+              )
+              .then((response) => {
+                if (response.data.error === 0) {
+                  setMyPosts(response.data.posts);
+                } else {
+                  setMyPosts([]);
+                }
+              })
+              .then(() => {
+                setModifiedValues([
+                  res.data.name,
+                  res.data.username,
+                  '',
+                  res.data.bio,
+                ]);
+              });
+          }
+        });
     }
     // eslint-disable-next-line
   }, []);
@@ -220,6 +218,50 @@ export default function MyProfile() {
     });
   };
 
+  const deleteAccount = (e) => {
+    if (window.confirm('Are you sure you want to delete your account?')) {
+      axios
+        .post(
+          `${APIURL}/api/user/delete`,
+          { uid: profile.uid, password: password },
+          { headers: { Authorization: `Bearer ${profile.jwt}` } }
+        )
+        .then((res) => {
+          if (res.data.error !== 0) {
+            alert(res.data.message);
+          } else {
+            alert('Account successfully deleted');
+
+            history.push('/');
+            localStorage.clear();
+          }
+        });
+    }
+  };
+
+  const clearProfilePic = (e) => {
+    e.preventDefault();
+
+    axios
+      .post(
+        `${APIURL}/api/profile/pic`,
+        { uid: profile.uid, profile_pic_url: '#' },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      )
+      .then((response) => {
+        if (response.data.error !== 0) {
+          alert(response.data.message);
+        } else {
+          alert('Profile Pic Removed!');
+
+          const updatedProfile = { ...profile };
+          updatedProfile.profile_pic = '';
+
+          setProfile(updatedProfile);
+        }
+      });
+  };
+
   return (
     <div className="w-screen flex flex-col items-center overflow-x-hidden">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
@@ -231,7 +273,8 @@ export default function MyProfile() {
         <div className="sm:w-2/3 w-11/12 mx-auto flex flex-col items-center overflow-x-hidden">
           <img
             src={`${
-              profile.profile_pic
+              profile.profile_pic !== undefined &&
+              profile.profile_pic.length > 1
                 ? `${UPLOADSURL}/${profile.profile_pic}`
                 : tmpAvatar
             }`}
@@ -311,15 +354,49 @@ export default function MyProfile() {
                 </button>
               </div>
 
+              <div className="flex sm:flex-row flex-col sm:justify-around w-11/12 mx-auto mt-4">
+                <button
+                  className={`p-2 sm:w-1/3 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 ${
+                    profile.profile_pic !== undefined &&
+                    profile.profile_pic.length > 0
+                      ? 'hover:bg-yellow-600 focus:bg-yellow-600'
+                      : 'opacity-50'
+                  } rounded-lg text-gray-300`}
+                  onClick={(e) =>
+                    profile.profile_pic !== undefined &&
+                    profile.profile_pic.length > 0
+                      ? clearProfilePic(e)
+                      : null
+                  }
+                >
+                  Remove Profile Picture
+                </button>
+
+                <button
+                  className={`p-2 sm:w-1/3 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 ${
+                    password.length > 0
+                      ? 'hover:bg-red-600 focus:bg-red-600'
+                      : 'opacity-50'
+                  } rounded-lg text-gray-300`}
+                  onClick={(e) =>
+                    password.length > 0 ? deleteAccount(e) : null
+                  }
+                >
+                  Delete Account
+                </button>
+              </div>
+
+              <div className="w-full pt-1 my-2 bg-gray-900 rounded"></div>
+
               <button
-                className="p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-600 focus:bg-green-600 mt-4 rounded-lg text-gray-300"
+                className="p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-600 focus:bg-green-600 rounded-lg text-gray-300"
                 onClick={() => setIsModifying(false)}
               >
                 Done
               </button>
             </div>
           )}
-          <div className="w-full pt-1 my-2 bg-gray-900 rounded"></div>
+          <div className="w-full pt-1 my-2 bg-gray-900 rounded mb-4"></div>
           {!isModifying && (
             <div className="text-blue-200 sm:text-xl text-md tracking-wide w-4/5 font-open text-center mx-auto mt-2">
               {myPosts.length > 0 ? myPosts : 'No posts yet.'}
