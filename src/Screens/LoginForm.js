@@ -290,38 +290,47 @@ export default function LoginForm() {
       <div className="font-bold tracking-wide text-white sm:text-4xl text-2xl sm:mt-0 mt-4">
         Login
       </div>
-      <input
-        type="text"
-        placeholder="Enter Username..."
-        className={classes.input}
-        value={loginInputs[0]}
-        onChange={(e) => {
-          e.persist();
-          setLoginInputs((prev) => [e.target.value, prev[1]]);
-        }}
-      />
-      <input
-        type="password"
-        placeholder="Enter Password..."
-        className={classes.input}
-        value={loginInputs[1]}
-        onChange={(e) => {
-          e.persist();
-          setLoginInputs((prev) => [prev[0], e.target.value]);
-        }}
-      />
-      <button
-        className={`p-2 rounded-lg bg-gray-900 uppercase tracking-wide font-bold text-lg ${
-          loginInputs.every((v) => v.length > 0)
-            ? 'hover:bg-blue-600 focus:bg-blue-600'
-            : 'opacity-50'
-        } text-gray-300 sm:w-1/3 w-full mt-4 mb-2`}
-        onClick={(e) =>
+      <form
+        className="w-full"
+        onSubmit={(e) =>
           loginInputs.every((v) => v.length > 0) ? submitLogin(e) : null
         }
       >
-        Let's Go!
-      </button>
+        <input
+          type="text"
+          name="username"
+          placeholder="Enter Username..."
+          className={classes.input}
+          value={loginInputs[0]}
+          onChange={(e) => {
+            e.persist();
+            setLoginInputs((prev) => [e.target.value, prev[1]]);
+          }}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter Password..."
+          className={classes.input}
+          value={loginInputs[1]}
+          onChange={(e) => {
+            e.persist();
+            setLoginInputs((prev) => [prev[0], e.target.value]);
+          }}
+          required
+        />
+        <button
+          type="submit"
+          className={`p-2 rounded-lg bg-gray-900 uppercase tracking-wide font-bold text-lg ${
+            loginInputs.every((v) => v.length > 0)
+              ? 'hover:bg-blue-600 focus:bg-blue-600'
+              : 'opacity-50'
+          } text-gray-300 sm:w-1/3 w-full mt-4 mb-2`}
+        >
+          Let's Go!
+        </button>
+      </form>
       <div className="sm:text-lg text-md text-gray-400">
         Don't already have an account?{' '}
         <button
@@ -339,56 +348,71 @@ export default function LoginForm() {
       <div className="font-bold tracking-wide text-white sm:text-4xl text-2xl sm:mt-0 mt-4">
         Register
       </div>
-      <input
-        type="text"
-        placeholder="Enter Name..."
-        className={classes.input}
-        value={registerInputs[0]}
-        onChange={(e) => setName(e)}
-      />
-      {showError(0)}
-      <input
-        type="text"
-        placeholder="Enter Username..."
-        className={classes.input}
-        value={registerInputs[1]}
-        onChange={(e) => setUsername(e)}
-      />
-      {showError(1)}
-      <input
-        type="email"
-        placeholder="Enter Email Address..."
-        className={classes.input}
-        value={registerInputs[2]}
-        onChange={(e) => setEmail(e)}
-      />
-      {showError(2)}
-      <input
-        type="password"
-        placeholder="Enter Password..."
-        className={classes.input}
-        value={registerInputs[3]}
-        onChange={(e) => setPassword(e)}
-      />
-      {showError(3)}
-      <input
-        type="password"
-        placeholder="Enter Password Again..."
-        className={classes.input}
-        value={registerInputs[4]}
-        onChange={(e) => setPasswordCheck(e)}
-      />
-      {showError(4)}
-      <button
-        className={`p-2 rounded-lg bg-gray-900 uppercase tracking-wide font-bold text-lg ${
-          validity.every((v) => v)
-            ? 'hover:bg-blue-600 focus:bg-blue-600'
-            : 'opacity-50'
-        } text-gray-300 sm:w-1/3 w-full my-4`}
-        onClick={(e) => (validity.every((v) => v) ? submitRegister(e) : null)}
+      <form
+        className="w-full"
+        onSubmit={(e) => (validity.every((v) => v) ? submitRegister(e) : null)}
       >
-        Create!
-      </button>
+        <input
+          type="text"
+          name="name"
+          placeholder="Enter Name..."
+          className={classes.input}
+          value={registerInputs[0]}
+          onChange={(e) => setName(e)}
+          required
+        />
+        {showError(0)}
+        <input
+          type="text"
+          name="username"
+          placeholder="Enter Username..."
+          className={classes.input}
+          value={registerInputs[1]}
+          onChange={(e) => setUsername(e)}
+          required
+        />
+        {showError(1)}
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter Email Address..."
+          className={classes.input}
+          value={registerInputs[2]}
+          onChange={(e) => setEmail(e)}
+          required
+        />
+        {showError(2)}
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter Password..."
+          className={classes.input}
+          value={registerInputs[3]}
+          onChange={(e) => setPassword(e)}
+          required
+        />
+        {showError(3)}
+        <input
+          type="password"
+          name="password_confirm"
+          placeholder="Enter Password Again..."
+          className={classes.input}
+          value={registerInputs[4]}
+          onChange={(e) => setPasswordCheck(e)}
+          required
+        />
+        {showError(4)}
+        <button
+          type="submit"
+          className={`p-2 rounded-lg bg-gray-900 uppercase tracking-wide font-bold text-lg ${
+            validity.every((v) => v)
+              ? 'hover:bg-blue-600 focus:bg-blue-600'
+              : 'opacity-50'
+          } text-gray-300 sm:w-1/3 w-full my-4`}
+        >
+          Create!
+        </button>
+      </form>
       <div className="sm:text-lg text-md text-gray-400">
         Already have an account?{' '}
         <button
@@ -409,11 +433,6 @@ export default function LoginForm() {
         }-400`}
       >
         {submitMessage}
-        {/* <div
-          className={`ri-${
-            submitError ? 'close' : 'checkbox'
-          }-circle-line sm:ml-2 sm:text-4xl text-2xl`}
-        ></div> */}
       </div>
     </div>
   );
