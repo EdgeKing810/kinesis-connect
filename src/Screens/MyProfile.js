@@ -157,6 +157,7 @@ export default function MyProfile() {
   const submitUpdate = (key, index, path) => {
     const data = {
       uid: profile.uid,
+      password: password,
       old_password: password,
       [key]: modifiedValues[index],
     };
@@ -198,7 +199,7 @@ export default function MyProfile() {
               <div className="font-bold sm:text-3xl text-xl tracking-wide text-blue-300 my-2 text-center">
                 {profile.name}
                 <br />
-                <div className="text-blue-200 font-thin sm:text-xl text-md tracking-wide w-4/5 font-open text-center mx-auto">
+                <div className="text-blue-200 font-thin sm:text-xl text-md tracking-wide w-4/5 font-open text-center mx-auto p-2 border-2 border-dashed border-blue-500 my-2">
                   {profile.bio}
                 </div>
                 <div className="text-green-400 sm:text-2xl text-lg mt-3">
@@ -232,6 +233,10 @@ export default function MyProfile() {
 
               {makeInput('Password', 2, () =>
                 submitUpdate('password', 2, '/api/user/update')
+              )}
+
+              {makeInput('Bio', 3, () =>
+                submitUpdate('bio', 3, '/api/profile/update')
               )}
 
               <button
