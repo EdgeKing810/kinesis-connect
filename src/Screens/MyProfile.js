@@ -20,7 +20,6 @@ export default function MyProfile() {
   const {
     APIURL,
     UPLOADSURL,
-    loggedInUser,
     profile,
     setProfile,
     myPosts,
@@ -354,7 +353,7 @@ export default function MyProfile() {
                 </button>
               </div>
 
-              <div className="flex sm:flex-row flex-col sm:justify-around w-11/12 mx-auto mt-4">
+              <div className="flex sm:flex-row flex-col sm:justify-around sm:items-start items-center w-11/12 mx-auto mt-4">
                 <button
                   className={`p-2 sm:w-1/3 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 ${
                     profile.profile_pic !== undefined &&
@@ -373,7 +372,7 @@ export default function MyProfile() {
                 </button>
 
                 <button
-                  className={`p-2 sm:w-1/3 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 ${
+                  className={`p-2 sm:w-1/3 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 sm:mt-0 mt-2 ${
                     password.length > 0
                       ? 'hover:bg-red-600 focus:bg-red-600'
                       : 'opacity-50'
