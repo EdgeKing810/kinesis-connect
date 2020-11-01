@@ -220,6 +220,14 @@ export default function LoginForm() {
 
         setSubmitMessage('Logging in...');
         setSubmitError(false);
+
+        localStorage.setItem(
+          '_userData',
+          JSON.stringify({
+            uid: res.data.uid,
+            jwt: res.data.jwt,
+          })
+        );
       } else {
         setSubmitMessage(res.data.message);
         setSubmitError(true);
