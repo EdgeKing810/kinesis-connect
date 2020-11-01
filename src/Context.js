@@ -9,11 +9,13 @@ function LocalContextProvider({ children }) {
   const [myPosts, setMyPosts] = useState([]);
 
   const APIURL = 'https://api.connect.kinesis.games';
+  const UPLOADSURL = 'https://uploads.connect.kinesis.games';
 
   return (
     <LocalContext.Provider
       value={{
         APIURL,
+        UPLOADSURL,
         loggedInUser,
         setLoggedInUser,
         profile,
