@@ -4,9 +4,11 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import { LocalContext } from '../Context';
+import { Parser } from '../Components/renderers';
 
 export default function Post() {
   const [error, setError] = useState('Loading...');
+  const [content, setContent] = useState('');
 
   const history = useHistory();
   const { APIURL, profile, setProfile, setMyPosts } = useContext(LocalContext);
@@ -49,7 +51,27 @@ export default function Post() {
       {error.length > 0 ? (
         <div className="text-2xl text-yellow-400 font-sans">{error}</div>
       ) : (
-        <div></div>
+        <div className="w-5/6">
+          <div className="font-bold tracking-widest font-open text-yellow-300 sm:text-3xl text-xl mt-8 sm:mb-0 mb-4">
+            Content
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-2 text-gray-100 bg-gray-700 border-2 border-blue-400 rounded-lg sm:h-1/4"
+            required
+          />
+
+          <div className="w-full pt-1 my-4 bg-gray-900 rounded"></div>
+
+          <div className="font-bold tracking-widest font-open text-blue-300 sm:text-3xl text-xl mt-4 sm:mb-0 mb-4">
+            Preview
+          </div>
+
+          <div className="w-full bg-gray-900 rounded-lg px-8 py-2">
+            <Parser content={content} />
+          </div>
+        </div>
       )}
     </div>
   );
