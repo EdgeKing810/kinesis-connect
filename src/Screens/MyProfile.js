@@ -6,10 +6,11 @@ import axios from 'axios';
 import { LocalContext } from '../Context';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
+import FeedPost from '../Components/FeedPost';
 
 export default function MyProfile() {
   const [error, setError] = useState('Loading...');
-  const [isModifying, setIsModifying] = useState(true);
+  const [isModifying, setIsModifying] = useState(false);
 
   const [modifiedValues, setModifiedValues] = useState(['', '', '', '']);
 
@@ -20,6 +21,7 @@ export default function MyProfile() {
   const {
     APIURL,
     UPLOADSURL,
+    setLoggedInUser,
     profile,
     setProfile,
     myPosts,
@@ -50,7 +52,7 @@ export default function MyProfile() {
         })
         .then((res) => {
           if (res.data.error !== 0) {
-            setError(res.data.message);
+            setError(res.data.message.toString());
             setTimeout(() => history.push('/'), 500);
           } else {
             setError('');
@@ -261,8 +263,23 @@ export default function MyProfile() {
       });
   };
 
+  const formattedPosts = myPosts.map((post) => (
+    <FeedPost
+      uid={profile.uid}
+      profileID={profile.uid}
+      username={profile.username}
+      profile_pic={`${UPLOADSURL}/${profile.profile_pic}`}
+      postID={post.postID}
+      content={post.content}
+      timestamp={post.timestamp}
+      reacts={post.reacts}
+      comments={post.comments}
+      key={post.postID}
+    />
+  ));
+
   return (
-    <div className="w-screen flex flex-col items-center overflow-x-hidden">
+    <div className="w-full flex flex-col items-center overflow-x-hidden">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
         My Profile
       </div>
@@ -283,22 +300,38 @@ export default function MyProfile() {
           <div className="w-full pt-1 my-2 bg-gray-900 rounded"></div>
           {!isModifying ? (
             <div className="w-full flex flex-col items-center">
-              <div className="font-bold sm:text-3xl text-2xl tracking-wide text-blue-300 my-2 text-center">
+              <div className="font-bold w-full sm:text-3xl text-2xl tracking-wide text-blue-300 my-2 text-center">
                 {profile.name}
                 <br />
-                <div className="text-blue-200 font-thin sm:text-xl text-sm tracking-wide sm:w-4/5 w-full font-open text-center mx-auto p-2 border-2 border-dashed border-blue-500 my-2">
+                <div className="text-blue-200 font-thin sm:text-xl text-sm tracking-wide sm:w-4/5 w-full font-open text-center mx-auto p-2 border-2 border-dashed border-blue-500 my-4">
                   {profile.bio}
                 </div>
                 <div className="text-green-400 sm:text-2xl text-lg tracking-widest font-rale mt-3">
                   @{profile.username}
                 </div>
               </div>
-              <button
-                className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-gray-700 focus:bg-gray-700 font-bold tracking-wide text-gray-300 sm:text-xl"
-                onClick={() => setIsModifying(true)}
-              >
-                Modify Profile
-              </button>
+              <div className="w-full flex sm:flex-row flex-col sm:justify-center sm:items-start items-center">
+                <button
+                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-gray-700 focus:bg-gray-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:mr-2"
+                  onClick={() => setIsModifying(true)}
+                >
+                  Modify Profile
+                </button>
+
+                <button
+                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-red-700 focus:bg-red-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:my-0 my-2 sm:ml-2"
+                  onClick={() => {
+                    setLoggedInUser({});
+                    setProfile({});
+                    setMyPosts([]);
+
+                    localStorage.clear();
+                    history.push('/');
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           ) : (
             <div className="w-full flex flex-col items-center overflow-x-hidden">
@@ -397,8 +430,17 @@ export default function MyProfile() {
           )}
           <div className="w-full pt-1 my-2 bg-gray-900 rounded mb-4"></div>
           {!isModifying && (
-            <div className="text-blue-200 sm:text-xl text-md tracking-wide w-4/5 font-open text-center mx-auto mt-2">
-              {myPosts.length > 0 ? myPosts : 'No posts yet.'}
+            <div className="text-blue-200 sm:text-xl text-md tracking-wide sm:w-4/5 w-11/12 font-open text-center mx-auto mt-2 flex flex-col items-center">
+              <button
+                className="sm:w-1/2 w-5/6 py-4 rounded bg-gray-900 hover:bg-blue-500 focus:bg-blue-500 font-bold tracking-wide text-gray-300 sm:text-xl mb-4"
+                onClick={() => {
+                  history.push('/post/create');
+                }}
+              >
+                Create new post
+              </button>
+
+              {myPosts.length > 0 ? formattedPosts : 'No posts yet.'}
             </div>
           )}
         </div>
