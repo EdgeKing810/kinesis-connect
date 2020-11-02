@@ -6,6 +6,7 @@ import axios from 'axios';
 import { LocalContext } from '../Context';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
+import FeedPost from '../Components/FeedPost';
 
 export default function MyProfile() {
   const [error, setError] = useState('Loading...');
@@ -262,6 +263,20 @@ export default function MyProfile() {
       });
   };
 
+  const formattedPosts = myPosts.map((post) => (
+    <FeedPost
+      uid={profile.uid}
+      profileID={profile.uid}
+      username={profile.username}
+      profile_pic={`${UPLOADSURL}/${profile.profile_pic}`}
+      postID={post.postID}
+      content={post.content}
+      timestamp={post.timestamp}
+      reacts={post.reacts}
+      comments={post.comments}
+    />
+  ));
+
   return (
     <div className="w-full flex flex-col items-center overflow-x-hidden">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
@@ -424,7 +439,7 @@ export default function MyProfile() {
                 Create new post
               </button>
 
-              {myPosts.length > 0 ? '' : 'No posts yet.'}
+              {myPosts.length > 0 ? formattedPosts : 'No posts yet.'}
             </div>
           )}
         </div>

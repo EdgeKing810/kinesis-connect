@@ -6,7 +6,7 @@ const htmlParser = require('react-markdown/plugins/html-parser');
 
 const heading = (props) => {
   return (
-    <div className="font-bold tracking-wider sm:text-3xl text-xl text-gray-200 my-4">
+    <div className="font-bold tracking-wider sm:text-3xl text-xl text-gray-200 sm:my-4 my-2">
       {props.children}
     </div>
   );
