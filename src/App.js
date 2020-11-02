@@ -3,6 +3,7 @@ import { Redirect, Switch, Route } from 'react-router-dom';
 
 import LoginForm from './Screens/LoginForm';
 import MyProfile from './Screens/MyProfile';
+import Post from './Screens/Post';
 
 export default function App() {
   return (
@@ -26,6 +27,10 @@ export default function App() {
 
         <Route exact path="/profile/:id">
           <div>profile</div>
+        </Route>
+
+        <Route exact path="/post/create">
+          <Post />
         </Route>
 
         <Route exact path="/chat">
