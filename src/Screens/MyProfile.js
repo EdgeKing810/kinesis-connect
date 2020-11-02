@@ -51,7 +51,7 @@ export default function MyProfile() {
         })
         .then((res) => {
           if (res.data.error !== 0) {
-            setError(res.data.message);
+            setError(res.data.message.toString());
             setTimeout(() => history.push('/'), 500);
           } else {
             setError('');
@@ -424,7 +424,7 @@ export default function MyProfile() {
                 Create new post
               </button>
 
-              {myPosts.length > 0 ? myPosts : 'No posts yet.'}
+              {myPosts.length > 0 ? '' : 'No posts yet.'}
             </div>
           )}
         </div>
