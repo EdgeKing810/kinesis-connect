@@ -7,7 +7,7 @@ import Post from './Screens/Post';
 
 export default function App() {
   return (
-    <div className="w-screen">
+    <div className="w-full">
       <Switch>
         <Route exact path="/">
           <Redirect to="/login" />

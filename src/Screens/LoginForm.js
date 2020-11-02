@@ -438,11 +438,11 @@ export default function LoginForm() {
   );
 
   return (
-    <div className="w-screen h-screen overflow-hidden flex justify-center items-center">
+    <div className="w-full h-screen overflow-hidden flex justify-center items-center">
       <img
         src={background}
         alt="Background"
-        className="fixed h-screen w-screen bg-gray-900 z-0 object-cover"
+        className="fixed h-screen w-full bg-gray-900 z-0 object-cover"
       />
       <div className="sm:w-2/3 sm:h-3/4 w-5/6 bg-gray-600 rounded-lg z-50 opacity-95 shadow-lg flex sm:flex-row flex-col">
         <div className="h-full sm:w-1/2 w-full bg-gray-600 rounded-l-lg flex flex-col justify-center items-center sm:border-r-4 sm:border-gray-800">

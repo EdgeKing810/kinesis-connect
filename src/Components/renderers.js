@@ -42,6 +42,16 @@ const code = (props) => {
   );
 };
 
+const image = (props) => {
+  return (
+    <img
+      src={props.src}
+      alt={props.alt}
+      className="w-5/6 mx-auto object-scale-down rounded p-1 border-2 border-blue-400"
+    />
+  );
+};
+
 const renderers = {
   heading: heading,
   link: link,
@@ -49,6 +59,7 @@ const renderers = {
   list: list,
   listItem: listItem,
   code: code,
+  image: image,
 };
 
 // eslint-disable-next-line

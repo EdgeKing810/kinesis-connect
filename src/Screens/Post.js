@@ -44,7 +44,7 @@ export default function Post() {
   }, []);
 
   return (
-    <div className="w-screen flex flex-col items-center overflow-x-hidden">
+    <div className="w-full flex flex-col items-center overflow-x-hidden">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
         Create New Post
       </div>
@@ -68,7 +68,7 @@ export default function Post() {
             Preview
           </div>
 
-          <div className="w-full bg-gray-900 rounded-lg px-8 py-2">
+          <div className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-4">
             <Parser content={content} />
           </div>
         </div>
