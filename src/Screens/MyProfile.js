@@ -442,7 +442,7 @@ export default function MyProfile() {
                 Create new post
               </button>
 
-              {myPosts.length > 0 ? formattedPosts : 'No posts yet.'}
+              {myPosts.length > 0 ? formattedPosts.reverse() : 'No posts yet.'}
             </div>
           )}
         </div>
