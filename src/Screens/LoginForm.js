@@ -20,12 +20,19 @@ export default function LoginForm() {
   const [submitMessage, setSubmitMessage] = useState('Submitting...');
   const [submitError, setSubmitError] = useState(false);
 
-  const { APIURL, setLoggedInUser, setProfile } = useContext(LocalContext);
+  const { APIURL, setLoggedInUser, profile, setProfile } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem('_userData')));
     if (localStorage.getItem('_userData')) {
+      if (profile.jwt !== undefined && profile.jwt) {
+        history.push('/feed');
+        return;
+      }
+
       const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
 
       const data = {

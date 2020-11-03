@@ -136,6 +136,7 @@ export default function Post() {
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
             className="w-full p-2 text-gray-100 bg-gray-700 border-2 border-blue-400 rounded-lg sm:h-1/4"
+            style={{ minHeight: '12em' }}
             required
           />
 
