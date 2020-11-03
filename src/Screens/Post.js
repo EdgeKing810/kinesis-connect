@@ -169,7 +169,7 @@ export default function Post() {
             Preview
           </div>
 
-          <div className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-4">
+          <div className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-8">
             <Parser content={postContent} />
           </div>
         </div>

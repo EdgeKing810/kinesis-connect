@@ -77,6 +77,29 @@ export default function FeedPost({
     );
   };
 
+  const deletePost = () => {
+    const data = {
+      uid: uid,
+      postID: postID,
+    };
+
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      axios
+        .post(
+          `${APIURL}/api/post/delete`,
+          { ...data },
+          { headers: { Authorization: `Bearer ${profile.jwt}` } }
+        )
+        .then((res) => {
+          alert(res.data.message);
+
+          if (res.data.error === 0) {
+            setMyPosts((prev) => prev.filter((post) => post.postID !== postID));
+          }
+        });
+    }
+  };
+
   const liked = reacts.some((r) => r.uid === uid);
 
   return (
@@ -112,7 +135,10 @@ export default function FeedPost({
             >
               Edit Post
             </button>
-            <button className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800">
+            <button
+              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
+              onClick={() => deletePost()}
+            >
               Delete Post
             </button>
           </div>
@@ -123,7 +149,7 @@ export default function FeedPost({
         ''
       )}
 
-      <div className="w-5/6 flex flex-col items-start">
+      <div className="w-5/6 flex flex-col items-start -mb-1">
         <Parser content={content} />
       </div>
 

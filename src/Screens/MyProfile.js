@@ -432,7 +432,7 @@ export default function MyProfile() {
           )}
           <div className="w-full pt-1 my-2 bg-gray-900 rounded mb-4"></div>
           {!isModifying && (
-            <div className="text-blue-200 sm:text-xl text-md tracking-wide sm:w-4/5 w-11/12 font-open text-center mx-auto mt-2 flex flex-col items-center">
+            <div className="text-blue-200 sm:text-xl text-md tracking-wide sm:w-4/5 w-11/12 font-open text-center mx-auto mt-2 flex flex-col items-center mb-8">
               <button
                 className="sm:w-1/2 w-5/6 py-4 rounded bg-gray-900 hover:bg-blue-500 focus:bg-blue-500 font-bold tracking-wide text-gray-300 sm:text-xl mb-4"
                 onClick={() => {
