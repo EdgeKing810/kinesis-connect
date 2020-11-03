@@ -33,6 +33,10 @@ export default function App() {
           <Post />
         </Route>
 
+        <Route exact path="/post/edit/:postID">
+          <Post />
+        </Route>
+
         <Route exact path="/chat">
           <div>chat</div>
         </Route>

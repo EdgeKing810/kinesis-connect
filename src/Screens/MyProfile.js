@@ -284,7 +284,9 @@ export default function MyProfile() {
         My Profile
       </div>
       {error.length > 0 ? (
-        <div className="text-2xl text-yellow-400 font-sans">{error}</div>
+        <div className="sm:text-2xl text-lg w-5/6 mx-auto text-yellow-400 font-sans text-center">
+          {error}
+        </div>
       ) : (
         <div className="sm:w-2/3 w-11/12 mx-auto flex flex-col items-center overflow-x-hidden">
           <img

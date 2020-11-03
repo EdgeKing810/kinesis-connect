@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { LocalContext } from '../Context';
 import { Parser } from './renderers';
+import { useHistory } from 'react-router-dom';
 
 export default function FeedPost({
   uid,
@@ -31,6 +32,7 @@ export default function FeedPost({
   };
 
   const { APIURL, profile, setMyPosts } = useContext(LocalContext);
+  const history = useHistory();
 
   const likePost = () => {
     const data = {
@@ -100,6 +102,26 @@ export default function FeedPost({
       </div>
 
       <div className="pt-1 w-full bg-gray-800 my-2"></div>
+
+      {uid === profileID ? (
+        <div className="w-full">
+          <div className="w-full flex justify-around py-1">
+            <button
+              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-indigo-700 focus:bg-indigo-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
+              onClick={() => history.push(`/post/edit/${postID}`)}
+            >
+              Edit Post
+            </button>
+            <button className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800">
+              Delete Post
+            </button>
+          </div>
+
+          <div className="pt-1 w-full bg-gray-800 my-2"></div>
+        </div>
+      ) : (
+        ''
+      )}
 
       <div className="w-5/6 flex flex-col items-start">
         <Parser content={content} />
