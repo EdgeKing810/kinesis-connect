@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { LocalContext } from '../Context';
@@ -20,8 +20,32 @@ export default function LoginForm() {
   const [submitMessage, setSubmitMessage] = useState('Submitting...');
   const [submitError, setSubmitError] = useState(false);
 
-  const { APIURL, setLoggedInUser } = useContext(LocalContext);
+  const { APIURL, setLoggedInUser, setProfile } = useContext(LocalContext);
   const history = useHistory();
+
+  useEffect(() => {
+    // console.log(JSON.parse(localStorage.getItem('_userData')));
+    if (localStorage.getItem('_userData')) {
+      const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
+
+      const data = {
+        uid,
+        profileID: uid,
+      };
+
+      axios
+        .post(`${APIURL}/api/profile/fetch`, data, {
+          headers: { Authorization: `Bearer ${jwt}` },
+        })
+        .then((res) => {
+          if (res.data.error === 0) {
+            setProfile({ ...res.data, jwt: jwt });
+            history.push('/feed');
+          }
+        });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const setName = (e) => {
     e.preventDefault();

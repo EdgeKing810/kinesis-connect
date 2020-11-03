@@ -84,7 +84,7 @@ export default function Post() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center overflow-x-hidden">
+    <div className="w-full flex flex-col items-center">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
         Create New Post
       </div>
