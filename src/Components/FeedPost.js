@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import axios from 'axios';
+import { v4 } from 'uuid';
 
 import { LocalContext } from '../Context';
 import { Parser } from './renderers';
-import { useHistory } from 'react-router-dom';
 
 export default function FeedPost({
   uid,
@@ -105,6 +106,53 @@ export default function FeedPost({
 
   const liked = reacts.some((r) => r.uid === uid);
 
+  const submitComment = (e) => {
+    e.preventDefault();
+
+    let d = new Date();
+    const t = new Date(
+      d.getUTCFullYear(),
+      d.getUTCMonth(),
+      d.getUTCDate(),
+      d.getUTCHours(),
+      d.getUTCMinutes(),
+      d.getUTCSeconds()
+    );
+
+    const data = {
+      uid: uid,
+      profileID: profileID,
+      postID: postID,
+      commentID: v4(),
+      comment: comment,
+      timestamp: t,
+      reacts: [],
+    };
+
+    setMyPosts((prev) =>
+      prev.map((post) => {
+        if (post.postID === postID) {
+          return {
+            uid: post.uid,
+            postID: post.postID,
+            content: post.content,
+            timestamp: post.timestamp,
+            reacts: post.reacts,
+            comments: [...post.comments, data],
+          };
+        } else {
+          return post;
+        }
+      })
+    );
+
+    axios.post(
+      `${APIURL}/api/post/comment/add`,
+      { ...data },
+      { headers: { Authorization: `Bearer ${profile.jwt}` } }
+    );
+  };
+
   return (
     <div
       className="w-full flex flex-col items-center p-2 bg-gray-900 my-2 rounded-lg"
@@ -162,7 +210,7 @@ export default function FeedPost({
         <button
           className={`w-49/100 p-2 sm:text-xl text-md bg-${
             liked ? 'blue' : 'gray'
-          }-900 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded-l`}
+          }-900 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
           onClick={() => likePost()}
         >
           Like{liked ? 'd' : ''}
@@ -173,7 +221,7 @@ export default function FeedPost({
         <button
           className={`w-49/100 p-2 sm:text-xl text-md ${
             showComment ? 'bg-blue-900' : ''
-          } tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded-r`}
+          } tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
           onClick={() => {
             setShowComment((prev) => !prev);
           }}
@@ -189,6 +237,10 @@ export default function FeedPost({
       {showComment ? (
         <div className="w-full mt-4 mb-2">
           <div className="pt-1 w-full bg-gray-800 mb-4"></div>
+
+          {comments.map((c) => (
+            <div className="w-full">{c.comment}</div>
+          ))}
 
           <div className="w-11/12 mx-auto flex justify-between">
             <div className="w-1/5 flex justify-center items-center sm:text-md text-sm font-rale tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">
@@ -210,6 +262,7 @@ export default function FeedPost({
                   ? 'hover:bg-blue-900 focus:bg-blue-900'
                   : 'opacity-50'
               } rounded-lg`}
+              onClick={(e) => (comment.length > 0 ? submitComment(e) : null)}
             >
               Comment
             </button>
