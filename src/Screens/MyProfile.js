@@ -43,6 +43,8 @@ export default function MyProfile() {
       setTimeout(() => history.push('/'), 500);
     } else {
       setError('');
+
+      setModifiedValues([profile.name, profile.username, '', profile.bio]);
     }
     // eslint-disable-next-line
   }, []);

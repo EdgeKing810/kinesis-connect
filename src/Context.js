@@ -7,7 +7,7 @@ const LocalContext = React.createContext();
 function LocalContextProvider({ children }) {
   const [loggedInUser, setLoggedInUser] = useState({});
 
-  const [profile, setProfile] = useState([]);
+  const [profile, setProfile] = useState({});
   const [myPosts, setMyPosts] = useState([]);
   const [people, setPeople] = useState([]);
 

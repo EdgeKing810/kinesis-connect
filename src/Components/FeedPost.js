@@ -416,11 +416,15 @@ export default function FeedPost({
       <div className="w-full flex mt-4">
         <button
           className={`w-1/3 p-1 sm:text-lg text-md tracking-wider font-open ${
-            showReacts
+            reacts.length <= 0
+              ? 'opacity-50 bg-gray-600'
+              : showReacts
               ? 'bg-gray-400'
               : 'bg-gray-600 hover:bg-gray-400 focus:bg-gray-400'
-          } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale uppercase text-blue-900`}
-          onClick={() => setShowReacts((prev) => !prev)}
+          } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale text-blue-900`}
+          onClick={() =>
+            reacts.length <= 0 ? null : setShowReacts((prev) => !prev)
+          }
         >
           Likes: {reacts.length}
         </button>
@@ -430,14 +434,14 @@ export default function FeedPost({
             showComment
               ? 'bg-gray-400'
               : 'bg-gray-600 hover:bg-gray-400 focus:bg-gray-400'
-          } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale uppercase text-blue-900`}
+          } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale text-blue-900`}
           onClick={() => setShowComment((prev) => !prev)}
         >
           Comments: {comments.length}
         </button> */}
       </div>
 
-      {showReacts && people !== undefined ? (
+      {showReacts && reacts.length > 0 && people !== undefined ? (
         <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-md text-sm flex mt-4">
           {postReacts.join(', ')}
         </div>
