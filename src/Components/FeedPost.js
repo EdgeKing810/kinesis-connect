@@ -224,6 +224,45 @@ export default function FeedPost({
     );
   };
 
+  const deleteComment = (e, commentID, like) => {
+    e.preventDefault();
+
+    const data = {
+      uid: uid,
+      profileID: profileID,
+      postID: postID,
+      commentID: commentID,
+      like: like,
+    };
+
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+      setMyPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            return {
+              uid: post.uid,
+              postID: post.postID,
+              content: post.content,
+              timestamp: post.timestamp,
+              reacts: post.reacts,
+              comments: post.comments.filter(
+                (comm) => comm.commentID !== commentID
+              ),
+            };
+          } else {
+            return post;
+          }
+        })
+      );
+
+      axios.post(
+        `${APIURL}/api/post/comment/delete`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      );
+    }
+  };
+
   const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
     <div
       className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
@@ -300,7 +339,7 @@ export default function FeedPost({
           {userID === uid ? (
             <button
               className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
-              onClick={() => null}
+              onClick={(e) => deleteComment(e, commentID)}
             >
               Delete Comment
             </button>
