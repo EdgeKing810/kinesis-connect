@@ -38,6 +38,8 @@ export default function FeedPost({
   const { APIURL, profile, setMyPosts } = useContext(LocalContext);
   const history = useHistory();
 
+  const userID = uid;
+
   const likePost = () => {
     const data = {
       uid: uid,
@@ -106,31 +108,6 @@ export default function FeedPost({
 
   const liked = reacts.some((r) => r.uid === uid);
 
-  const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
-    <div
-      className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
-      key={commentID}
-    >
-      <div className="w-1/6 flex justify-center items-center">
-        <img
-          src={profile_pic}
-          alt={'p.pic-comment'}
-          className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
-        />
-      </div>
-
-      <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
-        <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
-          {username}
-        </div>
-        <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
-          {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
-        </div>
-        <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
-      </div>
-    </div>
-  );
-
   const submitComment = (e) => {
     e.preventDefault();
 
@@ -177,6 +154,136 @@ export default function FeedPost({
       { headers: { Authorization: `Bearer ${profile.jwt}` } }
     );
   };
+
+  const reactComment = (e, commentID, like) => {
+    e.preventDefault();
+
+    const data = {
+      uid: uid,
+      profileID: profileID,
+      postID: postID,
+      commentID: commentID,
+      like: like,
+    };
+
+    setMyPosts((prev) =>
+      prev.map((post) => {
+        if (post.postID === postID) {
+          return {
+            uid: post.uid,
+            postID: post.postID,
+            content: post.content,
+            timestamp: post.timestamp,
+            reacts: post.reacts,
+            comments: post.comments.map((comm) => {
+              if (comm.commentID === commentID) {
+                return {
+                  uid: comm.uid,
+                  commentID: comm.commentID,
+                  comment: comm.comment,
+                  timestamp: comm.timestamp,
+                  reacts:
+                    like === 'true'
+                      ? [...comm.reacts, { uid: uid }]
+                      : comm.reacts.filter((c) => c.uid !== uid),
+                };
+              } else {
+                return comm;
+              }
+            }),
+          };
+        } else {
+          return post;
+        }
+      })
+    );
+
+    axios
+      .post(
+        `${APIURL}/api/post/comment/react`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      )
+      .then((res) => console.log(res.data));
+  };
+
+  const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
+    <div
+      className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
+      key={commentID}
+    >
+      <div className="w-1/6 flex justify-center items-center">
+        <img
+          src={profile_pic}
+          alt={'p.pic-comment'}
+          className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
+        />
+      </div>
+
+      <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
+        <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
+          {username}
+        </div>
+        <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
+          {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
+        </div>
+        <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
+
+        <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
+
+        <div className="w-full flex justify-between pr-2 my-2">
+          <button
+            className={`w-1/4 p-1 sm:text-md text-sm bg-${
+              reacts !== undefined && reacts.some((r) => r.uid === uid)
+                ? 'blue'
+                : 'gray'
+            }-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+            onClick={(e) =>
+              reactComment(
+                e,
+                commentID,
+                reacts !== undefined && reacts.some((r) => r.uid === uid)
+                  ? 'false'
+                  : 'true'
+              )
+            }
+          >
+            Like
+            {reacts !== undefined && reacts.some((r) => r.uid === uid)
+              ? 'd'
+              : ''}
+            <div
+              className={`ml-2 text-md ri-thumb-up-${
+                reacts !== undefined && reacts.some((r) => r.uid === uid)
+                  ? 'fill'
+                  : 'line'
+              }`}
+            ></div>
+          </button>
+          {userID === uid ? (
+            <button
+              className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+              onClick={() => null}
+            >
+              Edit Comment
+            </button>
+          ) : (
+            ''
+          )}
+          {userID === uid ? (
+            <button
+              className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+              onClick={() => null}
+            >
+              Delete Comment
+            </button>
+          ) : (
+            ''
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div
