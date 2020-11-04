@@ -9,6 +9,7 @@ function LocalContextProvider({ children }) {
 
   const [profile, setProfile] = useState([]);
   const [myPosts, setMyPosts] = useState([]);
+  const [people, setPeople] = useState([]);
 
   const APIURL = 'https://api.connect.kinesis.games';
   const UPLOADSURL = 'https://uploads.connect.kinesis.games';
@@ -55,6 +56,18 @@ function LocalContextProvider({ children }) {
                   setMyPosts([]);
                 }
               });
+
+            axios
+              .post(`${APIURL}/api/profiles/fetch`, data, {
+                headers: { Authorization: `Bearer ${jwt}` },
+              })
+              .then((response) => {
+                if (response.data.error === 0) {
+                  setPeople([...response.data.users, { ...res.data }]);
+                } else {
+                  setPeople([{ ...res.data }]);
+                }
+              });
           }
         });
     }
@@ -72,6 +85,8 @@ function LocalContextProvider({ children }) {
         setProfile,
         myPosts,
         setMyPosts,
+        people,
+        setPeople,
       }}
     >
       {children}

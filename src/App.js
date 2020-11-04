@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Switch, Route } from 'react-router-dom';
+import { Redirect, Switch, Route, Link } from 'react-router-dom';
 
 import LoginForm from './Screens/LoginForm';
 import MyProfile from './Screens/MyProfile';
@@ -18,7 +18,8 @@ export default function App() {
         </Route>
 
         <Route exact path="/feed">
-          <div>feed</div>
+          Feed
+          <Link to="/profile">My Profile</Link>
         </Route>
 
         <Route exact path="/profile">

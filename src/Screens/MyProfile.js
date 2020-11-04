@@ -41,6 +41,8 @@ export default function MyProfile() {
     ) {
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
+    } else {
+      setError('');
     }
     // eslint-disable-next-line
   }, []);

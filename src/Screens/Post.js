@@ -19,7 +19,6 @@ export default function Post() {
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
     const myPost = myPosts.find((p) => p.postID === postID);
-    console.log(myPost);
 
     content = myPost.content;
     reacts = myPost.reacts;
@@ -29,14 +28,18 @@ export default function Post() {
   const [postContent, setPostContent] = useState(edit ? content : '');
 
   useEffect(() => {
-    if (
-      !localStorage.getItem('_userData') ||
-      profile.jwt === undefined ||
-      !profile.jwt
-    ) {
-      setError('You need to login first to view this page.');
-      setTimeout(() => history.push('/'), 500);
-    }
+    setTimeout(() => {
+      if (
+        !localStorage.getItem('_userData') ||
+        profile.jwt === undefined ||
+        !profile.jwt
+      ) {
+        setError('You need to login first to view this page.');
+        setTimeout(() => history.push('/'), 500);
+      } else {
+        setError('');
+      }
+    }, 1000);
     // eslint-disable-next-line
   }, []);
 
