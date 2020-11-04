@@ -33,6 +33,7 @@ export default function FeedPost({
   };
 
   const [showComment, setShowComment] = useState(false);
+  const [isEditingComment, setIsEditingComment] = useState('');
   const [comment, setComment] = useState('');
 
   const { APIURL, profile, setMyPosts } = useContext(LocalContext);
@@ -125,10 +126,12 @@ export default function FeedPost({
       uid: uid,
       profileID: profileID,
       postID: postID,
-      commentID: v4(),
+      commentID: isEditingComment ? isEditingComment : v4(),
       comment: comment,
       timestamp: t,
-      reacts: [],
+      reacts: isEditingComment
+        ? comments.find((c) => c.commentID === isEditingComment).reacts
+        : [],
     };
 
     setMyPosts((prev) =>
@@ -140,7 +143,16 @@ export default function FeedPost({
             content: post.content,
             timestamp: post.timestamp,
             reacts: post.reacts,
-            comments: [...post.comments, data],
+            comments:
+              isEditingComment.length > 0
+                ? post.comments.map((c) => {
+                    if (c.commentID === isEditingComment) {
+                      return data;
+                    } else {
+                      return c;
+                    }
+                  })
+                : [...post.comments, data],
           };
         } else {
           return post;
@@ -149,10 +161,17 @@ export default function FeedPost({
     );
 
     axios.post(
-      `${APIURL}/api/post/comment/add`,
+      `${APIURL}/api/post/comment/${
+        isEditingComment.length > 0 ? 'edit' : 'add'
+      }`,
       { ...data },
       { headers: { Authorization: `Bearer ${profile.jwt}` } }
     );
+
+    if (isEditingComment.length > 0) {
+      setIsEditingComment('');
+      setComment('');
+    }
   };
 
   const reactComment = (e, commentID, like) => {
@@ -198,13 +217,11 @@ export default function FeedPost({
       })
     );
 
-    axios
-      .post(
-        `${APIURL}/api/post/comment/react`,
-        { ...data },
-        { headers: { Authorization: `Bearer ${profile.jwt}` } }
-      )
-      .then((res) => console.log(res.data));
+    axios.post(
+      `${APIURL}/api/post/comment/react`,
+      { ...data },
+      { headers: { Authorization: `Bearer ${profile.jwt}` } }
+    );
   };
 
   const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
@@ -262,10 +279,20 @@ export default function FeedPost({
           </button>
           {userID === uid ? (
             <button
-              className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
-              onClick={() => null}
+              className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-${
+                isEditingComment === commentID ? 'gray' : 'red'
+              }-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+              onClick={() => {
+                if (isEditingComment !== commentID) {
+                  setIsEditingComment(commentID);
+                  setComment(comment);
+                } else {
+                  setIsEditingComment('');
+                  setComment('');
+                }
+              }}
             >
-              Edit Comment
+              {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
             </button>
           ) : (
             ''
@@ -394,7 +421,7 @@ export default function FeedPost({
               } rounded-lg`}
               onClick={(e) => (comment.length > 0 ? submitComment(e) : null)}
             >
-              Comment
+              {isEditingComment.length > 0 ? 'Update' : 'Comment'}
             </button>
           </div>
         </div>
