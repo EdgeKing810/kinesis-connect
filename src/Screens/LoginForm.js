@@ -20,18 +20,16 @@ export default function LoginForm() {
   const [submitMessage, setSubmitMessage] = useState('Submitting...');
   const [submitError, setSubmitError] = useState(false);
 
-  const { APIURL, setLoggedInUser, profile, setProfile } = useContext(
-    LocalContext
-  );
+  const { APIURL, setLoggedInUser } = useContext(LocalContext);
   const history = useHistory();
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem('_userData')));
     if (localStorage.getItem('_userData')) {
-      if (profile.jwt !== undefined && profile.jwt) {
-        history.push('/feed');
-        return;
-      }
+      setSubmit(true);
+      setSubmitMessage('Trying to login automatically...');
+
+      let allowed = false;
 
       const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
 
@@ -45,11 +43,15 @@ export default function LoginForm() {
           headers: { Authorization: `Bearer ${jwt}` },
         })
         .then((res) => {
-          if (res.data.error === 0) {
-            setProfile({ ...res.data, jwt: jwt });
-            history.push('/feed');
-          }
+          allowed = res.data.error === 0;
         });
+
+      setTimeout(() => {
+        setSubmit(false);
+        setSubmitMessage('Submitting...');
+
+        allowed && history.push('/feed');
+      }, 1000);
     }
     // eslint-disable-next-line
   }, []);

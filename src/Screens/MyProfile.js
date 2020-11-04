@@ -34,65 +34,13 @@ export default function MyProfile() {
   };
 
   useEffect(() => {
-    // console.log(JSON.parse(localStorage.getItem('_userData')));
-    if (!localStorage.getItem('_userData')) {
+    if (
+      !localStorage.getItem('_userData') ||
+      profile.jwt === undefined ||
+      !profile.jwt
+    ) {
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
-    } else {
-      if (
-        profile.jwt !== undefined &&
-        profile.jwt &&
-        myPosts &&
-        myPosts.length > 0
-      ) {
-        setError('');
-        return;
-      }
-
-      const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
-
-      const data = {
-        uid,
-        profileID: uid,
-      };
-
-      axios
-        .post(`${APIURL}/api/profile/fetch`, data, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        })
-        .then((res) => {
-          if (res.data.error !== 0) {
-            setError(res.data.message.toString());
-            setTimeout(() => history.push('/'), 500);
-          } else {
-            setError('');
-            setProfile({ ...res.data, jwt: jwt });
-
-            axios
-              .post(
-                `${APIURL}/api/posts/get`,
-                { uid },
-                {
-                  headers: { Authorization: `Bearer ${jwt}` },
-                }
-              )
-              .then((response) => {
-                if (response.data.error === 0) {
-                  setMyPosts(response.data.posts);
-                } else {
-                  setMyPosts([]);
-                }
-              })
-              .then(() => {
-                setModifiedValues([
-                  res.data.name,
-                  res.data.username,
-                  '',
-                  res.data.bio,
-                ]);
-              });
-          }
-        });
     }
     // eslint-disable-next-line
   }, []);

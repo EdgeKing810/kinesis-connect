@@ -14,9 +14,7 @@ export default function Post() {
   const edit = postID !== undefined;
 
   const history = useHistory();
-  const { APIURL, profile, setProfile, myPosts, setMyPosts } = useContext(
-    LocalContext
-  );
+  const { APIURL, profile, myPosts, setMyPosts } = useContext(LocalContext);
 
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
@@ -31,36 +29,13 @@ export default function Post() {
   const [postContent, setPostContent] = useState(edit ? content : '');
 
   useEffect(() => {
-    // console.log(JSON.parse(localStorage.getItem('_userData')));
-    if (!localStorage.getItem('_userData') || !myPosts) {
+    if (
+      !localStorage.getItem('_userData') ||
+      profile.jwt === undefined ||
+      !profile.jwt
+    ) {
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
-    } else {
-      if (profile.jwt !== undefined && profile.jwt) {
-        setError('');
-        return;
-      }
-
-      const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
-
-      const data = {
-        uid,
-        profileID: uid,
-      };
-
-      axios
-        .post(`${APIURL}/api/profile/fetch`, data, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        })
-        .then((res) => {
-          if (res.data.error !== 0) {
-            setError(res.data.message);
-            setTimeout(() => history.push('/'), 500);
-          } else {
-            setError('');
-            setProfile({ ...res.data, jwt: jwt });
-          }
-        });
     }
     // eslint-disable-next-line
   }, []);
