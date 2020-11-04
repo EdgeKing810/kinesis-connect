@@ -106,6 +106,31 @@ export default function FeedPost({
 
   const liked = reacts.some((r) => r.uid === uid);
 
+  const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
+    <div
+      className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
+      key={commentID}
+    >
+      <div className="w-1/6 flex justify-center items-center">
+        <img
+          src={profile_pic}
+          alt={'p.pic-comment'}
+          className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
+        />
+      </div>
+
+      <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
+        <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
+          {username}
+        </div>
+        <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
+          {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
+        </div>
+        <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
+      </div>
+    </div>
+  );
+
   const submitComment = (e) => {
     e.preventDefault();
 
@@ -238,12 +263,10 @@ export default function FeedPost({
         <div className="w-full mt-4 mb-2">
           <div className="pt-1 w-full bg-gray-800 mb-4"></div>
 
-          {comments.map((c) => (
-            <div className="w-full">{c.comment}</div>
-          ))}
+          {comments.map((c) => makeComment(c))}
 
-          <div className="w-11/12 mx-auto flex justify-between">
-            <div className="w-1/5 flex justify-center items-center sm:text-md text-sm font-rale tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">
+          <div className="w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-between items-center">
+            <div className="sm:w-1/5 w-2/5 flex justify-center items-center sm:text-md text-sm font-rale sm:mb-0 mb-2 tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">
               {profile.username}
             </div>
 
@@ -252,12 +275,12 @@ export default function FeedPost({
               name="commentBox"
               value={comment}
               placeholder="Type Something..."
-              className="w-1/2 p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
+              className="sm:w-1/2 w-5/6 p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
               onChange={(e) => setComment(e.target.value)}
             />
 
             <button
-              className={`p-1 sm:text-md text-sm w-1/5 bg-gray-800 ${
+              className={`p-1 sm:text-md text-sm sm:w-1/5 w-1/2 sm:mt-0 mt-2 bg-gray-800 ${
                 comment.length > 0
                   ? 'hover:bg-blue-900 focus:bg-blue-900'
                   : 'opacity-50'

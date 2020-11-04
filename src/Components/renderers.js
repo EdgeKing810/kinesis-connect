@@ -37,8 +37,6 @@ const listItem = (props) => {
 };
 
 const code = (props) => {
-  console.log(props);
-
   return (
     <div
       className="text-blue-400 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100"
