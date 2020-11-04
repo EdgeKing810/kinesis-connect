@@ -21,7 +21,11 @@ const link = (props) => {
 };
 
 const text = (props) => {
-  return <span className="text-gray-300">{props.children}</span>;
+  return (
+    <span className="text-gray-300" style={{ whiteSpace: 'pre-line' }}>
+      {props.children}
+    </span>
+  );
 };
 
 const list = (props) => {
@@ -36,7 +40,10 @@ const code = (props) => {
   console.log(props);
 
   return (
-    <div className="text-blue-400 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100">
+    <div
+      className="text-blue-400 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100"
+      style={{ whiteSpace: 'pre-line' }}
+    >
       {props.node.value}
     </div>
   );

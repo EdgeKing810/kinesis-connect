@@ -39,6 +39,16 @@ export default function MyProfile() {
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
     } else {
+      if (
+        profile.jwt !== undefined &&
+        profile.jwt &&
+        myPosts &&
+        myPosts.length > 0
+      ) {
+        setError('');
+        return;
+      }
+
       const { uid, jwt } = JSON.parse(localStorage.getItem('_userData'));
 
       const data = {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import axios from 'axios';
 
@@ -30,6 +30,9 @@ export default function FeedPost({
       )
     ).toString();
   };
+
+  const [showComment, setShowComment] = useState(false);
+  const [comment, setComment] = useState('');
 
   const { APIURL, profile, setMyPosts } = useContext(LocalContext);
   const history = useHistory();
@@ -115,7 +118,7 @@ export default function FeedPost({
         />
 
         <div className="h-full w-full flex flex-col items-start ml-2">
-          <div className="sm:text-xl text-md bg-blue-900 p-1 rounded">
+          <div className="sm:text-xl text-lg bg-blue-900 p-1 rounded">
             {username}
           </div>
           <div className="sm:text-md text-xs text-left italic">
@@ -155,9 +158,9 @@ export default function FeedPost({
 
       <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
 
-      <div className="w-full flex">
+      <div className="w-full flex justify-between">
         <button
-          className={`w-1/2 p-2 sm:text-xl text-md bg-${
+          className={`w-49/100 p-2 sm:text-xl text-md bg-${
             liked ? 'blue' : 'gray'
           }-900 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded-l`}
           onClick={() => likePost()}
@@ -167,10 +170,52 @@ export default function FeedPost({
             className={`ml-2 text-md ri-thumb-up-${liked ? 'fill' : 'line'}`}
           ></div>
         </button>
-        <button className="w-1/2 p-2 sm:text-xl text-md tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded-r">
-          Comment <div className="ml-2 text-md ri-message-3-line"></div>
+        <button
+          className={`w-49/100 p-2 sm:text-xl text-md ${
+            showComment ? 'bg-blue-900' : ''
+          } tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded-r`}
+          onClick={() => {
+            setShowComment((prev) => !prev);
+          }}
+        >
+          {showComment ? 'Hide Comments' : 'Show Comments'}{' '}
+          <div
+            className={`ml-2 text-md ri-message-3-${
+              showComment ? 'fill' : 'line'
+            }`}
+          ></div>
         </button>
       </div>
+      {showComment ? (
+        <div className="w-full mt-4 mb-2">
+          <div className="pt-1 w-full bg-gray-800 mb-4"></div>
+
+          <div className="w-11/12 mx-auto flex justify-between">
+            <div className="w-1/5 flex justify-center items-center sm:text-md text-sm font-rale tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">
+              {profile.username}
+            </div>
+
+            <input
+              type="text"
+              name="commentBox"
+              value={comment}
+              placeholder="Type Something..."
+              className="w-1/2 p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
+              onChange={(e) => setComment(e.target.value)}
+            />
+
+            <button
+              className={`p-1 sm:text-md text-sm w-1/5 bg-gray-800 ${
+                comment.length > 0
+                  ? 'hover:bg-blue-900 focus:bg-blue-900'
+                  : 'opacity-50'
+              } rounded-lg`}
+            >
+              Comment
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

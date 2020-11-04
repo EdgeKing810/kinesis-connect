@@ -32,7 +32,7 @@ export default function Post() {
 
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem('_userData')));
-    if (!localStorage.getItem('_userData') || !myPosts.length > 0) {
+    if (!localStorage.getItem('_userData') || !myPosts) {
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
     } else {
@@ -152,16 +152,15 @@ export default function Post() {
               {edit ? 'Update' : 'Create'}
             </button>
 
-            {edit ? (
-              <button
-                className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-500 focus:bg-green-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
-                onClick={() => history.push('/profile')}
-              >
-                Cancel
-              </button>
-            ) : (
-              ''
-            )}
+            <button
+              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-500 focus:bg-green-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
+              onClick={() => {
+                setPostContent('');
+                history.push('/profile');
+              }}
+            >
+              Cancel
+            </button>
           </div>
 
           <div className="w-full pt-1 my-4 bg-gray-900 rounded"></div>
@@ -170,7 +169,10 @@ export default function Post() {
             Preview
           </div>
 
-          <div className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-8">
+          <div
+            className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-8"
+            style={{ whiteSpace: 'pre-line' }}
+          >
             <Parser content={postContent} />
           </div>
         </div>
