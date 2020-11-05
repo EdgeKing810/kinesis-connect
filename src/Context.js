@@ -63,9 +63,12 @@ function LocalContextProvider({ children }) {
               })
               .then((response) => {
                 if (response.data.error === 0) {
-                  setPeople([...response.data.users, { ...res.data }]);
+                  setPeople([
+                    ...response.data.users,
+                    { ...res.data, profileID: res.data.uid },
+                  ]);
                 } else {
-                  setPeople([{ ...res.data }]);
+                  setPeople([{ ...res.data, profileID: res.data.uid }]);
                 }
               });
           }

@@ -7,6 +7,8 @@ import { v4 } from 'uuid';
 import { LocalContext } from '../Context';
 import { Parser } from './renderers';
 
+import tmpAvatar from '../Assets/images/avatar_tmp.png';
+
 export default function FeedPost({
   uid,
   profileID,
@@ -37,7 +39,9 @@ export default function FeedPost({
   const [isEditingComment, setIsEditingComment] = useState('');
   const [comment, setComment] = useState('');
 
-  const { APIURL, profile, setMyPosts, people } = useContext(LocalContext);
+  const { APIURL, UPLOADSURL, profile, setMyPosts, people } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   const userID = uid;
@@ -264,99 +268,114 @@ export default function FeedPost({
     }
   };
 
-  const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => (
-    <div
-      className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
-      key={commentID}
-    >
-      <div className="w-1/6 flex justify-center items-center">
-        <img
-          src={profile_pic}
-          alt={'p.pic-comment'}
-          className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
-        />
-      </div>
+  const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => {
+    let currentPerson = { username: 'username', profile_pic: '' };
 
-      <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
-        <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
-          {username}
-        </div>
-        <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
-          {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
-        </div>
-        <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
+    people.forEach((p) => {
+      if (p.profileID === uid) {
+        currentPerson.username = p.username;
+        currentPerson.profile_pic = p.profile_pic;
+      }
+    });
 
-        <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
-
-        <div className="w-full flex justify-between pr-2 my-2">
-          <button
-            className={`w-1/4 p-1 sm:text-md text-sm bg-${
-              reacts !== undefined && reacts.some((r) => r.uid === uid)
-                ? 'blue'
-                : 'gray'
-            }-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
-            onClick={(e) =>
-              reactComment(
-                e,
-                commentID,
-                reacts !== undefined && reacts.some((r) => r.uid === uid)
-                  ? 'false'
-                  : 'true'
-              )
+    return (
+      <div
+        className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
+        key={commentID}
+      >
+        <div className="w-1/6 flex justify-center items-center">
+          <img
+            src={
+              currentPerson.profile_pic.length > 0
+                ? `${UPLOADSURL}/${currentPerson.profile_pic}`
+                : tmpAvatar
             }
-          >
-            Like
-            {reacts !== undefined && reacts.some((r) => r.uid === uid)
-              ? 'd'
-              : ''}
-            <div
-              className={`ml-2 text-md ri-thumb-up-${
+            alt={'p.pic-comment'}
+            className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
+          />
+        </div>
+
+        <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
+          <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
+            {currentPerson.username}
+          </div>
+          <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
+            {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
+          </div>
+          <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
+
+          <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
+
+          <div className="w-full flex justify-between pr-2 my-2">
+            <button
+              className={`w-1/4 p-1 sm:text-md text-sm bg-${
                 reacts !== undefined && reacts.some((r) => r.uid === uid)
-                  ? 'fill'
-                  : 'line'
-              }`}
-            ></div>
-          </button>
-          {userID === uid ? (
-            <button
-              className={`w-1/4 p-1 sm:text-md text-sm tracking-wider font-open bg-${
-                isEditingComment === commentID ? 'indigo' : 'gray'
-              }-700 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
-              onClick={() => {
-                if (isEditingComment !== commentID) {
-                  setIsEditingComment(commentID);
-                  setComment(comment);
-                } else {
-                  setIsEditingComment('');
-                  setComment('');
-                }
-              }}
+                  ? 'blue'
+                  : 'gray'
+              }-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+              onClick={(e) =>
+                reactComment(
+                  e,
+                  commentID,
+                  reacts !== undefined && reacts.some((r) => r.uid === uid)
+                    ? 'false'
+                    : 'true'
+                )
+              }
             >
-              {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
+              Like
+              {reacts !== undefined && reacts.some((r) => r.uid === uid)
+                ? 'd'
+                : ''}
+              <div
+                className={`ml-2 text-md ri-thumb-up-${
+                  reacts !== undefined && reacts.some((r) => r.uid === uid)
+                    ? 'fill'
+                    : 'line'
+                }`}
+              ></div>
             </button>
-          ) : (
-            ''
-          )}
-          {userID === uid ? (
-            <button
-              className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
-              onClick={(e) => deleteComment(e, commentID)}
-            >
-              Delete Comment
-            </button>
-          ) : (
-            ''
-          )}
+            {userID === uid ? (
+              <button
+                className={`w-1/4 p-1 sm:text-md text-sm tracking-wider font-open bg-${
+                  isEditingComment === commentID ? 'indigo' : 'gray'
+                }-700 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+                onClick={() => {
+                  if (isEditingComment !== commentID) {
+                    setIsEditingComment(commentID);
+                    setComment(comment);
+                  } else {
+                    setIsEditingComment('');
+                    setComment('');
+                  }
+                }}
+              >
+                {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
+              </button>
+            ) : (
+              ''
+            )}
+            {userID === uid ? (
+              <button
+                className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
+                onClick={(e) => deleteComment(e, commentID)}
+              >
+                Delete Comment
+              </button>
+            ) : (
+              ''
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   let postReacts = [];
 
   reacts.forEach((r) => {
     people.forEach((p) => {
-      if (p.profileID === r.uid || p.uid === r.uid) {
+      if (p.profileID === r.uid) {
         postReacts.push(p.username);
       }
     });
