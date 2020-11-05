@@ -35,9 +35,12 @@ export default function FeedPost({
   };
 
   const [showReacts, setShowReacts] = useState(false);
+
+  const [comment, setComment] = useState('');
+
   const [showComment, setShowComment] = useState(false);
   const [isEditingComment, setIsEditingComment] = useState('');
-  const [comment, setComment] = useState('');
+  const [showCommentReacts, setShowCommentReacts] = useState('');
 
   const { APIURL, UPLOADSURL, profile, setMyPosts, people } = useContext(
     LocalContext
@@ -131,12 +134,13 @@ export default function FeedPost({
       uid: uid,
       profileID: profileID,
       postID: postID,
-      commentID: isEditingComment ? isEditingComment : v4(),
+      commentID: isEditingComment.length > 0 ? isEditingComment : v4(),
       comment: comment,
       timestamp: t,
-      reacts: isEditingComment
-        ? comments.find((c) => c.commentID === isEditingComment).reacts
-        : [],
+      reacts:
+        isEditingComment.length > 0
+          ? comments.find((c) => c.commentID === isEditingComment).reacts
+          : [],
     };
 
     setMyPosts((prev) =>
@@ -278,6 +282,16 @@ export default function FeedPost({
       }
     });
 
+    let commentReacts = [];
+
+    reacts.forEach((r) => {
+      people.forEach((p) => {
+        if (p.profileID === r.uid) {
+          commentReacts.push(p.username);
+        }
+      });
+    });
+
     return (
       <div
         className="w-11/12 mx-auto flex justify-around rounded-lg py-2 px-4 border-2 border-blue-900 my-2"
@@ -306,9 +320,9 @@ export default function FeedPost({
 
           <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
 
-          <div className="w-full flex justify-between pr-2 my-2">
+          <div className="w-full flex sm:flex-row flex-col sm:justify-between sm:items-start pr-2 my-2">
             <button
-              className={`w-1/4 p-1 sm:text-md text-sm bg-${
+              className={`sm:w-1/4 w-3/4 p-1 sm:text-md text-sm bg-${
                 reacts !== undefined && reacts.some((r) => r.uid === uid)
                   ? 'blue'
                   : 'gray'
@@ -337,7 +351,7 @@ export default function FeedPost({
             </button>
             {userID === uid ? (
               <button
-                className={`w-1/4 p-1 sm:text-md text-sm tracking-wider font-open bg-${
+                className={`sm:w-1/4 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
                   isEditingComment === commentID ? 'indigo' : 'gray'
                 }-700 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
                 onClick={() => {
@@ -357,7 +371,7 @@ export default function FeedPost({
             )}
             {userID === uid ? (
               <button
-                className={`w-1/4 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
+                className={`sm:w-1/4 w-3/4 sm:mt-0 mt-2 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
                 onClick={(e) => deleteComment(e, commentID)}
               >
                 Delete Comment
@@ -366,6 +380,40 @@ export default function FeedPost({
               ''
             )}
           </div>
+
+          <div className="w-full flex">
+            <button
+              className={`sm:w-1/5 w-1/2 p-1 sm:text-sm text-xs tracking-wider font-open ${
+                reacts.length <= 0
+                  ? 'opacity-50 bg-gray-600'
+                  : showCommentReacts === commentID &&
+                    showCommentReacts.length > 0
+                  ? 'bg-gray-400'
+                  : 'bg-gray-600 hover:bg-gray-400 focus:bg-gray-400'
+              } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale text-blue-900`}
+              onClick={() =>
+                reacts.length <= 0
+                  ? null
+                  : setShowCommentReacts((prev) =>
+                      prev === commentID && prev.length > 0
+                        ? setShowCommentReacts('')
+                        : setShowCommentReacts(commentID)
+                    )
+              }
+            >
+              Likes: {reacts.length}
+            </button>
+          </div>
+
+          {showCommentReacts === commentID &&
+          showCommentReacts.length > 0 &&
+          people !== undefined ? (
+            <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-sm text-xs flex mt-2">
+              {commentReacts.join(', ')}
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       </div>
     );
