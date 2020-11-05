@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, Switch, Route, Link } from 'react-router-dom';
+import NavBar from './Components/NavBar';
 
 import LoginForm from './Screens/LoginForm';
 import MyProfile from './Screens/MyProfile';
@@ -17,33 +18,37 @@ export default function App() {
           <LoginForm />
         </Route>
 
-        <Route exact path="/feed">
-          Feed
-          <Link to="/profile">My Profile</Link>
-        </Route>
+        <Route>
+          <div className="w-screen">
+            <NavBar />
 
-        <Route exact path="/profile">
-          <MyProfile />
-        </Route>
+            <Switch>
+              <Route exact path="/feed">
+                Feed
+                <Link to="/profile">My Profile</Link>
+              </Route>
+              <Route exact path="/profile">
+                <MyProfile />
+              </Route>
+              <Route exact path="/profile/:id">
+                <div>profile</div>
+              </Route>
+              <Route exact path="/post/create">
+                <Post />
+              </Route>
+              <Route exact path="/post/edit/:postID">
+                <Post />
+              </Route>
+              <Route exact path="/chat">
+                <div>chat</div>
+              </Route>
+              <Route exact path="/discover">
+                <div>discover</div>
+              </Route>
 
-        <Route exact path="/profile/:id">
-          <div>profile</div>
-        </Route>
-
-        <Route exact path="/post/create">
-          <Post />
-        </Route>
-
-        <Route exact path="/post/edit/:postID">
-          <Post />
-        </Route>
-
-        <Route exact path="/chat">
-          <div>chat</div>
-        </Route>
-
-        <Route exact path="/discover">
-          <div>discover</div>
+              <Route render={() => <Redirect to="/" />} />
+            </Switch>
+          </div>
         </Route>
       </Switch>
     </div>

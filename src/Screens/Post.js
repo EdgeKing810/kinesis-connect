@@ -28,18 +28,16 @@ export default function Post() {
   const [postContent, setPostContent] = useState(edit ? content : '');
 
   useEffect(() => {
-    setTimeout(() => {
-      if (
-        !localStorage.getItem('_userData') ||
-        profile.jwt === undefined ||
-        !profile.jwt
-      ) {
-        setError('You need to login first to view this page.');
-        setTimeout(() => history.push('/'), 500);
-      } else {
-        setError('');
-      }
-    }, 1000);
+    if (
+      !localStorage.getItem('_userData') ||
+      profile.jwt === undefined ||
+      !profile.jwt
+    ) {
+      setError('You need to login first to view this page.');
+      setTimeout(() => history.push('/'), 500);
+    } else {
+      setError('');
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -123,7 +121,7 @@ export default function Post() {
               className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 ${
                 postContent.length > 0
                   ? 'hover:bg-blue-500 focus:bg-blue-500'
-                  : 'opacity-50'
+                  : 'opacity-50 z-0'
               } rounded-lg text-gray-300`}
               onClick={(e) => (postContent.length > 0 ? submitPost(e) : null)}
             >
@@ -131,7 +129,7 @@ export default function Post() {
             </button>
 
             <button
-              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-500 focus:bg-green-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
+              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-red-500 focus:bg-red-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
               onClick={() => {
                 setPostContent('');
                 history.push('/profile');
