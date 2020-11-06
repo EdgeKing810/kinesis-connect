@@ -412,7 +412,7 @@ export default function FeedPost({
               {/* {commentReacts.join(', ')} */}
 
               {commentReacts.map((cr, i) => (
-                <div>
+                <div key={`comm-${cr}-${i}`}>
                   <a
                     href={`/profile/${cr.profileID}`}
                     className="underline hover:text-blue-400 focus:text-blue-400"
