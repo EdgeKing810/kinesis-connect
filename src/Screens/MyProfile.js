@@ -250,7 +250,7 @@ export default function MyProfile() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-2/3 w-11/12 mx-auto flex flex-col items-center overflow-x-hidden">
+        <div className="sm:w-2/3 w-11/12 mx-auto flex flex-col items-center">
           <img
             src={`${
               profile.profile_pic !== undefined &&

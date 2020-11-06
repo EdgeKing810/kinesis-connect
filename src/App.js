@@ -1,10 +1,12 @@
 import React from 'react';
 import { Redirect, Switch, Route, Link } from 'react-router-dom';
+
 import NavBar from './Components/NavBar';
 
 import LoginForm from './Screens/LoginForm';
 import MyProfile from './Screens/MyProfile';
 import Post from './Screens/Post';
+import Discover from './Screens/Discover';
 
 export default function App() {
   return (
@@ -39,11 +41,11 @@ export default function App() {
               <Route exact path="/post/edit/:postID">
                 <Post />
               </Route>
+              <Route exact path="/discover">
+                <Discover />
+              </Route>
               <Route exact path="/chat">
                 <div>chat</div>
-              </Route>
-              <Route exact path="/discover">
-                <div>discover</div>
               </Route>
 
               <Route render={() => <Redirect to="/" />} />
