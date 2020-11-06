@@ -353,7 +353,7 @@ export default function FeedPost({
               <button
                 className={`sm:w-1/4 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
                   isEditingComment === commentID ? 'indigo' : 'gray'
-                }-700 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+                }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
                 onClick={() => {
                   if (isEditingComment !== commentID) {
                     setIsEditingComment(commentID);
@@ -457,8 +457,8 @@ export default function FeedPost({
           <div className="sm:text-xl text-lg bg-blue-900 p-1 rounded">
             {username}
           </div>
-          <div className="sm:text-md text-xs text-left italic">
-            Posted on {convertDate(timestamp)}
+          <div className="sm:text-lg text-md text-left italic">
+            Posted on {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
           </div>
         </div>
       </div>
@@ -562,7 +562,7 @@ export default function FeedPost({
             setShowComment((prev) => !prev);
           }}
         >
-          {showComment ? 'Hide Comments' : 'Show Comments'}{' '}
+          {showComment ? 'Hide Comments' : `Comments (${comments.length})`}{' '}
           <div
             className={`ml-2 text-md ri-message-3-${
               showComment ? 'fill' : 'line'

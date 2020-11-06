@@ -14,6 +14,7 @@ export default function NavBar() {
   const buttonsToMake = [
     { name: 'Feed', path: '/feed', icon: 'article' },
     { name: 'Create a post', path: '/post/create', icon: 'add-box' },
+    { name: 'Discover', path: '/discover', icon: 'eye-2' },
     { name: 'Chats', path: '/chat', icon: 'message-2' },
     { name: 'My Profile', path: '/profile', icon: 'account-box' },
   ];
