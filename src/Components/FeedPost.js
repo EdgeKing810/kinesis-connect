@@ -287,7 +287,7 @@ export default function FeedPost({
     reacts.forEach((r) => {
       people.forEach((p) => {
         if (p.profileID === r.uid) {
-          commentReacts.push(p.username);
+          commentReacts.push({ profileID: p.profileID, username: p.username });
         }
       });
     });
@@ -409,7 +409,19 @@ export default function FeedPost({
           showCommentReacts.length > 0 &&
           people !== undefined ? (
             <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-sm text-xs flex mt-2">
-              {commentReacts.join(', ')}
+              {/* {commentReacts.join(', ')} */}
+
+              {commentReacts.map((cr, i) => (
+                <div>
+                  <a
+                    href={`/profile/${cr.profileID}`}
+                    className="underline hover:text-blue-400 focus:text-blue-400"
+                  >
+                    {cr.username}
+                  </a>
+                  {i !== commentReacts.length - 1 ? ', ' : ''}
+                </div>
+              ))}
             </div>
           ) : (
             ''
@@ -424,7 +436,7 @@ export default function FeedPost({
   reacts.forEach((r) => {
     people.forEach((p) => {
       if (p.profileID === r.uid) {
-        postReacts.push(p.username);
+        postReacts.push({ profileID: p.profileID, username: p.username });
       }
     });
   });
@@ -510,7 +522,19 @@ export default function FeedPost({
 
       {showReacts && reacts.length > 0 && people !== undefined ? (
         <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-md text-sm flex mt-4">
-          {postReacts.join(', ')}
+          {/* {postReacts.join(', ')} */}
+
+          {postReacts.map((pr, i) => (
+            <div>
+              <a
+                href={`/profile/${pr.profileID}`}
+                className="underline hover:text-blue-400 focus:text-blue-400"
+              >
+                {pr.username}
+              </a>
+              {i !== postReacts.length - 1 ? ', ' : ''}
+            </div>
+          ))}
         </div>
       ) : (
         ''
