@@ -103,7 +103,7 @@ export default function Discover() {
         className="my-2 border-4 border-blue-400 rounded-full p-2 sm:w-40 w-32 sm:h-40 h-32 sm:mb-4 mb-2 object-scale-down"
       />
 
-      <div className="w-full text-center text-green-300 sm:text-xl text-lg font-rale tracking-wider font-bold">
+      <div className="w-full text-center text-green-300 sm:text-xl text-lg font-rale tracking-wider sm:mb-0 mb-1 font-bold">
         @{username}
       </div>
 
