@@ -48,7 +48,13 @@ export default function NavBar() {
         </button>
       </div>
 
-      <div className="w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-100">
+      <div
+        className={`w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-100 transform ${
+          showMenu
+            ? 'translate-x-0 ease-out duration-1000 transition-medium'
+            : '-translate-x-screen ease-in duration-1000 transition-mediums'
+        }`}
+      >
         <div className="text-2xl font-bold my-2 tracking-widest text-blue-300">
           Navigation
         </div>
@@ -72,7 +78,7 @@ export default function NavBar() {
   );
 
   return (
-    <div className="w-full sm:py-4 sm:bg-gray-700 sm:mb-2 flex sm:justify-center justify-end sm:border-b-2 sm:border-blue-500 sm:pr-0 pr-4 sm:pt-0 pt-4">
+    <div className="w-full sm:py-4 sm:bg-gray-700 sm:mb-2 flex sm:justify-center justify-end sm:border-b-2 sm:border-blue-500 sm:pr-0 pr-4 pt-4">
       {width > 640 ? (
         navButtons
       ) : (
