@@ -5,6 +5,7 @@ import NavBar from './Components/NavBar';
 
 import LoginForm from './Screens/LoginForm';
 import MyProfile from './Screens/MyProfile';
+import UserProfile from './Screens/UserProfile';
 import Post from './Screens/Post';
 import Discover from './Screens/Discover';
 
@@ -32,8 +33,8 @@ export default function App() {
               <Route exact path="/profile">
                 <MyProfile />
               </Route>
-              <Route exact path="/profile/:id">
-                <div>profile</div>
+              <Route exact path="/profile/:profileID">
+                <UserProfile />
               </Route>
               <Route exact path="/post/create">
                 <Post />

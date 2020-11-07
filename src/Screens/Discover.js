@@ -138,7 +138,7 @@ export default function Discover() {
 
         <button
           className="w-full p-1 my-1 rounded uppercase tracking-wide sm:text-lg text-center bg-blue-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200"
-          onClick={() => history.push(`/${profileID}`)}
+          onClick={() => history.push(`/profile/${profileID}`)}
         >
           Visit Profile
         </button>

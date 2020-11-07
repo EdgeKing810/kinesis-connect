@@ -51,7 +51,7 @@ export default function LoginForm() {
         setSubmitMessage('Submitting...');
 
         allowed && history.push('/feed');
-      }, 1000);
+      }, 1500);
     }
     // eslint-disable-next-line
   }, []);
@@ -461,7 +461,7 @@ export default function LoginForm() {
   const errorMessage = (
     <div className="w-5/6 mx-auto flex flex-col justify-between items-center">
       <div
-        className={`tracking-wide sm:text-2xl text-xl sm:my-0 my-4 text-center flex items-center text-${
+        className={`tracking-wide sm:text-2xl text-lg sm:my-0 my-4 text-center flex items-center text-${
           submitError ? 'red' : 'green'
         }-400`}
       >
