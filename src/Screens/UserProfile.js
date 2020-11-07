@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { LocalContext } from '../Context';
+import FeedPost from '../Components/FeedPost';
 import userAction from '../Components/userAction';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
@@ -13,6 +14,8 @@ export default function UserProfile() {
     LocalContext
   );
   const history = useHistory();
+
+  const userPosts = [];
 
   const { profileID } = useParams();
   let currentProfile = people.find((p) => p.profileID === profileID.toString());
@@ -43,6 +46,21 @@ export default function UserProfile() {
     }
     // eslint-disable-next-line
   }, []);
+
+  const formattedPosts = userPosts.map((post) => (
+    <FeedPost
+      uid={profileID}
+      profileID={profile.uid}
+      username={currentProfile.username}
+      profile_pic={`${UPLOADSURL}/${currentProfile.profile_pic}`}
+      postID={post.postID}
+      content={post.content}
+      timestamp={post.timestamp}
+      reacts={post.reacts}
+      comments={post.comments}
+      key={post.postID}
+    />
+  ));
 
   return (
     <div className="w-full flex flex-col items-center overflow-x-hidden">
@@ -116,6 +134,22 @@ export default function UserProfile() {
           </div>
 
           <div className="w-full pt-1 mt-4 mb-2 bg-gray-900 rounded"></div>
+
+          {!isFollowing || isBlocked || !userPosts.length > 0 ? (
+            <div className="w-full sm:text-2xl text-lg w-5/6 mx-auto text-yellow-400 font-sans text-center">
+              {userPosts.length > 0
+                ? `Need to ${
+                    isBlocked ? 'unblock' : !isFollowing ? 'follow' : ''
+                  }${' '}
+              ${(
+                <span className="text-blue-300">{currentProfile.username}</span>
+              )}${' '}
+              to view posts.`
+                : 'No posts yet.'}
+            </div>
+          ) : (
+            { formattedPosts }
+          )}
         </div>
       )}
     </div>
