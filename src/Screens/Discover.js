@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import axios from 'axios';
-
 import { LocalContext } from '../Context';
+import userAction from '../Components/userAction';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
 
@@ -56,55 +55,6 @@ export default function Discover() {
       profile.blocked.some((u) => p.profileID === u.uid)
   );
 
-  const userAction = (profileID, operation) => {
-    const bool =
-      operation === 'block'
-        ? !profile.blocked.some((u) => u.uid === profileID)
-        : !profile.following.some((u) => u.uid === profileID);
-
-    const data = {
-      uid: profile.uid,
-      profileID: profileID,
-      status: bool ? 'true' : 'false',
-    };
-
-    setProfile((prev) => ({
-      uid: prev.uid,
-      name: prev.name,
-      username: prev.username,
-      email: prev.email,
-      roomID: prev.roomID,
-      bio: prev.bio,
-      profile_pic: prev.profile_pic,
-      followers:
-        operation === 'block'
-          ? prev.followers.filter((p) => p.uid !== profileID)
-          : prev.followers,
-      following:
-        operation !== 'block'
-          ? bool
-            ? [...prev.following, { uid: profileID }]
-            : prev.following.filter((p) => p.uid !== profileID)
-          : prev.following,
-      blocked:
-        operation === 'block'
-          ? bool
-            ? [...prev.blocked, { uid: profileID }]
-            : prev.blocked.filter((p) => p.uid !== profileID)
-          : prev.blocked,
-      chats: prev.chats,
-      jwt: prev.jwt,
-    }));
-
-    axios.post(
-      `${APIURL}/api/profile/${operation === 'block' ? 'block' : 'follow'}`,
-      { ...data },
-      {
-        headers: { Authorization: `Bearer ${profile.jwt}` },
-      }
-    );
-  };
-
   const card = ({ profileID, name, username, profile_pic }, id, operation) => {
     const bool =
       operation !== 'block'
@@ -113,7 +63,7 @@ export default function Discover() {
 
     return (
       <div
-        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center px-2 mr-2 my-2 w-64 sm:h-100 sm:py-2 h-74"
+        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center px-2 mr-2 my-2 w-64 sm:py-2 h-auto"
         key={`${id}-${profileID}`}
       >
         <div className="w-full text-center text-blue-300 sm:text-xl text-lg tracking-wide font-open mt-2">
@@ -147,7 +97,9 @@ export default function Discover() {
           className={`w-full p-1 my-1 rounded uppercase tracking-wide sm:text-lg text-center bg-${
             bool ? 'red' : 'blue'
           }-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200`}
-          onClick={() => userAction(profileID, operation)}
+          onClick={() =>
+            userAction(profileID, operation, APIURL, profile, setProfile)
+          }
         >
           {bool
             ? operation !== 'block'
@@ -175,7 +127,7 @@ export default function Discover() {
           <div className="font-bold tracking-wider font-open text-gray-400 sm:text-3xl text-xl mt-4 mb-1">
             Users you may know ({peopleYouMayKnow.length})
           </div>
-          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll">
+          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll overflow-y-hidden">
             {peopleYouMayKnow.map((p) => card(p, 'pymk', 'follow'))}
           </div>
           {/* <div className="w-full flex sm:py-2 py-4 overflow-x-scroll">
@@ -185,21 +137,21 @@ export default function Discover() {
           <div className="font-bold tracking-wider font-open text-gray-400 sm:text-3xl text-xl mt-4 mb-1">
             Followers ({peopleFollowingYou.length})
           </div>
-          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll">
+          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll overflow-y-hidden">
             {peopleFollowingYou.map((p) => card(p, 'pfw', 'follow'))}
           </div>
 
           <div className="font-bold tracking-wider font-open text-gray-400 sm:text-3xl text-xl mt-4 mb-1">
             Following ({peopleYouFollow.length})
           </div>
-          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll">
+          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll overflow-y-hidden">
             {peopleYouFollow.map((p) => card(p, 'pyf', 'follow'))}
           </div>
 
           <div className="font-bold tracking-wider font-open text-gray-400 sm:text-3xl text-xl mt-4 mb-1">
             Blocked ({peopleBlocked.length})
           </div>
-          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll mb-4">
+          <div className="w-full flex sm:py-2 py-4 overflow-x-scroll overflow-y-hidden mb-4">
             {peopleBlocked.map((p) => card(p, 'bck', 'block'))}
           </div>
         </div>

@@ -2,17 +2,29 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { LocalContext } from '../Context';
+import userAction from '../Components/userAction';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
 
 export default function UserProfile() {
   const [error, setError] = useState('Loading...');
 
-  const { UPLOADSURL, people, profile } = useContext(LocalContext);
+  const { APIURL, UPLOADSURL, people, profile, setProfile } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   const { profileID } = useParams();
   let currentProfile = people.find((p) => p.profileID === profileID.toString());
+
+  let isFollowing =
+    profile.following !== undefined
+      ? profile.following.some((p) => p.uid === profileID)
+      : false;
+  let isBlocked =
+    profile.blocked !== undefined
+      ? profile.blocked.some((p) => p.uid === profileID)
+      : false;
 
   useEffect(() => {
     if (
@@ -53,7 +65,9 @@ export default function UserProfile() {
             alt="Profile Pic"
             className="border-4 border-blue-400 rounded-full p-2 sm:w-64 w-56 sm:h-64 h-56 mb-4 object-scale-down"
           />
+
           <div className="w-full pt-1 my-2 bg-gray-900 rounded"></div>
+
           <div className="w-full flex flex-col items-center">
             <div className="font-bold w-full sm:text-3xl text-2xl tracking-wide text-blue-300 my-2 text-center">
               {currentProfile.name}
@@ -66,6 +80,42 @@ export default function UserProfile() {
               </div>
             </div>
           </div>
+
+          <div className="w-full pt-1 mt-2 mb-4 bg-gray-900 rounded"></div>
+
+          <div className="w-full flex sm:flex-row flex-col justify-around sm:items-start items-center">
+            {!isBlocked ? (
+              <button
+                className={`sm:w-1/3 w-5/6 sm:py-4 py-2 rounded-lg sm:text-lg bg-blue-${
+                  isFollowing ? '900' : '700'
+                } text-gray-200 hover:bg-blue-${
+                  isFollowing ? '700' : '900'
+                } focus:bg-blue-${isFollowing ? '700' : '900'} sm:mb-0 mb-2`}
+                onClick={() =>
+                  userAction(profileID, 'follow', APIURL, profile, setProfile)
+                }
+              >
+                {isFollowing ? 'Unfollow' : 'Follow'}
+              </button>
+            ) : (
+              ''
+            )}
+
+            <button
+              className={`sm:w-1/3 w-5/6 sm:py-4 py-2 rounded-lg sm:text-lg bg-red-${
+                isBlocked ? '900' : '700'
+              } text-gray-200 hover:bg-red-${
+                isBlocked ? '700' : '900'
+              } focus:bg-red-${isBlocked ? '700' : '900'}`}
+              onClick={() =>
+                userAction(profileID, 'block', APIURL, profile, setProfile)
+              }
+            >
+              {isBlocked ? 'Unblock' : 'Block'}
+            </button>
+          </div>
+
+          <div className="w-full pt-1 mt-4 mb-2 bg-gray-900 rounded"></div>
         </div>
       )}
     </div>
