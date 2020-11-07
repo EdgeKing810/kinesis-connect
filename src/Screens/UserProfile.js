@@ -20,7 +20,6 @@ export default function UserProfile() {
       profile.jwt === undefined ||
       !profile.jwt
     ) {
-      console.log(profile.jwt, JSON.parse(localStorage.getItem('_userData')));
       setError('You need to login first to view this page.');
       setTimeout(() => history.push('/'), 500);
     } else {

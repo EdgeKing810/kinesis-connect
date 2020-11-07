@@ -478,7 +478,7 @@ export default function LoginForm() {
         className="fixed h-screen w-full bg-gray-900 z-0 object-cover"
       />
       <div className="sm:w-2/3 sm:h-3/4 w-5/6 bg-gray-600 rounded-lg z-50 opacity-95 shadow-lg flex sm:flex-row flex-col">
-        <div className="h-full sm:w-1/2 w-full bg-gray-600 sm:rounded-l-lg rounded-t-lg flex flex-col justify-center items-center sm:border-r-4 sm:border-gray-800">
+        <div className="h-full sm:w-1/2 w-full bg-gray-600 sm:rounded-l-lg sm:rounded-t-none rounded-t-lg flex flex-col justify-center items-center sm:border-r-4 sm:border-gray-800">
           <div className="w-full mb-4 font-bold tracking-wider sm:text-4xl text-2xl sm:mt-0 mt-4 uppercase text-blue-900 flex justify-center">
             Kinesis <p className="ml-2 text-blue-300">Connect</p>
           </div>
@@ -488,7 +488,7 @@ export default function LoginForm() {
             className="sm:w-1/2 w-1/3 sm:mb-0 mb-4 object-scale-down"
           />
         </div>
-        <div className="h-full sm:w-1/2 w-full bg-gray-800 sm:rounded-r-lg rounded-b-lg sm:border-l-4 sm:border-gray-600 flex flex-col justify-center">
+        <div className="h-full sm:w-1/2 w-full bg-gray-800 sm:rounded-r-lg sm:rounded-b-none rounded-b-lg sm:border-l-4 sm:border-gray-600 flex flex-col justify-center">
           {submit ? errorMessage : isRegistering ? Register : Login}
         </div>
       </div>
