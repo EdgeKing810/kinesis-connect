@@ -68,7 +68,7 @@ export default function Discover() {
 
     return (
       <div
-        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center px-2 mr-4 my-2 w-64 sm:py-2 h-auto"
+        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center px-2 mr-4 my-2 w-64 py-2 h-auto"
         key={`${id}-${profileID}`}
       >
         <div className="w-full text-center text-blue-300 sm:text-xl text-lg tracking-wide font-open mt-2">
