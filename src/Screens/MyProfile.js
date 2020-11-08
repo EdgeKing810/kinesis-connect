@@ -236,7 +236,8 @@ export default function MyProfile() {
       timestamp={post.timestamp}
       reacts={post.reacts}
       comments={post.comments}
-      key={post.postID}
+      keyname={`${post.postID}-myp`}
+      personal={true}
     />
   ));
 

@@ -19,6 +19,8 @@ export default function FeedPost({
   timestamp,
   reacts,
   comments,
+  keyname,
+  personal,
 }) {
   const convertDate = (date) => {
     const oldDate = new Date(date);
@@ -42,9 +44,14 @@ export default function FeedPost({
   const [isEditingComment, setIsEditingComment] = useState('');
   const [showCommentReacts, setShowCommentReacts] = useState('');
 
-  const { APIURL, UPLOADSURL, profile, setMyPosts, people } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    UPLOADSURL,
+    profile,
+    setMyPosts,
+    setFeedPosts,
+    people,
+  } = useContext(LocalContext);
   const history = useHistory();
 
   const userID = uid;
@@ -63,33 +70,63 @@ export default function FeedPost({
       { headers: { Authorization: `Bearer ${profile.jwt}` } }
     );
 
-    setMyPosts((prev) =>
-      prev.map((post) => {
-        if (post.postID === postID) {
-          if (post.reacts.some((r) => r.uid === uid)) {
-            return {
-              uid: post.uid,
-              postID: post.postID,
-              content: post.content,
-              timestamp: post.timestamp,
-              reacts: post.reacts.filter((r) => r.uid !== uid),
-              comments: post.comments,
-            };
+    if (personal) {
+      setMyPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            if (post.reacts.some((r) => r.uid === uid)) {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: post.reacts.filter((r) => r.uid !== uid),
+                comments: post.comments,
+              };
+            } else {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: [...post.reacts, { uid: uid }],
+                comments: post.comments,
+              };
+            }
           } else {
-            return {
-              uid: post.uid,
-              postID: post.postID,
-              content: post.content,
-              timestamp: post.timestamp,
-              reacts: [...post.reacts, { uid: uid }],
-              comments: post.comments,
-            };
+            return post;
           }
-        } else {
-          return post;
-        }
-      })
-    );
+        })
+      );
+    } else {
+      setFeedPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            if (post.reacts.some((r) => r.uid === uid)) {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: post.reacts.filter((r) => r.uid !== uid),
+                comments: post.comments,
+              };
+            } else {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: [...post.reacts, { uid: uid }],
+                comments: post.comments,
+              };
+            }
+          } else {
+            return post;
+          }
+        })
+      );
+    }
   };
 
   const deletePost = () => {
@@ -109,7 +146,15 @@ export default function FeedPost({
           alert(res.data.message);
 
           if (res.data.error === 0) {
-            setMyPosts((prev) => prev.filter((post) => post.postID !== postID));
+            if (personal) {
+              setMyPosts((prev) =>
+                prev.filter((post) => post.postID !== postID)
+              );
+            } else {
+              setFeedPosts((prev) =>
+                prev.filter((post) => post.postID !== postID)
+              );
+            }
           }
         });
     }
@@ -143,31 +188,59 @@ export default function FeedPost({
           : [],
     };
 
-    setMyPosts((prev) =>
-      prev.map((post) => {
-        if (post.postID === postID) {
-          return {
-            uid: post.uid,
-            postID: post.postID,
-            content: post.content,
-            timestamp: post.timestamp,
-            reacts: post.reacts,
-            comments:
-              isEditingComment.length > 0
-                ? post.comments.map((c) => {
-                    if (c.commentID === isEditingComment) {
-                      return data;
-                    } else {
-                      return c;
-                    }
-                  })
-                : [...post.comments, data],
-          };
-        } else {
-          return post;
-        }
-      })
-    );
+    if (personal) {
+      setMyPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            return {
+              uid: post.uid,
+              postID: post.postID,
+              content: post.content,
+              timestamp: post.timestamp,
+              reacts: post.reacts,
+              comments:
+                isEditingComment.length > 0
+                  ? post.comments.map((c) => {
+                      if (c.commentID === isEditingComment) {
+                        return data;
+                      } else {
+                        return c;
+                      }
+                    })
+                  : [...post.comments, data],
+            };
+          } else {
+            return post;
+          }
+        })
+      );
+    } else {
+      setFeedPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            return {
+              uid: post.uid,
+              postID: post.postID,
+              content: post.content,
+              timestamp: post.timestamp,
+              reacts: post.reacts,
+              comments:
+                isEditingComment.length > 0
+                  ? post.comments.map((c) => {
+                      if (c.commentID === isEditingComment) {
+                        return data;
+                      } else {
+                        return c;
+                      }
+                    })
+                  : [...post.comments, data],
+            };
+          } else {
+            return post;
+          }
+        })
+      );
+    }
 
     axios.post(
       `${APIURL}/api/post/comment/${
@@ -194,57 +267,7 @@ export default function FeedPost({
       like: like,
     };
 
-    setMyPosts((prev) =>
-      prev.map((post) => {
-        if (post.postID === postID) {
-          return {
-            uid: post.uid,
-            postID: post.postID,
-            content: post.content,
-            timestamp: post.timestamp,
-            reacts: post.reacts,
-            comments: post.comments.map((comm) => {
-              if (comm.commentID === commentID) {
-                return {
-                  uid: comm.uid,
-                  commentID: comm.commentID,
-                  comment: comm.comment,
-                  timestamp: comm.timestamp,
-                  reacts:
-                    like === 'true'
-                      ? [...comm.reacts, { uid: uid }]
-                      : comm.reacts.filter((c) => c.uid !== uid),
-                };
-              } else {
-                return comm;
-              }
-            }),
-          };
-        } else {
-          return post;
-        }
-      })
-    );
-
-    axios.post(
-      `${APIURL}/api/post/comment/react`,
-      { ...data },
-      { headers: { Authorization: `Bearer ${profile.jwt}` } }
-    );
-  };
-
-  const deleteComment = (e, commentID, like) => {
-    e.preventDefault();
-
-    const data = {
-      uid: uid,
-      profileID: profileID,
-      postID: postID,
-      commentID: commentID,
-      like: like,
-    };
-
-    if (window.confirm('Are you sure you want to delete this comment?')) {
+    if (personal) {
       setMyPosts((prev) =>
         prev.map((post) => {
           if (post.postID === postID) {
@@ -254,15 +277,119 @@ export default function FeedPost({
               content: post.content,
               timestamp: post.timestamp,
               reacts: post.reacts,
-              comments: post.comments.filter(
-                (comm) => comm.commentID !== commentID
-              ),
+              comments: post.comments.map((comm) => {
+                if (comm.commentID === commentID) {
+                  return {
+                    uid: comm.uid,
+                    commentID: comm.commentID,
+                    comment: comm.comment,
+                    timestamp: comm.timestamp,
+                    reacts:
+                      like === 'true'
+                        ? [...comm.reacts, { uid: uid }]
+                        : comm.reacts.filter((c) => c.uid !== uid),
+                  };
+                } else {
+                  return comm;
+                }
+              }),
             };
           } else {
             return post;
           }
         })
       );
+    } else {
+      setFeedPosts((prev) =>
+        prev.map((post) => {
+          if (post.postID === postID) {
+            return {
+              uid: post.uid,
+              postID: post.postID,
+              content: post.content,
+              timestamp: post.timestamp,
+              reacts: post.reacts,
+              comments: post.comments.map((comm) => {
+                if (comm.commentID === commentID) {
+                  return {
+                    uid: comm.uid,
+                    commentID: comm.commentID,
+                    comment: comm.comment,
+                    timestamp: comm.timestamp,
+                    reacts:
+                      like === 'true'
+                        ? [...comm.reacts, { uid: uid }]
+                        : comm.reacts.filter((c) => c.uid !== uid),
+                  };
+                } else {
+                  return comm;
+                }
+              }),
+            };
+          } else {
+            return post;
+          }
+        })
+      );
+    }
+
+    axios.post(
+      `${APIURL}/api/post/comment/react`,
+      { ...data },
+      { headers: { Authorization: `Bearer ${profile.jwt}` } }
+    );
+  };
+
+  const deleteComment = (e, commentID) => {
+    e.preventDefault();
+
+    const data = {
+      uid: uid,
+      profileID: profileID,
+      postID: postID,
+      commentID: commentID,
+    };
+
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+      if (personal) {
+        setMyPosts((prev) =>
+          prev.map((post) => {
+            if (post.postID === postID) {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: post.reacts,
+                comments: post.comments.filter(
+                  (comm) => comm.commentID !== commentID
+                ),
+              };
+            } else {
+              return post;
+            }
+          })
+        );
+      } else {
+        setFeedPosts((prev) =>
+          prev.map((post) => {
+            if (post.postID === postID) {
+              return {
+                uid: post.uid,
+                postID: post.postID,
+                content: post.content,
+                timestamp: post.timestamp,
+                reacts: post.reacts,
+                comments: post.comments.filter(
+                  (comm) => comm.commentID !== commentID
+                ),
+              };
+            } else {
+              return post;
+            }
+          })
+        );
+      }
 
       axios.post(
         `${APIURL}/api/post/comment/delete`,
@@ -323,7 +450,7 @@ export default function FeedPost({
           <div className="w-full flex sm:flex-row flex-col sm:justify-between sm:items-start pr-2 my-2">
             <button
               className={`sm:w-1/4 w-3/4 p-1 sm:text-md text-sm bg-${
-                reacts !== undefined && reacts.some((r) => r.uid === uid)
+                reacts !== undefined && reacts.some((r) => r.uid === userID)
                   ? 'blue'
                   : 'gray'
               }-800 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
@@ -331,19 +458,19 @@ export default function FeedPost({
                 reactComment(
                   e,
                   commentID,
-                  reacts !== undefined && reacts.some((r) => r.uid === uid)
+                  reacts !== undefined && reacts.some((r) => r.uid === userID)
                     ? 'false'
                     : 'true'
                 )
               }
             >
               Like
-              {reacts !== undefined && reacts.some((r) => r.uid === uid)
+              {reacts !== undefined && reacts.some((r) => r.uid === userID)
                 ? 'd'
                 : ''}
               <div
                 className={`ml-2 text-md ri-thumb-up-${
-                  reacts !== undefined && reacts.some((r) => r.uid === uid)
+                  reacts !== undefined && reacts.some((r) => r.uid === userID)
                     ? 'fill'
                     : 'line'
                 }`}
@@ -413,13 +540,13 @@ export default function FeedPost({
 
               {commentReacts.map((cr, i) => (
                 <div key={`comm-${cr}-${i}`}>
-                  <a
-                    href={`/profile/${cr.profileID}`}
-                    className="underline hover:text-blue-400 focus:text-blue-400"
+                  <button
+                    onClick={() => history.push(`/profile/${cr.profileID}`)}
+                    className="underline hover:text-blue-400 focus:text-blue-400 pr-1"
                   >
                     {cr.username}
-                  </a>
-                  {i !== commentReacts.length - 1 ? ', ' : ''}
+                    {i !== commentReacts.length - 1 ? ', ' : ''}
+                  </button>
                 </div>
               ))}
             </div>
@@ -443,10 +570,10 @@ export default function FeedPost({
 
   return (
     <div
-      className="w-full flex flex-col items-center p-2 bg-gray-900 my-2 rounded-lg"
-      key={postID}
+      className="w-full flex flex-col items-center p-2 bg-gray-900 sm:my-4 my-2 rounded-lg"
+      key={keyname}
     >
-      <div className="flex items-center">
+      <div className="flex flex-none justify-start items-center">
         <img
           src={profile_pic}
           alt={'p.pic'}
@@ -454,9 +581,16 @@ export default function FeedPost({
         />
 
         <div className="h-full w-full flex flex-col items-start ml-2">
-          <div className="sm:text-xl text-lg bg-blue-900 p-1 rounded">
+          <button
+            className="sm:text-xl text-lg bg-blue-900 p-1 rounded underline hover:bg-blue-800 focus:bg-blue-800"
+            onClick={() =>
+              userID === profileID
+                ? history.push(`/profile/`)
+                : history.push(`/profile/${profileID}`)
+            }
+          >
             {username}
-          </div>
+          </button>
           <div className="sm:text-lg text-md text-left italic">
             Posted on {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
           </div>
@@ -525,14 +659,14 @@ export default function FeedPost({
           {/* {postReacts.join(', ')} */}
 
           {postReacts.map((pr, i) => (
-            <div>
-              <a
-                href={`/profile/${pr.profileID}`}
-                className="underline hover:text-blue-400 focus:text-blue-400"
+            <div key={`postr-${pr}-${i}`}>
+              <button
+                onClick={() => history.push(`/profile/${pr.profileID}`)}
+                className="underline hover:text-blue-400 focus:text-blue-400 pr-1"
               >
                 {pr.username}
-              </a>
-              {i !== postReacts.length - 1 ? ', ' : ''}
+                {i !== postReacts.length - 1 ? ', ' : ''}
+              </button>
             </div>
           ))}
         </div>

@@ -130,6 +130,7 @@ export default function Discover() {
           <div className="w-full flex sm:py-2 py-4 overflow-x-scroll overflow-y-hidden">
             {peopleYouMayKnow.map((p) => card(p, 'pymk', 'follow'))}
           </div>
+
           {/* <div className="w-full flex sm:py-2 py-4 overflow-x-scroll">
             {peopleYouMayKnow.map((p) => card(p, 'pymkb', 'block'))}
           </div> */}

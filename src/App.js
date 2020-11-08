@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Switch, Route, Link } from 'react-router-dom';
+import { Redirect, Switch, Route } from 'react-router-dom';
 
 import NavBar from './Components/NavBar';
 
@@ -8,6 +8,7 @@ import MyProfile from './Screens/MyProfile';
 import UserProfile from './Screens/UserProfile';
 import Post from './Screens/Post';
 import Discover from './Screens/Discover';
+import Feed from './Screens/Feed';
 
 export default function App() {
   return (
@@ -27,8 +28,7 @@ export default function App() {
 
             <Switch>
               <Route exact path="/feed">
-                Feed
-                <Link to="/profile">My Profile</Link>
+                <Feed />
               </Route>
               <Route exact path="/profile">
                 <MyProfile />
