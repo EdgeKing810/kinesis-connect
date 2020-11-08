@@ -9,9 +9,14 @@ import tmpAvatar from '../Assets/images/avatar_tmp.png';
 export default function Discover() {
   const [error, setError] = useState('Loading...');
 
-  const { APIURL, UPLOADSURL, profile, setProfile, people } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    UPLOADSURL,
+    profile,
+    setProfile,
+    people,
+    setFeedPosts,
+  } = useContext(LocalContext);
   const history = useHistory();
 
   useEffect(() => {
@@ -98,7 +103,14 @@ export default function Discover() {
             bool ? 'red' : 'blue'
           }-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200`}
           onClick={() =>
-            userAction(profileID, operation, APIURL, profile, setProfile)
+            userAction(
+              profileID,
+              operation,
+              APIURL,
+              profile,
+              setProfile,
+              setFeedPosts
+            )
           }
         >
           {bool

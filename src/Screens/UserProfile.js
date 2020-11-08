@@ -10,12 +10,16 @@ import tmpAvatar from '../Assets/images/avatar_tmp.png';
 export default function UserProfile() {
   const [error, setError] = useState('Loading...');
 
-  const { APIURL, UPLOADSURL, people, profile, setProfile } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    UPLOADSURL,
+    people,
+    profile,
+    setProfile,
+    feedPosts,
+    setFeedPosts,
+  } = useContext(LocalContext);
   const history = useHistory();
-
-  const userPosts = [];
 
   const { profileID } = useParams();
   let currentProfile = people.find((p) => p.profileID === profileID.toString());
@@ -28,6 +32,11 @@ export default function UserProfile() {
     profile.blocked !== undefined
       ? profile.blocked.some((p) => p.uid === profileID)
       : false;
+
+  let userPosts =
+    feedPosts.length > 0
+      ? feedPosts.filter((post) => post.uid === profileID)
+      : [];
 
   useEffect(() => {
     if (
@@ -49,16 +58,21 @@ export default function UserProfile() {
 
   const formattedPosts = userPosts.map((post) => (
     <FeedPost
-      uid={profileID}
-      profileID={profile.uid}
+      uid={profile.uid}
+      profileID={profileID}
       username={currentProfile.username}
-      profile_pic={`${UPLOADSURL}/${currentProfile.profile_pic}`}
+      profile_pic={
+        currentProfile.profile_pic
+          ? `${UPLOADSURL}/${currentProfile.profile_pic}`
+          : tmpAvatar
+      }
       postID={post.postID}
       content={post.content}
       timestamp={post.timestamp}
       reacts={post.reacts}
       comments={post.comments}
-      key={post.postID}
+      keyname={`${post.postID}-profile`}
+      personal={false}
     />
   ));
 
@@ -110,7 +124,14 @@ export default function UserProfile() {
                   isFollowing ? '700' : '900'
                 } focus:bg-blue-${isFollowing ? '700' : '900'} sm:mb-0 mb-2`}
                 onClick={() =>
-                  userAction(profileID, 'follow', APIURL, profile, setProfile)
+                  userAction(
+                    profileID,
+                    'follow',
+                    APIURL,
+                    profile,
+                    setProfile,
+                    setFeedPosts
+                  )
                 }
               >
                 {isFollowing ? 'Unfollow' : 'Follow'}
@@ -126,7 +147,14 @@ export default function UserProfile() {
                 isBlocked ? '700' : '900'
               } focus:bg-red-${isBlocked ? '700' : '900'}`}
               onClick={() =>
-                userAction(profileID, 'block', APIURL, profile, setProfile)
+                userAction(
+                  profileID,
+                  'block',
+                  APIURL,
+                  profile,
+                  setProfile,
+                  setFeedPosts
+                )
               }
             >
               {isBlocked ? 'Unblock' : 'Block'}
@@ -148,7 +176,9 @@ export default function UserProfile() {
                 : 'No posts yet.'}
             </div>
           ) : (
-            { formattedPosts }
+            <div className="sm:w-4/5 w-11/12 mx-auto mb-4 text-blue-200 sm:text-xl text-md tracking-wide">
+              {formattedPosts.reverse()}
+            </div>
           )}
         </div>
       )}

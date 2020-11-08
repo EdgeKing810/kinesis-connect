@@ -230,7 +230,9 @@ export default function MyProfile() {
       uid={profile.uid}
       profileID={profile.uid}
       username={profile.username}
-      profile_pic={`${UPLOADSURL}/${profile.profile_pic}`}
+      profile_pic={
+        profile.profile_pic ? `${UPLOADSURL}/${profile.profile_pic}` : tmpAvatar
+      }
       postID={post.postID}
       content={post.content}
       timestamp={post.timestamp}

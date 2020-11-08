@@ -5,7 +5,8 @@ export default function userAction(
   operation,
   APIURL,
   profile,
-  setProfile
+  setProfile,
+  setFeedPosts
 ) {
   const bool =
     operation === 'block'
@@ -46,13 +47,31 @@ export default function userAction(
     jwt: prev.jwt,
   }));
 
-  axios.post(
-    `${APIURL}/api/profile/${operation === 'block' ? 'block' : 'follow'}`,
-    { ...data },
-    {
-      headers: { Authorization: `Bearer ${profile.jwt}` },
-    }
-  );
+  axios
+    .post(
+      `${APIURL}/api/profile/${operation === 'block' ? 'block' : 'follow'}`,
+      { ...data },
+      {
+        headers: { Authorization: `Bearer ${profile.jwt}` },
+      }
+    )
+    .then(() => {
+      axios
+        .post(
+          `${APIURL}/api/feed/fetch`,
+          { ...data },
+          {
+            headers: { Authorization: `Bearer ${profile.jwt}` },
+          }
+        )
+        .then((response) => {
+          if (response.data.error === 0) {
+            setFeedPosts([...response.data.posts]);
+          } else {
+            setFeedPosts([]);
+          }
+        });
+    });
 
   return null;
 }

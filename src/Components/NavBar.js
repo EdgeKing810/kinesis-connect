@@ -38,7 +38,7 @@ export default function NavBar() {
   ));
 
   const sidebarMenu = (
-    <div className="w-screen h-screen fixed flex -mt-4 -mr-4 z-100">
+    <div className="w-screen h-screen fixed flex -mt-4 -mr-4 z-50 opacity-100">
       <div className="w-full flex justify-end fixed pt-4 pr-4">
         <button className="h-12 w-12 fixed" onClick={() => setShowMenu(false)}>
           <div
@@ -50,7 +50,7 @@ export default function NavBar() {
       </div>
 
       <div
-        className={`w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-100 transform ${
+        className={`w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-50 transform ${
           showMenu
             ? 'translate-x-0 ease-out duration-1000 transition-medium'
             : '-translate-x-screen ease-in duration-1000 transition-mediums'

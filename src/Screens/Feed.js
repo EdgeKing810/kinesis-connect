@@ -61,7 +61,7 @@ export default function Feed() {
         </div>
       ) : (
         <div className="sm:w-4/5 w-11/12 mx-auto mb-4 text-blue-200 sm:text-xl text-md tracking-wide">
-          {displayPosts}
+          {displayPosts.reverse()}
         </div>
       )}
     </div>
