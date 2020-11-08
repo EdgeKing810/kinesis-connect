@@ -52,7 +52,7 @@ export default function Feed() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
+      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl sm:mt-4 mt-8 sm:mb-0 mb-4">
         Feed
       </div>
       {error.length > 0 ? (
@@ -60,8 +60,10 @@ export default function Feed() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-4/5 w-11/12 mx-auto mb-4 text-blue-200 sm:text-xl text-md tracking-wide">
-          {displayPosts.reverse()}
+        <div className="sm:w-4/5 w-11/12 mx-auto mb-4 text-blue-200 sm:text-xl text-md tracking-wide text-center">
+          {displayPosts.length > 0
+            ? displayPosts.reverse()
+            : `Follow more users to see posts here!`}
         </div>
       )}
     </div>

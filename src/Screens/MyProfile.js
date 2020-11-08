@@ -245,7 +245,7 @@ export default function MyProfile() {
 
   return (
     <div className="w-full flex flex-col items-center overflow-x-hidden">
-      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
+      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-2 mb-4">
         My Profile
       </div>
       {error.length > 0 ? (

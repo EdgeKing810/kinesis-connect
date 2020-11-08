@@ -96,7 +96,7 @@ export default function Post() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-0 mb-4">
+      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl sm:mt-4 mt-8 sm:mb-0 mb-4">
         {edit ? 'Edit' : 'Create New'} Post
       </div>
       {error.length > 0 ? (

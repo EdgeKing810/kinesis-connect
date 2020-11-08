@@ -432,7 +432,7 @@ export default function FeedPost({
                 : tmpAvatar
             }
             alt={'p.pic-comment'}
-            className="w-12 h-12 rounded-full object-scale-down bg-blue-200 mr-2"
+            className="sm:w-16 w-12 sm:h-16 h-12 rounded-full object-scale-down bg-blue-200 mr-2 border-1 border-blue-400 p-1"
           />
         </div>
 
@@ -449,7 +449,7 @@ export default function FeedPost({
 
           <div className="w-full flex sm:flex-row flex-col sm:justify-between sm:items-start pr-2 my-2">
             <button
-              className={`sm:w-1/4 w-3/4 p-1 sm:text-md text-sm bg-${
+              className={`sm:w-1/5 w-3/4 p-1 sm:text-md text-sm bg-${
                 reacts !== undefined && reacts.some((r) => r.uid === userID)
                   ? 'blue'
                   : 'gray'
@@ -476,41 +476,9 @@ export default function FeedPost({
                 }`}
               ></div>
             </button>
-            {userID === uid ? (
-              <button
-                className={`sm:w-1/4 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
-                  isEditingComment === commentID ? 'indigo' : 'gray'
-                }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
-                onClick={() => {
-                  if (isEditingComment !== commentID) {
-                    setIsEditingComment(commentID);
-                    setComment(comment);
-                  } else {
-                    setIsEditingComment('');
-                    setComment('');
-                  }
-                }}
-              >
-                {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
-              </button>
-            ) : (
-              ''
-            )}
-            {userID === uid ? (
-              <button
-                className={`sm:w-1/4 w-3/4 sm:mt-0 mt-2 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
-                onClick={(e) => deleteComment(e, commentID)}
-              >
-                Delete Comment
-              </button>
-            ) : (
-              ''
-            )}
-          </div>
 
-          <div className="w-full flex">
             <button
-              className={`sm:w-1/5 w-1/2 p-1 sm:text-sm text-xs tracking-wider font-open ${
+              className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-sm text-xs tracking-wider font-open ${
                 reacts.length <= 0
                   ? 'opacity-50 bg-gray-600'
                   : showCommentReacts === commentID &&
@@ -530,6 +498,38 @@ export default function FeedPost({
             >
               Likes: {reacts.length}
             </button>
+
+            {userID === uid ? (
+              <button
+                className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
+                  isEditingComment === commentID ? 'indigo' : 'gray'
+                }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+                onClick={() => {
+                  if (isEditingComment !== commentID) {
+                    setIsEditingComment(commentID);
+                    setComment(comment);
+                  } else {
+                    setIsEditingComment('');
+                    setComment('');
+                  }
+                }}
+              >
+                {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
+              </button>
+            ) : (
+              ''
+            )}
+
+            {userID === uid ? (
+              <button
+                className={`sm:w-1/5 w-3/4 sm:mt-0 mt-2 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
+                onClick={(e) => deleteComment(e, commentID)}
+              >
+                Delete Comment
+              </button>
+            ) : (
+              ''
+            )}
           </div>
 
           {showCommentReacts === commentID &&
@@ -573,7 +573,7 @@ export default function FeedPost({
       className="w-full flex flex-col items-center p-2 bg-gray-900 sm:my-4 my-2 rounded-lg"
       key={keyname}
     >
-      <div className="flex flex-none justify-start items-center">
+      <div className="flex flex-none justify-start items-center w-full sm:pl-8">
         <img
           src={profile_pic}
           alt={'p.pic'}
@@ -591,8 +591,8 @@ export default function FeedPost({
           >
             {username}
           </button>
-          <div className="sm:text-lg text-md text-left italic">
-            Posted on {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
+          <div className="sm:text-lg text-md text-left">
+            {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
           </div>
         </div>
       </div>
