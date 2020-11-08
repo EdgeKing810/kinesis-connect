@@ -46,6 +46,7 @@ export default function Feed() {
         comments={post.comments}
         keyname={`${post.postID}-feed`}
         personal={false}
+        key={`${post.postID}-feed`}
       />
     );
   });
