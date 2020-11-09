@@ -9,6 +9,7 @@ import UserProfile from './Screens/UserProfile';
 import Post from './Screens/Post';
 import Discover from './Screens/Discover';
 import Feed from './Screens/Feed';
+import Chat from './Screens/Chat';
 
 export default function App() {
   return (
@@ -46,7 +47,7 @@ export default function App() {
                 <Discover />
               </Route>
               <Route exact path="/chat">
-                <div>chat</div>
+                <Chat />
               </Route>
 
               <Route render={() => <Redirect to="/" />} />
