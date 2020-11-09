@@ -145,11 +145,10 @@ export default function Post() {
             Preview
           </div>
 
-          <div
-            className="w-full bg-gray-900 rounded-lg px-8 py-2 mb-8"
-            style={{ whiteSpace: 'pre-line' }}
-          >
-            <Parser content={postContent} />
+          <div className="w-full flex flex-col items-center bg-gray-900 rounded-lg px-8 py-2 mb-8">
+            <div className="w-full " style={{ whiteSpace: 'pre-line' }}>
+              <Parser content={postContent} />
+            </div>
           </div>
         </div>
       )}

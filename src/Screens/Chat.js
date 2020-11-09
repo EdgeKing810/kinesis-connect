@@ -5,7 +5,6 @@ import axios from 'axios';
 import { v4 } from 'uuid';
 
 import { LocalContext } from '../Context';
-import { act } from 'react-dom/test-utils';
 
 export default function Chat() {
   const [error, setError] = useState('Loading...');
@@ -65,7 +64,7 @@ export default function Chat() {
           alert(res.data.message);
         } else {
           let updatedProfile = { ...profile };
-          updatedProfile.chats = [{ ...data }, ...updatedProfile.chats];
+          updatedProfile.chats = [...updatedProfile.chats, { ...data }];
 
           setProfile(updatedProfile);
         }
@@ -116,7 +115,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center sm:h-3/5 sm:px-4">
+    <div className="w-full flex flex-col items-center sm:h-2/3 sm:px-4">
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-2 mb-4">
         Chat
       </div>
@@ -126,20 +125,22 @@ export default function Chat() {
         </div>
       ) : (
         <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full">
-          <div className="sm:w-1/2 w-full flex flex-col items-center bg-gray-900">
-            <div className="w-full font-open sm:text-xl text-lg text-blue-200 flex flex-col items-center py-2 sm:h-4/5 overflow-y-scroll">
+          <div className="sm:w-1/2 w-full flex flex-col items-center bg-gray-900 sm:h-full">
+            <div className="w-full font-open sm:text-xl text-lg text-blue-200 flex flex-col items-center py-2 sm:h-full">
               {createChat()}
 
-              {chats.length > 0 ? (
-                chats
-              ) : (
-                <div className="w-5/6 text-center rounded-lg border-2 border-blue-700 p-2">
-                  Rooms you join will appear here.
-                </div>
-              )}
+              <div className="w-full sm:h-full sm:overflow-y-scroll flex flex-col items-center">
+                {chats.length > 0 ? (
+                  chats.reverse()
+                ) : (
+                  <div className="w-5/6 text-center rounded-lg border-2 border-blue-700 p-2">
+                    Rooms you join will appear here.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <div className="sm:w-1/2 w-full bg-red-300 items-center py-2 px-2">
+          <div className="sm:w-1/2 w-full h-full bg-red-300 items-center py-2 px-2">
             .
           </div>
         </div>

@@ -47,9 +47,7 @@ export default function App() {
                 <Discover />
               </Route>
               <Route exact path="/chat">
-                <div className="w-screen sm:h-4/5">
-                  <Chat />
-                </div>
+                <Chat />
               </Route>
 
               <Route render={() => <Redirect to="/" />} />

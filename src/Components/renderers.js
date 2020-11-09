@@ -49,11 +49,11 @@ const code = (props) => {
 
 const image = (props) => {
   return (
-    <div className="w-5/6 flex flex-col justify-center items-center">
+    <div className="w-full flex flex-col justify-center items-center">
       <img
         src={props.src}
         alt={props.alt}
-        className="w-full object-scale-down rounded p-1 border-2 border-blue-400"
+        className="max-w-lg object-scale-down rounded p-1 border-2 border-blue-400"
       />
     </div>
   );

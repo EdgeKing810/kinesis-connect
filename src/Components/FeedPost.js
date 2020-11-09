@@ -622,11 +622,10 @@ export default function FeedPost({
         ''
       )}
 
-      <div
-        className="w-5/6 flex flex-col items-start justify-start -mb-1"
-        style={{ whiteSpace: 'pre-line' }}
-      >
-        <Parser content={content} />
+      <div className="w-full flex flex-col items-center -mb-1">
+        <div className="" style={{ whiteSpace: 'pre-line' }}>
+          <Parser content={content} />
+        </div>
       </div>
 
       <div className="w-full flex mt-4">

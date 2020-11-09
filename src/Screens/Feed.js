@@ -61,7 +61,7 @@ export default function Feed() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-4/5 w-11/12 mx-auto mb-4 text-blue-200 sm:text-xl text-md tracking-wide text-center">
+        <div className="sm:w-4/5 w-11/12 mb-4 text-blue-200 sm:text-xl text-md tracking-wide text-center">
           {displayPosts.length > 0
             ? displayPosts.reverse()
             : `Follow more users to see posts here!`}
