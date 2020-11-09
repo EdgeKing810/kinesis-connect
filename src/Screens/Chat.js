@@ -34,7 +34,7 @@ export default function Chat() {
     profile.chats &&
     profile.chats.map(({ uid, name }) => (
       <button
-        className={`sm:w-4/5 w-11/12 rounded-lg flex-none flex justify-center px-2 py-4 my-1 font-open sm:text-lg text-md bg-${
+        className={`sm:w-4/5 w-11/12 rounded-lg flex-none flex justify-center px-2 py-4 my-1 font-open sm:text-lg text-md sm:mx-0 mx-2 bg-${
           uid === activeRoom
             ? 'blue-600 text-gray-900 font-bold'
             : 'gray-800 text-blue-200'
@@ -97,7 +97,7 @@ export default function Chat() {
 
         {currentFound && currentFound.name ? (
           <button
-            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg mb-2 mt-4 flex flex-col w-5/6 py-2 sm:px-4 px-2"
+            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg mb-8 mt-4 flex flex-col w-5/6 py-2 sm:px-4 px-2"
             onClick={() => joinRoom({ ...currentFound })}
           >
             <div className="sm:text-xl text-lg text-blue-300">
@@ -126,10 +126,10 @@ export default function Chat() {
       ) : (
         <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full">
           <div className="sm:w-1/2 w-full flex flex-col items-center bg-gray-900 sm:h-full">
-            <div className="w-full font-open sm:text-xl text-lg text-blue-200 flex flex-col items-center py-2 sm:h-full">
-              {createChat()}
+            {createChat()}
 
-              <div className="w-full sm:h-full sm:overflow-y-scroll flex flex-col items-center">
+            <div className="w-full font-open sm:text-xl text-lg text-blue-200 flex flex-col items-center py-2 sm:h-4/5 sm:px-0 px-2">
+              <div className="w-full sm:h-full sm:overflow-y-scroll sm:overflow-x-hidden overflow-x-scroll flex sm:flex-col flex-row sm:items-center justify-center bg-gray-900">
                 {chats.length > 0 ? (
                   chats.reverse()
                 ) : (
