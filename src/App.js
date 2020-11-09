@@ -24,7 +24,7 @@ export default function App() {
         </Route>
 
         <Route>
-          <div className="w-screen">
+          <div className="w-screen sm:h-screen">
             <NavBar />
 
             <Switch>
@@ -47,7 +47,9 @@ export default function App() {
                 <Discover />
               </Route>
               <Route exact path="/chat">
-                <Chat />
+                <div className="w-screen sm:h-4/5">
+                  <Chat />
+                </div>
               </Route>
 
               <Route render={() => <Redirect to="/" />} />
