@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import useWindowSize from './usewindowSize';
+import useWindowSize from './useWindowSize';
 
 export default function NavBar() {
   const [showMenu, setShowMenu] = useState(false);
