@@ -34,7 +34,7 @@ export default function Chat() {
     profile.chats &&
     profile.chats.map(({ uid, name }) => (
       <button
-        className={`sm:w-4/5 w-11/12 rounded-lg flex justify-center px-2 py-4 mb-2 font-open sm:text-lg text-md sm:mx-0 mx-2 bg-${
+        className={`sm:w-4/5 w-11/12 rounded-lg flex justify-center px-2 py-4 my-1 font-open sm:text-lg text-md sm:mx-0 mx-2 bg-${
           uid === activeRoom
             ? 'blue-600 text-gray-900 font-bold'
             : 'gray-800 text-blue-200'
@@ -125,13 +125,13 @@ export default function Chat() {
         </div>
       ) : (
         <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full">
-          <div className="sm:w-1/2 w-full sm:h-full flex sm:flex-col bg-gray-900 sm:justify-between">
-            <div className="w-full flex justify-center items-center sm:h-1/3">
+          <div className="sm:w-1/2 w-full sm:h-full flex flex-col bg-gray-900 sm:justify-between">
+            <div className="w-full flex sm:flex-row flex-col sm:justify-center sm:items-center sm:h-1/3">
               {createChat()}
             </div>
 
-            <div className="w-full flex flex-col items-center sm:h-2/3 sm:px-2">
-              <div className="w-full sm:h-full overflow-y-scroll flex flex-col items-center bg-gray-900 rounded border-2 border-yellow-500 sm:py-2">
+            <div className="w-full flex flex-col items-center sm:h-2/3 sm:px-2 sm:max-h-none max-h-xs">
+              <div className="w-full sm:h-full overflow-y-scroll flex flex-col items-center bg-gray-900 rounded border-2 border-yellow-500 py-2">
                 {chats.length > 0 ? (
                   chats.reverse()
                 ) : (
