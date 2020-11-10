@@ -116,7 +116,7 @@ export default function Chat() {
 
   return (
     <div className="w-full flex flex-col items-center sm:h-7/10 sm:px-4">
-      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-2 mb-4">
+      <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-8 mb-4">
         Chat
       </div>
       {error.length > 0 ? (
@@ -124,7 +124,7 @@ export default function Chat() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full">
+        <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full rounded-lg">
           <div className="sm:w-1/2 w-full sm:h-full flex flex-col bg-gray-900 sm:justify-between">
             <div className="w-full flex sm:flex-row flex-col sm:justify-center sm:items-center sm:h-1/3">
               {createChat()}
