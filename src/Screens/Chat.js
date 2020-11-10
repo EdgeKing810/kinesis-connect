@@ -12,7 +12,10 @@ export default function Chat() {
 
   const [search, setSearch] = useState('');
   const [currentFound, setCurrentFound] = useState({});
+
   const [activeRoom, setActiveRoom] = useState('');
+  const [activeRoomID, setActiveRoomID] = useState('');
+
   const [currentChat, setCurrentChat] = useState('');
 
   const [chat, setChat] = useState({});
@@ -21,6 +24,7 @@ export default function Chat() {
   const history = useHistory();
 
   const { height } = useWindowSize();
+  // console.log(`Height: ${height}`);
 
   useEffect(() => {
     if (
@@ -69,9 +73,11 @@ export default function Chat() {
           if (activeRoom !== uid) {
             setChat({});
             setActiveRoom(name);
+            setActiveRoomID(uid);
             fetchChats(uid);
           } else {
             setActiveRoom('');
+            setActiveRoomID('');
           }
         }}
       >
@@ -91,6 +97,7 @@ export default function Chat() {
     setSearch('');
     setCurrentFound({});
     setActiveRoom(data.name);
+    setActiveRoomID(data.roomID);
     setCurrentChat('');
     setChat({});
 
@@ -110,6 +117,79 @@ export default function Chat() {
       });
   };
 
+  const sendMessage = (e) => {
+    e.preventDefault();
+
+    let d = new Date();
+    const timestamp = new Date(
+      d.getUTCFullYear(),
+      d.getUTCMonth(),
+      d.getUTCDate(),
+      d.getUTCHours(),
+      d.getUTCMinutes(),
+      d.getUTCSeconds()
+    );
+
+    const data = {
+      uid: profile.uid,
+      roomID: activeRoomID,
+      messageID: v4(),
+      message: currentChat,
+      timestamp: timestamp,
+    };
+
+    axios
+      .post(`${APIURL}/api/message/send`, data, {
+        headers: { Authorization: `Bearer ${profile.jwt}` },
+      })
+      .then((res) => {
+        if (res.data.error !== 0) {
+          alert(res.data.message);
+        } else {
+          setChat((prev) => ({
+            room: prev.room,
+            members: prev.members,
+            messages: [...prev.messages, { ...data }],
+          }));
+
+          setCurrentChat('');
+        }
+      });
+  };
+
+  const leaveRoom = () => {
+    const data = {
+      uid: profile.uid,
+      roomID: activeRoomID,
+    };
+
+    if (window.confirm(`Are you sure you want to close ${activeRoom}?`)) {
+      setSearch('');
+      setCurrentFound({});
+      setActiveRoom('');
+      setActiveRoomID('');
+      setCurrentChat('');
+      setChat({});
+
+      axios
+        .post(`${APIURL}/api/room/leave`, data, {
+          headers: { Authorization: `Bearer ${profile.jwt}` },
+        })
+        .then((res) => {
+          if (res.data.error !== 0) {
+            alert(res.data.message);
+          } else {
+            let updatedProfile = { ...profile };
+            updatedProfile.chats = updatedProfile.chats.filter(
+              (c) => c.uid !== data.roomID
+            );
+
+            setProfile(updatedProfile);
+          }
+        });
+    }
+  };
+
   const createChat = () => {
     return (
       <div className="w-11/12 flex flex-col items-center rounded border-2 border-gray-800 py-2 my-4">
@@ -127,7 +207,8 @@ export default function Chat() {
                     (p) =>
                       p.name.includes(e.target.value) ||
                       (p.username.includes(e.target.value) &&
-                        p.profileID !== profile.uid)
+                        p.profileID !== profile.uid &&
+                        !profile.blocked.some((u) => p.profileID === u.uid))
                   )
                 : {}
             );
@@ -156,7 +237,7 @@ export default function Chat() {
   return (
     <div
       className={`w-full flex flex-col items-center ${
-        height > 900 ? 'sm:h-7/10' : height > 700 ? 'sm:h-3/5' : 'sm:h-2/5'
+        height > 850 ? 'sm:h-5/6' : height > 700 ? 'sm:h-3/5' : 'sm:h-2/5'
       } sm:px-4 h-screen`}
     >
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-8 mb-4">
@@ -198,7 +279,10 @@ export default function Chat() {
                     {activeRoom}
                   </div>
 
-                  <button className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 sm:w-1/6 w-1/3">
+                  <button
+                    className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 sm:w-1/6 w-1/3"
+                    onClick={() => leaveRoom()}
+                  >
                     Leave Chat
                   </button>
                 </div>
@@ -211,11 +295,16 @@ export default function Chat() {
                         : 'Loading...'}
                     </div>
                   ) : (
-                    'wai'
+                    <div>{chat.messages.map((m) => m.message)}</div>
                   )}
                 </div>
 
-                <div className="w-full sm:h-1/6 h-2/5 flex sm:flex-row flex-col justify-around items-center">
+                <form
+                  className="w-full sm:h-1/6 h-2/5 flex sm:flex-row flex-col justify-around items-center"
+                  onSubmit={(e) =>
+                    currentChat.length > 0 ? sendMessage(e) : null
+                  }
+                >
                   <textarea
                     name="chat_box"
                     placeholder="Type something..."
@@ -224,10 +313,17 @@ export default function Chat() {
                     className="max-h-sm sm:w-3/4 w-full p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 sm:mt-0 mt-2 sm:text-lg text-xs"
                   />
 
-                  <button className="text-gray-100 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 rounded-lg sm:py-4 py-2 sm:w-1/5 w-3/5 sm:mt-0 mt-2">
+                  <button
+                    className={`text-gray-100 bg-blue-500 ${
+                      currentChat.length > 0
+                        ? 'hover:bg-blue-600 focus:bg-blue-600'
+                        : 'opacity-50'
+                    } rounded-lg sm:py-4 py-2 sm:w-1/5 w-3/5 sm:mt-0 mt-2`}
+                    type="submit"
+                  >
                     Send
                   </button>
-                </div>
+                </form>
               </div>
             )}
           </div>
