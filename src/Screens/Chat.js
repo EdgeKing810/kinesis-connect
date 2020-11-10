@@ -15,6 +15,8 @@ export default function Chat() {
   const [activeRoom, setActiveRoom] = useState('');
   const [currentChat, setCurrentChat] = useState('');
 
+  const [chat, setChat] = useState({});
+
   const { APIURL, profile, setProfile, people } = useContext(LocalContext);
   const history = useHistory();
 
@@ -34,7 +36,26 @@ export default function Chat() {
     // eslint-disable-next-line
   }, []);
 
-  const chats =
+  const fetchChats = (roomID) => {
+    const data = {
+      uid: profile.uid,
+      roomID: roomID,
+    };
+
+    axios
+      .post(`${APIURL}/api/messages/get`, data, {
+        headers: { Authorization: `Bearer ${profile.jwt}` },
+      })
+      .then((res) => {
+        if (res.data.error !== 0) {
+          console.log(res.data.message);
+        } else {
+          setChat(res.data);
+        }
+      });
+  };
+
+  const messages =
     profile.chats &&
     profile.chats.map(({ uid, name }) => (
       <button
@@ -44,9 +65,15 @@ export default function Chat() {
             : 'gray-800 text-blue-200'
         } ${name === activeRoom ? '' : 'hover:bg-blue-900 focus:bg-blue-900'}`}
         key={uid}
-        onClick={() =>
-          activeRoom === uid ? setActiveRoom('') : setActiveRoom(name)
-        }
+        onClick={() => {
+          if (activeRoom !== uid) {
+            setChat({});
+            setActiveRoom(name);
+            fetchChats(uid);
+          } else {
+            setActiveRoom('');
+          }
+        }}
       >
         {name}
       </button>
@@ -65,6 +92,7 @@ export default function Chat() {
     setCurrentFound({});
     setActiveRoom(data.name);
     setCurrentChat('');
+    setChat({});
 
     axios
       .post(`${APIURL}/api/room/join`, data, {
@@ -129,7 +157,7 @@ export default function Chat() {
     <div
       className={`w-full flex flex-col items-center ${
         height > 900 ? 'sm:h-7/10' : height > 700 ? 'sm:h-3/5' : 'sm:h-2/5'
-      } sm:px-4`}
+      } sm:px-4 h-screen`}
     >
       <div className="font-bold tracking-widest font-rale text-gray-200 sm:text-5xl text-3xl mt-8 sm:mb-8 mb-4">
         Chat
@@ -139,53 +167,61 @@ export default function Chat() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center sm:h-full">
-          <div className="sm:w-1/3 w-full sm:h-full flex flex-col bg-gray-900 sm:justify-between sm:border-r-2 sm:border-gray-700 sm:rounded-l-lg">
-            <div className="w-full flex sm:flex-row flex-col sm:justify-center sm:items-center sm:h-1/3">
+        <div className="sm:w-full w-11/12 mx-auto flex sm:flex-row flex-col sm:justify-center sm:items-start items-center h-full">
+          <div className="sm:w-1/3 w-full sm:h-full h-3/5 flex sm:flex-col flex-col-reverse bg-gray-900 sm:justify-between sm:border-r-2 sm:border-gray-700 sm:rounded-l-lg sm:rounded-t-none rounded-t-lg">
+            <div className="w-full flex sm:flex-row flex-col sm:justify-center items-center sm:h-1/3 h-3/5">
               {createChat()}
             </div>
 
-            <div className="w-full flex flex-col items-center sm:h-2/3 sm:px-2 sm:max-h-none max-h-xs py-2">
+            <div className="w-full flex flex-col items-center sm:h-2/3 h-3/5 sm:px-2 py-2">
               <div className="w-full sm:h-full overflow-y-scroll flex flex-col items-center bg-gray-900 rounded border-2 border-yellow-500 border-opacity-50 py-2">
-                {chats.length > 0 ? (
-                  chats.reverse()
+                {messages.length > 0 ? (
+                  messages.reverse()
                 ) : (
                   <div className="w-5/6 text-center rounded-lg border-2 border-blue-700 p-2 font-rale font-bold tracking-wide text-blue-100">
-                    Rooms you join will appear here.
+                    Chats you participate in will appear here.
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="sm:w-2/3 w-full h-full bg-gray-700 flex flex-col justify-center items-center py-2 px-2 sm:border-l-2 sm:border-gray-900 sm:border-gray-700 sm:rounded-r-lg">
+          <div className="sm:w-2/3 w-full sm:h-full h-3/4 bg-gray-700 flex flex-col justify-center items-center py-2 px-2 sm:border-l-2 sm:border-gray-900 sm:border-gray-700 sm:rounded-r-lg sm:rounded-b-none rounded-b-lg">
             {activeRoom.length <= 0 ? (
               <div className="w-5/6 text-center border-b-2 border-t-2 border-blue-600 p-2 sm:text-lg text-md font-rale font-bold tracking-wide text-blue-100">
                 Select a chat to see messages.
               </div>
             ) : (
-              <div className="w-full sm:h-full flex flex-col sm:justify-between">
-                <div className="w-full flex sm:h-1/12 items-center p-2 justify-between mb-2">
+              <div className="w-full h-full flex flex-col sm:justify-between">
+                <div className="w-full flex sm:h-1/12 items-center p-2 justify-between mb-2 h-1/6">
                   <div className="text-blue-100 sm:text-xl text-md font-bold tracking-wide sm:w-4/5 w-2/3">
                     {activeRoom}
                   </div>
 
                   <button className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 sm:w-1/6 w-1/3">
-                    Leave Room
+                    Leave Chat
                   </button>
                 </div>
 
-                <div className="w-full sm:h-3/4 overflow-y-scroll flex flex-col px-2 bg-gray-900">
-                  Chats
+                <div className="w-full sm:h-3/4 h-1/2 overflow-y-scroll flex flex-col bg-gray-900">
+                  {!chat.messages || chat.messages.length <= 0 ? (
+                    <div className="w-full h-full border-2 border-red-500 p-2 sm:text-lg text-md font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
+                      {chat.messages
+                        ? 'No messages yet, send one!'
+                        : 'Loading...'}
+                    </div>
+                  ) : (
+                    'wai'
+                  )}
                 </div>
 
-                <div className="w-full sm:h-1/6 flex sm:flex-row flex-col justify-around items-center">
+                <div className="w-full sm:h-1/6 h-2/5 flex sm:flex-row flex-col justify-around items-center">
                   <textarea
                     name="chat_box"
                     placeholder="Type something..."
                     value={currentChat}
                     onChange={(e) => setCurrentChat(e.target.value)}
-                    className="max-h-sm sm:w-3/4 w-full p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100"
+                    className="max-h-sm sm:w-3/4 w-full p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 sm:mt-0 mt-2 sm:text-lg text-xs"
                   />
 
                   <button className="text-gray-100 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 rounded-lg sm:py-4 py-2 sm:w-1/5 w-3/5 sm:mt-0 mt-2">
