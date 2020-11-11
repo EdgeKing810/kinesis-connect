@@ -39,7 +39,7 @@ const listItem = (props) => {
 const code = (props) => {
   return (
     <div
-      className="text-blue-400 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100"
+      className="text-blue-300 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100 sm:text-md text-sm"
       style={{ whiteSpace: 'pre-line' }}
     >
       {props.node.value}

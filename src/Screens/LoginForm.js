@@ -20,7 +20,14 @@ export default function LoginForm() {
   const [submitMessage, setSubmitMessage] = useState('Submitting...');
   const [submitError, setSubmitError] = useState(false);
 
-  const { APIURL, setLoggedInUser } = useContext(LocalContext);
+  const {
+    APIURL,
+    setLoggedInUser,
+    setProfile,
+    setMyPosts,
+    setPeople,
+    setFeedPosts,
+  } = useContext(LocalContext);
   const history = useHistory();
 
   useEffect(() => {
@@ -247,9 +254,9 @@ export default function LoginForm() {
     setLoginInputs(['', '']);
     setSubmit(true);
 
-    axios.post(`${APIURL}/api/user/login`, data).then((res) => {
-      if (res.data.error === 0) {
-        setLoggedInUser(res.data);
+    axios.post(`${APIURL}/api/user/login`, data).then((resp) => {
+      if (resp.data.error === 0) {
+        setLoggedInUser(resp.data);
 
         setSubmitMessage('Logging in...');
         setSubmitError(false);
@@ -257,12 +264,70 @@ export default function LoginForm() {
         localStorage.setItem(
           '_userData',
           JSON.stringify({
-            uid: res.data.uid,
-            jwt: res.data.jwt,
+            uid: resp.data.uid,
+            jwt: resp.data.jwt,
           })
         );
+
+        const data = {
+          uid: resp.data.uid,
+          profileID: resp.data.uid,
+        };
+
+        axios
+          .post(`${APIURL}/api/profile/fetch`, data, {
+            headers: { Authorization: `Bearer ${resp.data.jwt}` },
+          })
+          .then((res) => {
+            if (res.data.error === 0) {
+              setProfile({ ...res.data, jwt: resp.data.jwt });
+
+              axios
+                .post(
+                  `${APIURL}/api/posts/get`,
+                  { uid: resp.data.uid },
+                  {
+                    headers: { Authorization: `Bearer ${resp.data.jwt}` },
+                  }
+                )
+                .then((response) => {
+                  if (response.data.error === 0) {
+                    setMyPosts(response.data.posts);
+                  } else {
+                    setMyPosts([]);
+                  }
+                });
+
+              axios
+                .post(`${APIURL}/api/profiles/fetch`, data, {
+                  headers: { Authorization: `Bearer ${resp.data.jwt}` },
+                })
+                .then((response) => {
+                  if (response.data.error === 0) {
+                    setPeople([
+                      ...response.data.users,
+                      { ...res.data, profileID: res.data.uid },
+                    ]);
+                  } else {
+                    setPeople([{ ...res.data, profileID: res.data.uid }]);
+                  }
+                });
+
+              axios
+                .post(`${APIURL}/api/feed/fetch`, data, {
+                  headers: { Authorization: `Bearer ${resp.data.jwt}` },
+                })
+                .then((response) => {
+                  if (response.data.error === 0) {
+                    setFeedPosts([...response.data.posts]);
+                  } else {
+                    setFeedPosts([]);
+                  }
+                });
+            }
+          });
       } else {
-        setSubmitMessage(res.data.message);
+        setSubmitMessage(resp.data.message);
         setSubmitError(true);
       }
 
@@ -271,7 +336,7 @@ export default function LoginForm() {
         setSubmitMessage('Submitting...');
         setSubmitError(false);
 
-        if (res.data.error === 0) {
+        if (resp.data.error === 0) {
           history.push('/feed');
         }
       }, 1000);

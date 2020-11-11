@@ -573,7 +573,7 @@ export default function FeedPost({
       className="w-full flex flex-col items-center p-2 bg-gray-900 sm:my-4 my-2 rounded-lg"
       key={keyname}
     >
-      <div className="flex flex-none justify-start items-center w-full sm:pl-8">
+      <div className="flex flex-none justify-start items-center w-full sm:pl-8 py-2">
         <img
           src={profile_pic}
           alt={'p.pic'}
@@ -623,7 +623,16 @@ export default function FeedPost({
       )}
 
       <div className="w-full flex flex-col items-center -mb-1">
-        <div className="" style={{ whiteSpace: 'pre-line' }}>
+        <div
+          className={`sm:w-4/5 w-11/12 flex flex-col text-${
+            content.length < 100 &&
+            !content.includes('<img') &&
+            !content.includes('<li>') < 100
+              ? 'center'
+              : 'left'
+          }`}
+          style={{ whiteSpace: 'pre-line' }}
+        >
           <Parser content={content} />
         </div>
       </div>

@@ -165,13 +165,11 @@ export default function UserProfile() {
 
           {!isFollowing || isBlocked || !userPosts.length > 0 ? (
             <div className="w-full sm:text-2xl text-lg w-5/6 mx-auto text-yellow-400 font-sans text-center">
-              {userPosts.length > 0
+              {!isFollowing || isBlocked
                 ? `Need to ${
                     isBlocked ? 'unblock' : !isFollowing ? 'follow' : ''
                   }${' '}
-              ${(
-                <span className="text-blue-300">{currentProfile.username}</span>
-              )}${' '}
+              ${currentProfile.username}${' '}
               to view posts.`
                 : 'No posts yet.'}
             </div>
