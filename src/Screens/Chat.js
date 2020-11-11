@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'axios';
@@ -17,6 +17,7 @@ export default function Chat() {
   const [activeRoomID, setActiveRoomID] = useState('');
 
   const [currentChat, setCurrentChat] = useState('');
+  const [currentEditChat, setCurrentEditChat] = useState('');
 
   const [chat, setChat] = useState({});
 
@@ -39,6 +40,8 @@ export default function Chat() {
     }
     // eslint-disable-next-line
   }, []);
+
+  const messagesEndRef = useRef(null);
 
   const convertDate = (date) => {
     const oldDate = new Date(date);
@@ -69,6 +72,9 @@ export default function Chat() {
           console.log(res.data.message);
         } else {
           setChat(res.data);
+          setTimeout(() => {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
         }
       });
   };
@@ -113,6 +119,7 @@ export default function Chat() {
     setActiveRoom(data.name);
     setActiveRoomID(data.roomID);
     setCurrentChat('');
+    setCurrentEditChat('');
     setChat({});
 
     axios
@@ -131,7 +138,7 @@ export default function Chat() {
       });
   };
 
-  const sendMessage = (e) => {
+  const submitMessage = (e) => {
     e.preventDefault();
 
     let d = new Date();
@@ -144,17 +151,19 @@ export default function Chat() {
       d.getUTCSeconds()
     );
 
+    const isEditing = currentEditChat.length > 0;
+
     const data = {
       uid: profile.uid,
       senderID: profile.uid,
       roomID: activeRoomID,
-      messageID: v4(),
+      messageID: isEditing ? currentEditChat : v4(),
       message: currentChat,
       timestamp: timestamp,
     };
 
     axios
-      .post(`${APIURL}/api/message/send`, data, {
+      .post(`${APIURL}/api/message/${isEditing ? 'edit' : 'send'}`, data, {
         headers: { Authorization: `Bearer ${profile.jwt}` },
       })
       .then((res) => {
@@ -164,12 +173,56 @@ export default function Chat() {
           setChat((prev) => ({
             room: prev.room,
             members: prev.members,
-            messages: [...prev.messages, data],
+            messages: isEditing
+              ? prev.messages.map((msg) => {
+                  if (msg.messageID === data.messageID) {
+                    return data;
+                  } else {
+                    return msg;
+                  }
+                })
+              : [...prev.messages, data],
           }));
 
           setCurrentChat('');
+          setCurrentEditChat('');
         }
       });
+  };
+
+  const deleteMessage = (e, messageID) => {
+    e.preventDefault();
+
+    const data = {
+      uid: profile.uid,
+      roomID: activeRoomID,
+      messageID: messageID,
+    };
+
+    if (window.confirm('Are you sure you want to delete this message?')) {
+      axios
+        .post(`${APIURL}/api/message/delete`, data, {
+          headers: { Authorization: `Bearer ${profile.jwt}` },
+        })
+        .then((res) => {
+          if (res.data.error !== 0) {
+            alert(res.data.message);
+          } else {
+            setChat((prev) => ({
+              room: prev.room,
+              members: prev.members,
+              messages: prev.messages.filter(
+                (msg) => msg.messageID !== data.messageID
+              ),
+            }));
+
+            if (currentEditChat === currentChat) {
+              setCurrentChat('');
+            }
+            setCurrentEditChat('');
+          }
+        });
+    }
   };
 
   const leaveRoom = () => {
@@ -184,6 +237,7 @@ export default function Chat() {
       setActiveRoom('');
       setActiveRoomID('');
       setCurrentChat('');
+      setCurrentEditChat('');
       setChat({});
 
       axios
@@ -265,6 +319,32 @@ export default function Chat() {
               }`}
               key={msg.messageID}
             >
+              {isCurrentUser ? (
+                <div className={`flex items-center justify-center mx-1`}>
+                  <button
+                    className={`${
+                      currentEditChat === msg.messageID
+                        ? 'ri-close-circle-line hover:ri-close-circle-fill focus:ri-close-circle-fill'
+                        : 'ri-pencil-line hover:ri-pencil-fill focus:ri-pencil-fill'
+                    } px-2 flex justify-center items-center hover:text-yellow-400 focus:text-yellow-400 text-gray-300 sm:text-xl text-md`}
+                    onClick={() => {
+                      if (currentEditChat !== msg.messageID) {
+                        setCurrentEditChat(msg.messageID);
+                        setCurrentChat(msg.message);
+                      } else {
+                        setCurrentEditChat('');
+                        setCurrentChat('');
+                      }
+                    }}
+                  ></button>
+                  <button
+                    className={`ri-delete-bin-5-line hover:ri-delete-bin-5-fill focus:ri-delete-bin-5-fill px-2 flex justify-center items-center hover:text-red-400 focus:text-red-400 text-gray-300 sm:text-xl text-md`}
+                    onClick={(e) => deleteMessage(e, msg.messageID)}
+                  ></button>
+                </div>
+              ) : (
+                ''
+              )}
               <div
                 className={`sm:w-2/5 w-4/5 font-rale sm:text-lg text-sm tracking-wide rounded-lg p-2 text-gray-900 bg-${
                   isCurrentUser ? 'green' : 'blue'
@@ -350,6 +430,7 @@ export default function Chat() {
                   ) : (
                     <div className="w-full h-full border-2 border-blue-500 py-2 px-3 overflow-y-scroll flex-initial">
                       {chatMessages}
+                      <div ref={messagesEndRef} />
                     </div>
                   )}
                 </div>
@@ -357,7 +438,7 @@ export default function Chat() {
                 <form
                   className="w-full sm:h-1/6 h-1/3 flex sm:flex-row flex-col justify-around items-center"
                   onSubmit={(e) =>
-                    currentChat.length > 0 ? sendMessage(e) : null
+                    currentChat.length > 0 ? submitMessage(e) : null
                   }
                 >
                   <textarea
@@ -376,7 +457,7 @@ export default function Chat() {
                     } rounded-lg sm:py-4 py-2 sm:w-1/5 w-3/5 sm:mt-0 mt-2`}
                     type="submit"
                   >
-                    Send
+                    {currentEditChat.length > 0 ? 'Edit' : 'Send'}
                   </button>
                 </form>
               </div>
