@@ -40,6 +40,20 @@ export default function Chat() {
     // eslint-disable-next-line
   }, []);
 
+  const convertDate = (date) => {
+    const oldDate = new Date(date);
+    return new Date(
+      Date.UTC(
+        oldDate.getFullYear(),
+        oldDate.getMonth(),
+        oldDate.getDate(),
+        oldDate.getHours(),
+        oldDate.getMinutes(),
+        oldDate.getSeconds()
+      )
+    ).toString();
+  };
+
   const fetchChats = (roomID) => {
     const data = {
       uid: profile.uid,
@@ -132,6 +146,7 @@ export default function Chat() {
 
     const data = {
       uid: profile.uid,
+      senderID: profile.uid,
       roomID: activeRoomID,
       messageID: v4(),
       message: currentChat,
@@ -149,7 +164,7 @@ export default function Chat() {
           setChat((prev) => ({
             room: prev.room,
             members: prev.members,
-            messages: [...prev.messages, { ...data }],
+            messages: [...prev.messages, data],
           }));
 
           setCurrentChat('');
@@ -205,8 +220,12 @@ export default function Chat() {
               e.target.value.length > 0
                 ? people.find(
                     (p) =>
-                      p.name.includes(e.target.value) ||
-                      (p.username.includes(e.target.value) &&
+                      p.name
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase()) ||
+                      (p.username
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase()) &&
                         p.profileID !== profile.uid &&
                         !profile.blocked.some((u) => p.profileID === u.uid))
                   )
@@ -233,6 +252,40 @@ export default function Chat() {
       </div>
     );
   };
+
+  const chatMessages =
+    chat && chat.messages
+      ? chat.messages.map((msg) => {
+          const isCurrentUser = msg.senderID === profile.uid;
+
+          return (
+            <div
+              className={`w-full my-1 flex-none flex ${
+                isCurrentUser ? 'justify-end' : 'justify-start'
+              }`}
+              key={msg.messageID}
+            >
+              <div
+                className={`sm:w-2/5 w-4/5 font-rale sm:text-lg text-sm tracking-wide rounded-lg p-2 text-gray-900 bg-${
+                  isCurrentUser ? 'green' : 'blue'
+                }-400`}
+              >
+                <div className={`text-${isCurrentUser ? 'right' : 'left'}`}>
+                  {msg.message}
+                </div>
+
+                <div
+                  className={`mt-1 text-xs font-sans text-${
+                    isCurrentUser ? 'right' : 'left'
+                  }`}
+                >
+                  {convertDate(msg.timestamp).split(' ').slice(0, 5).join(' ')}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      : [];
 
   return (
     <div
@@ -273,21 +326,21 @@ export default function Chat() {
                 Select a chat to see messages.
               </div>
             ) : (
-              <div className="w-full h-full flex flex-col sm:justify-between">
-                <div className="w-full flex sm:h-1/12 items-center p-2 justify-between mb-2 h-1/6">
+              <div className="w-full sm:h-150 h-100 flex flex-col sm:justify-around">
+                <div className="w-full flex sm:h-1/12 h-1/12 items-center p-2 justify-between mb-2">
                   <div className="text-blue-100 sm:text-xl text-md font-bold tracking-wide sm:w-4/5 w-2/3">
                     {activeRoom}
                   </div>
 
                   <button
-                    className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 sm:w-1/6 w-1/3"
+                    className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg sm:py-2 p-1 sm:w-1/6 w-1/3 sm:text-lg text-xs"
                     onClick={() => leaveRoom()}
                   >
                     Leave Chat
                   </button>
                 </div>
 
-                <div className="w-full sm:h-3/4 h-1/2 overflow-y-scroll flex flex-col bg-gray-900">
+                <div className="w-full sm:h-3/4 h-3/5 flex flex-col justify-around bg-gray-900">
                   {!chat.messages || chat.messages.length <= 0 ? (
                     <div className="w-full h-full border-2 border-red-500 p-2 sm:text-lg text-md font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
                       {chat.messages
@@ -295,12 +348,14 @@ export default function Chat() {
                         : 'Loading...'}
                     </div>
                   ) : (
-                    <div>{chat.messages.map((m) => m.message)}</div>
+                    <div className="w-full h-full border-2 border-blue-500 py-2 px-3 overflow-y-scroll flex-initial">
+                      {chatMessages}
+                    </div>
                   )}
                 </div>
 
                 <form
-                  className="w-full sm:h-1/6 h-2/5 flex sm:flex-row flex-col justify-around items-center"
+                  className="w-full sm:h-1/6 h-1/3 flex sm:flex-row flex-col justify-around items-center"
                   onSubmit={(e) =>
                     currentChat.length > 0 ? sendMessage(e) : null
                   }
@@ -310,7 +365,7 @@ export default function Chat() {
                     placeholder="Type something..."
                     value={currentChat}
                     onChange={(e) => setCurrentChat(e.target.value)}
-                    className="max-h-sm sm:w-3/4 w-full p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 sm:mt-0 mt-2 sm:text-lg text-xs"
+                    className="max-h-sm sm:w-3/4 w-11/12 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 sm:mt-0 mt-2 sm:text-lg text-xs"
                   />
 
                   <button
