@@ -25,7 +25,7 @@ export default function Chat() {
   const history = useHistory();
 
   const { height } = useWindowSize();
-  // console.log(`Height: ${height}`);
+  console.log(`Height: ${height}`);
 
   useEffect(() => {
     if (
@@ -70,6 +70,7 @@ export default function Chat() {
       .then((res) => {
         if (res.data.error !== 0) {
           console.log(res.data.message);
+          setChat({ messages: [] });
         } else {
           setChat(res.data);
           setTimeout(() => {
@@ -240,14 +241,6 @@ export default function Chat() {
     };
 
     if (window.confirm(`Are you sure you want to close ${activeRoom}?`)) {
-      setSearch('');
-      setCurrentFound({});
-      setActiveRoom('');
-      setActiveRoomID('');
-      setCurrentChat('');
-      setCurrentEditChat('');
-      setChat({});
-
       axios
         .post(`${APIURL}/api/room/leave`, data, {
           headers: { Authorization: `Bearer ${profile.jwt}` },
@@ -262,6 +255,14 @@ export default function Chat() {
             );
 
             setProfile(updatedProfile);
+
+            setSearch('');
+            setCurrentFound({});
+            setActiveRoom('');
+            setActiveRoomID('');
+            setCurrentChat('');
+            setCurrentEditChat('');
+            setChat({});
           }
         });
     }
@@ -414,7 +415,15 @@ export default function Chat() {
                 Select a chat to see messages.
               </div>
             ) : (
-              <div className="w-full sm:h-150 h-100 flex flex-col sm:justify-around">
+              <div
+                className={`w-full ${
+                  height > 850
+                    ? 'sm:h-150'
+                    : height > 700
+                    ? 'sm:h-160'
+                    : 'sm:h-130'
+                } h-100 flex flex-col sm:justify-around`}
+              >
                 <div className="w-full flex sm:h-1/12 h-1/12 items-center p-2 justify-between mb-2">
                   <div className="text-blue-100 sm:text-xl text-md font-bold tracking-wide sm:w-4/5 w-2/3">
                     {activeRoom}
@@ -431,7 +440,7 @@ export default function Chat() {
                 <div className="w-full sm:h-3/4 h-3/5 flex flex-col justify-around bg-gray-900">
                   {!chat.messages || chat.messages.length <= 0 ? (
                     <div className="w-full h-full border-2 border-red-500 p-2 sm:text-lg text-md font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
-                      {!chat.messages || chat.messages.length <= 0
+                      {chat.messages && chat.messages.length <= 0
                         ? 'No messages yet, send one!'
                         : 'Loading...'}
                     </div>
