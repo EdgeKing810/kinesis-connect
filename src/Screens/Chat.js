@@ -109,7 +109,7 @@ export default function Chat() {
     const data = {
       uid: profile.uid,
       roomID: v4(),
-      roomName: `${username} (${profileID.split('-')[0].toString()})`,
+      roomName: `${profile.username}, ${username} (${profileID.split('-')[0].toString()})`,
       name: `${username} (${profileID.split('-')[0].toString()})`,
       profileID: profileID,
     };
