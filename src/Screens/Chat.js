@@ -73,7 +73,9 @@ export default function Chat() {
         } else {
           setChat(res.data);
           setTimeout(() => {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            if (messagesEndRef.current) {
+              messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
           }, 300);
         }
       });
@@ -106,11 +108,15 @@ export default function Chat() {
     ));
 
   const joinRoom = ({ profileID, username }) => {
+    const id = v4();
+
     const data = {
       uid: profile.uid,
-      roomID: v4(),
-      roomName: `${profile.username}, ${username} (${profileID.split('-')[0].toString()})`,
-      name: `${username} (${profileID.split('-')[0].toString()})`,
+      roomID: id,
+      roomName: `${profile.username}, ${username} (${id
+        .split('-')[0]
+        .toString()})`,
+      name: `${profile.username}, ${username} (${id.split('-')[0].toString()})`,
       profileID: profileID,
     };
 
@@ -181,7 +187,9 @@ export default function Chat() {
                     return msg;
                   }
                 })
-              : [...prev.messages, data],
+              : prev.messages
+              ? [...prev.messages, data]
+              : [data],
           }));
 
           setCurrentChat('');
@@ -423,7 +431,7 @@ export default function Chat() {
                 <div className="w-full sm:h-3/4 h-3/5 flex flex-col justify-around bg-gray-900">
                   {!chat.messages || chat.messages.length <= 0 ? (
                     <div className="w-full h-full border-2 border-red-500 p-2 sm:text-lg text-md font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
-                      {chat.messages
+                      {!chat.messages || chat.messages.length <= 0
                         ? 'No messages yet, send one!'
                         : 'Loading...'}
                     </div>
