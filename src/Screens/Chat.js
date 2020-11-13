@@ -25,7 +25,7 @@ export default function Chat() {
   const history = useHistory();
 
   const { height } = useWindowSize();
-  console.log(`Height: ${height}`);
+  // console.log(`Height: ${height}`);
 
   useEffect(() => {
     if (
@@ -127,7 +127,6 @@ export default function Chat() {
     setActiveRoomID(data.roomID);
     setCurrentChat('');
     setCurrentEditChat('');
-    setChat({});
 
     axios
       .post(`${APIURL}/api/room/join`, data, {
@@ -138,7 +137,9 @@ export default function Chat() {
           alert(res.data.message);
         } else {
           let updatedProfile = { ...profile };
-          updatedProfile.chats = [...updatedProfile.chats, { ...data }];
+          updatedProfile.chats = [...updatedProfile.chats, { uid: id, name: data.name }];
+
+          setChat({room: id, messages: [], members: [{uid: profile.uid}, {uid: profileID}]});
 
           setProfile(updatedProfile);
         }
