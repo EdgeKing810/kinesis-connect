@@ -502,7 +502,7 @@ export default function FeedPost({
             {userID === uid ? (
               <button
                 className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
-                  isEditingComment === commentID ? 'indigo' : 'gray'
+                  isEditingComment === commentID ? 'blue' : 'gray'
                 }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
                 onClick={() => {
                   if (isEditingComment !== commentID) {
@@ -603,7 +603,7 @@ export default function FeedPost({
         <div className="w-full">
           <div className="w-full flex justify-around py-1">
             <button
-              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-indigo-700 focus:bg-indigo-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
+              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-blue-700 focus:bg-blue-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
               onClick={() => history.push(`/post/edit/${postID}`)}
             >
               Edit Post
