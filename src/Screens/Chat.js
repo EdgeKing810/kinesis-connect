@@ -5,6 +5,7 @@ import axios from 'axios';
 import { v4 } from 'uuid';
 
 import { LocalContext } from '../Context';
+import { Parser } from '../Components/renderers';
 import useWindowSize from '../Components/useWindowSize';
 
 export default function Chat() {
@@ -360,8 +361,8 @@ export default function Chat() {
                   isCurrentUser ? 'green' : 'blue'
                 }-400`}
               >
-                <div className={`text-${isCurrentUser ? 'right' : 'left'}`}>
-                  {msg.message}
+                <div className={`text-${isCurrentUser ? 'right' : 'left'} bg-gray-900 rounded p-1`} style={{ whiteSpace: 'pre-line' }}>
+                  <Parser content={msg.message} />
                 </div>
 
                 <div
