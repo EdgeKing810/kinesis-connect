@@ -400,10 +400,15 @@ export default function FeedPost({
   };
 
   const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => {
-    let currentPerson = { username: 'username', profile_pic: '' };
+    let currentPerson = {
+      profileID: '',
+      username: 'username',
+      profile_pic: '',
+    };
 
     people.forEach((p) => {
       if (p.profileID === uid) {
+        currentPerson.profileID = p.profileID;
         currentPerson.username = p.username;
         currentPerson.profile_pic = p.profile_pic;
       }
@@ -432,14 +437,21 @@ export default function FeedPost({
                 : tmpAvatar
             }
             alt={'p.pic-comment'}
-            className="sm:w-16 w-12 sm:h-16 h-12 rounded-full object-scale-down bg-blue-200 mr-2 border-1 border-blue-400 p-1"
+            className="sm:w-16 w-12 sm:h-16 h-12 rounded-full object-scale-down mr-2 border-2 border-blue-400 p-1"
           />
         </div>
 
         <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
-          <div className="font-bold tracking-wider sm:text-md text-sm mb-1">
+          <button
+            className="font-bold tracking-wider sm:text-md text-sm mb-1 hover:underline focus:underline"
+            onClick={() =>
+              currentPerson.profileID === userID
+                ? history.push(`/profile/`)
+                : history.push(`/profile/${currentPerson.profileID}`)
+            }
+          >
             {currentPerson.username}
-          </div>
+          </button>
           <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
             {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
           </div>
