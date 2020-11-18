@@ -50,6 +50,7 @@ function LocalContextProvider({ children }) {
                 ws.send(
                   JSON.stringify({
                     roomID: res.data.roomID,
+                    uid: uid,
                     type: 'join',
                   })
                 );

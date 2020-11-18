@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Redirect, Switch, Route } from 'react-router-dom';
+import { Redirect, Switch, Route, useHistory } from 'react-router-dom';
 
 import NavBar from './Components/NavBar';
 
@@ -15,6 +15,7 @@ import { LocalContext } from './Context';
 
 export default function App() {
   const { profile, setProfile, setPeople, ws } = useContext(LocalContext);
+  const history = useHistory();
 
   const handleWebSockets = ({ data }) => {
     const dataObj = JSON.parse(data);
@@ -51,6 +52,10 @@ export default function App() {
         });
 
         break;
+
+      case 'account_delete':
+        history.push('/');
+        localStorage.clear();
 
       default:
         break;

@@ -227,6 +227,14 @@ export default function MyProfile() {
           } else {
             alert('Account successfully deleted');
 
+            ws.send(
+              JSON.stringify({
+                roomID: profile.roomID,
+                type: 'account_delete',
+                uid: profile.uid,
+              })
+            );
+
             history.push('/');
             localStorage.clear();
           }
@@ -441,23 +449,6 @@ export default function MyProfile() {
             </div>
           )}
           <div className="w-full pt-1 my-2 bg-gray-900 rounded mb-4"></div>
-
-          <button
-            onClick={() => {
-              if (ws.readyState === WebSocket.OPEN) {
-                ws.send(
-                  JSON.stringify({
-                    roomID: profile.roomID,
-                    type: 'getID',
-                    message: 'Hello',
-                  })
-                );
-              }
-            }}
-          >
-            Get ID ws
-          </button>
-
           {!isModifying && (
             <div className="text-blue-200 sm:text-xl text-md tracking-wide sm:w-4/5 w-full font-open text-center mx-auto mt-2 flex flex-col items-center mb-8">
               <button
