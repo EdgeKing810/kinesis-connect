@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Redirect, Switch, Route } from 'react-router-dom';
 
 import NavBar from './Components/NavBar';
@@ -11,7 +11,54 @@ import Discover from './Screens/Discover';
 import Feed from './Screens/Feed';
 import Chat from './Screens/Chat';
 
+import { LocalContext } from './Context';
+
 export default function App() {
+  const { profile, setProfile, setPeople, ws } = useContext(LocalContext);
+
+  const handleWebSockets = ({ data }) => {
+    const dataObj = JSON.parse(data);
+    let entityData = { ...dataObj };
+
+    switch (dataObj.type) {
+      case 'profile_change':
+        if (dataObj.uid === profile.uid) {
+          setProfile((prev) => {
+            entityData = { ...prev };
+
+            entityData.uid = dataObj.uid;
+            entityData.profileID = dataObj.uid;
+            entityData.name = dataObj.name;
+            entityData.username = dataObj.username;
+            entityData.bio = dataObj.bio;
+
+            return entityData;
+          });
+        }
+
+        setPeople((prev) => {
+          let updatedPeople = [];
+
+          prev.forEach((p) => {
+            if (p.profileID === dataObj.uid) {
+              updatedPeople.push({ ...entityData });
+            } else {
+              updatedPeople.push({ ...p });
+            }
+          });
+
+          return [...updatedPeople];
+        });
+
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  ws.addEventListener('message', handleWebSockets);
+
   return (
     <div className="w-full">
       <Switch>

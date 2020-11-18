@@ -136,6 +136,24 @@ export default function MyProfile() {
           let updatedProfile = { ...profile };
           updatedProfile[key] = modifiedValues[index];
 
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: 'profile_change',
+              uid: profile.uid,
+              profileID: profile.uid,
+              name:
+                modifiedValues[0].length > 0 ? modifiedValues[0] : profile.name,
+              username:
+                modifiedValues[1].length > 0
+                  ? modifiedValues[1]
+                  : profile.username,
+              bio:
+                modifiedValues[3].length > 0 ? modifiedValues[3] : profile.bio,
+              profile_pic: profile.profile_pic,
+            })
+          );
+
           setProfile(updatedProfile);
           alert('Successful!');
         }
@@ -175,6 +193,19 @@ export default function MyProfile() {
 
             const updatedProfile = { ...profile };
             updatedProfile.profile_pic = res.data.url;
+
+            ws.send(
+              JSON.stringify({
+                roomID: profile.roomID,
+                type: 'profile_change',
+                uid: profile.uid,
+                profileID: profile.uid,
+                name: profile.name,
+                username: profile.username,
+                bio: profile.bio,
+                profile_pic: res.data.url,
+              })
+            );
 
             setProfile(updatedProfile);
           }
@@ -220,6 +251,19 @@ export default function MyProfile() {
 
           const updatedProfile = { ...profile };
           updatedProfile.profile_pic = '';
+
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: 'profile_change',
+              uid: profile.uid,
+              profileID: profile.uid,
+              name: profile.name,
+              username: profile.username,
+              bio: profile.bio,
+              profile_pic: '',
+            })
+          );
 
           setProfile(updatedProfile);
         }

@@ -18,12 +18,6 @@ function LocalContextProvider({ children }) {
 
   const ws = new WebSocket(SOCKETURL);
 
-  const displayMessage = ({ data }) => {
-    console.log(data);
-  };
-
-  ws.addEventListener('message', displayMessage);
-
   useEffect(() => {
     // console.log(JSON.parse(localStorage.getItem('_userData')));
     if (localStorage.getItem('_userData')) {
@@ -50,6 +44,17 @@ function LocalContextProvider({ children }) {
         .then((res) => {
           if (res.data.error === 0) {
             setProfile({ ...res.data, jwt: jwt });
+
+            setTimeout(() => {
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(
+                  JSON.stringify({
+                    roomID: res.data.roomID,
+                    type: 'join',
+                  })
+                );
+              }
+            }, 1000);
 
             axios
               .post(
