@@ -6,7 +6,8 @@ export default function userAction(
   APIURL,
   profile,
   setProfile,
-  setFeedPosts
+  setFeedPosts,
+  ws
 ) {
   const bool =
     operation === 'block'
@@ -30,19 +31,19 @@ export default function userAction(
     followers:
       operation === 'block'
         ? prev.followers.filter((p) => p.uid !== profileID)
-        : prev.followers,
+        : [...prev.followers],
     following:
-      operation !== 'block'
-        ? bool
-          ? [...prev.following, { uid: profileID }]
-          : prev.following.filter((p) => p.uid !== profileID)
-        : prev.following,
+      operation === 'block' || (operation !== 'block' && !bool)
+        ? prev.following.filter((p) => p.uid !== profileID)
+        : bool
+        ? [...prev.following, { uid: profileID }]
+        : [...prev.following],
     blocked:
       operation === 'block'
         ? bool
           ? [...prev.blocked, { uid: profileID }]
           : prev.blocked.filter((p) => p.uid !== profileID)
-        : prev.blocked,
+        : [...prev.blocked],
     chats: prev.chats,
     jwt: prev.jwt,
   }));
@@ -56,6 +57,17 @@ export default function userAction(
       }
     )
     .then(() => {
+      ws.send(
+        JSON.stringify({
+          roomID: profile.roomID,
+          type: 'relation',
+          operation: operation,
+          uid: profile.uid,
+          profileID: profileID,
+          bool: bool,
+        })
+      );
+
       axios
         .post(
           `${APIURL}/api/feed/fetch`,

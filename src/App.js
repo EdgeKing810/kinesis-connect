@@ -153,6 +153,68 @@ export default function App() {
         });
         break;
 
+      case 'relation':
+        console.log(entityData);
+
+        setProfile((prev) => {
+          let updatedProfile = { ...prev };
+
+          if (entityData.profileID === profile.uid) {
+            // Current User -> entityData.profileID
+            // User requesting -> entityData.uid
+
+            if (entityData.operation === 'block' && entityData.bool) {
+              setPeople((pre) => pre.filter((p) => p.uid !== entityData.uid));
+            }
+
+            updatedProfile.followers =
+              entityData.operation === 'block' || // (un)block
+              (entityData.operation !== 'block' && !entityData.bool) // unfollow
+                ? updatedProfile.followers.filter(
+                    (p) => p.uid !== entityData.uid
+                  )
+                : entityData.bool // follow
+                ? [...updatedProfile.followers, { uid: entityData.uid }]
+                : [...prev.followers];
+
+            updatedProfile.following =
+              entityData.operation === 'block' // (un)block
+                ? prev.following.filter((p) => p.uid !== entityData.uid)
+                : [...prev.following];
+          } else {
+            // Current User -> entityData.uid
+            // User beng requested -> entityData.profileID
+
+            updatedProfile.followers =
+              entityData.operation === 'block' // (un)block
+                ? prev.followers.filter((p) => p.uid !== entityData.profileID)
+                : [...prev.followers];
+
+            updatedProfile.following =
+              entityData.operation === 'block' || // (un)block
+              (entityData.operation !== 'block' && !entityData.bool) // unfollow
+                ? updatedProfile.following.filter(
+                    (p) => p.uid !== entityData.profileID
+                  )
+                : entityData.bool &&
+                  !updatedProfile.following.find(
+                    (f) => f.uid === entityData.profileID
+                  )
+                ? [...updatedProfile.following, { uid: entityData.profileID }]
+                : [...prev.following];
+
+            updatedProfile.blocked =
+              entityData.operation === 'block' // (un)block
+                ? entityData.bool
+                  ? [...prev.blocked, { uid: entityData.profileID }]
+                  : prev.blocked.filter((p) => p.uid !== entityData.profileID)
+                : [...prev.blocked];
+          }
+
+          return updatedProfile;
+        });
+        break;
+
       default:
         break;
     }

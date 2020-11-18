@@ -16,6 +16,7 @@ export default function Discover() {
     setProfile,
     people,
     setFeedPosts,
+    ws,
   } = useContext(LocalContext);
   const history = useHistory();
 
@@ -109,7 +110,8 @@ export default function Discover() {
               APIURL,
               profile,
               setProfile,
-              setFeedPosts
+              setFeedPosts,
+              ws
             )
           }
         >

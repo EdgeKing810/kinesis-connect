@@ -18,6 +18,7 @@ export default function UserProfile() {
     setProfile,
     feedPosts,
     setFeedPosts,
+    ws,
   } = useContext(LocalContext);
   const history = useHistory();
 
@@ -130,7 +131,8 @@ export default function UserProfile() {
                     APIURL,
                     profile,
                     setProfile,
-                    setFeedPosts
+                    setFeedPosts,
+                    ws
                   )
                 }
               >
@@ -153,7 +155,8 @@ export default function UserProfile() {
                   APIURL,
                   profile,
                   setProfile,
-                  setFeedPosts
+                  setFeedPosts,
+                  ws
                 )
               }
             >
