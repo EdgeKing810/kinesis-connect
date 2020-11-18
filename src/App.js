@@ -14,7 +14,9 @@ import Chat from './Screens/Chat';
 import { LocalContext } from './Context';
 
 export default function App() {
-  const { profile, setProfile, setPeople, ws } = useContext(LocalContext);
+  const { profile, setProfile, setPeople, setChat, ws } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   const handleWebSockets = ({ data }) => {
@@ -56,6 +58,30 @@ export default function App() {
       case 'account_delete':
         history.push('/');
         localStorage.clear();
+        break;
+
+      case 'room_join':
+        setProfile((prev) => {
+          let updatedProfile = { ...prev };
+          if (!updatedProfile.chats.find((c) => c.uid === dataObj.room_id)) {
+            updatedProfile.chats = [
+              ...updatedProfile.chats,
+              { uid: dataObj.room_id, name: dataObj.roomName },
+            ];
+          }
+          return updatedProfile;
+        });
+        break;
+
+      case 'room_leave':
+        setProfile((prev) => {
+          let updatedProfile = { ...prev };
+          updatedProfile.chats = updatedProfile.chats.filter(
+            (c) => c.uid !== dataObj.room_id
+          );
+          return updatedProfile;
+        });
+        break;
 
       default:
         break;

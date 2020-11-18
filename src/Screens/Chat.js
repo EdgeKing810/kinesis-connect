@@ -22,7 +22,7 @@ export default function Chat() {
 
   const [chat, setChat] = useState({});
 
-  const { APIURL, profile, setProfile, people } = useContext(LocalContext);
+  const { APIURL, profile, setProfile, people, ws } = useContext(LocalContext);
   const history = useHistory();
 
   const { height } = useWindowSize();
@@ -138,9 +138,27 @@ export default function Chat() {
           alert(res.data.message);
         } else {
           let updatedProfile = { ...profile };
-          updatedProfile.chats = [...updatedProfile.chats, { uid: id, name: data.name }];
+          updatedProfile.chats = [
+            ...updatedProfile.chats,
+            { uid: id, name: data.name },
+          ];
 
-          setChat({room: id, messages: [], members: [{uid: profile.uid}, {uid: profileID}]});
+          setChat({
+            room: id,
+            messages: [],
+            members: [{ uid: profile.uid }, { uid: profileID }],
+          });
+
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: 'room_join',
+              uid: profile.uid,
+              profileID: data.profileID,
+              room_id: data.roomID,
+              roomName: data.roomName,
+            })
+          );
 
           setProfile(updatedProfile);
         }
@@ -256,6 +274,15 @@ export default function Chat() {
               (c) => c.uid !== data.roomID
             );
 
+            ws.send(
+              JSON.stringify({
+                roomID: profile.roomID,
+                type: 'room_leave',
+                uid: profile.uid,
+                room_id: data.roomID,
+              })
+            );
+
             setProfile(updatedProfile);
 
             setSearch('');
@@ -361,7 +388,12 @@ export default function Chat() {
                   isCurrentUser ? 'green' : 'blue'
                 }-400`}
               >
-                <div className={`text-${isCurrentUser ? 'right' : 'left'} bg-gray-900 rounded p-1`} style={{ whiteSpace: 'pre-line' }}>
+                <div
+                  className={`text-${
+                    isCurrentUser ? 'right' : 'left'
+                  } bg-gray-900 rounded p-1`}
+                  style={{ whiteSpace: 'pre-line' }}
+                >
                   <Parser content={msg.message} />
                 </div>
 
