@@ -83,6 +83,76 @@ export default function App() {
         });
         break;
 
+      case 'message_new':
+        setChat((prev) => {
+          if (prev.room !== entityData.room_id) {
+            return prev;
+          }
+
+          let updatedRoom = { ...prev };
+          const message = {
+            messageID: entityData.messageID,
+            senderID: entityData.senderID,
+            message: entityData.message,
+            timestamp: entityData.timestamp,
+          };
+
+          if (
+            !updatedRoom.messages.find(
+              (m) => m.messageID === entityData.messageID
+            )
+          ) {
+            updatedRoom.messages = updatedRoom.messages
+              ? [...prev.messages, message]
+              : [message];
+          }
+
+          return updatedRoom;
+        });
+        break;
+
+      case 'message_edit':
+        setChat((prev) => {
+          if (prev.room !== entityData.room_id) {
+            return prev;
+          }
+
+          let updatedRoom = { ...prev };
+          const message = {
+            messageID: entityData.messageID,
+            senderID: entityData.senderID,
+            message: entityData.message,
+            timestamp: entityData.timestamp,
+          };
+
+          updatedRoom.messages = updatedRoom.messages.map((m) => {
+            if (m.messageID === entityData.messageID) {
+              return message;
+            } else {
+              return m;
+            }
+          });
+
+          return updatedRoom;
+        });
+        break;
+
+      case 'message_delete':
+        setChat((prev) => {
+          if (prev.room !== entityData.room_id) {
+            return prev;
+          }
+
+          let updatedRoom = { ...prev };
+
+          updatedRoom.messages = updatedRoom.messages.filter(
+            (m) => m.messageID !== entityData.messageID
+          );
+
+          return updatedRoom;
+        });
+        break;
+
       default:
         break;
     }

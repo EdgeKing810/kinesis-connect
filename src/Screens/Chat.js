@@ -20,9 +20,11 @@ export default function Chat() {
   const [currentChat, setCurrentChat] = useState('');
   const [currentEditChat, setCurrentEditChat] = useState('');
 
-  const [chat, setChat] = useState({});
+  const [otherProfileID, setOtherProfileID] = useState('');
 
-  const { APIURL, profile, setProfile, people, ws } = useContext(LocalContext);
+  const { APIURL, profile, setProfile, people, ws, chat, setChat } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   const { height } = useWindowSize();
@@ -74,6 +76,10 @@ export default function Chat() {
           setChat({ messages: [] });
         } else {
           setChat(res.data);
+          setOtherProfileID(
+            res.data.members.find((m) => m.uid !== profile.uid).uid
+          );
+
           setTimeout(() => {
             if (messagesEndRef.current) {
               messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -128,6 +134,8 @@ export default function Chat() {
     setActiveRoomID(data.roomID);
     setCurrentChat('');
     setCurrentEditChat('');
+
+    setOtherProfileID(profileID);
 
     axios
       .post(`${APIURL}/api/room/join`, data, {
@@ -213,6 +221,20 @@ export default function Chat() {
               : [data],
           }));
 
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: `message_${isEditing ? 'edit' : 'new'}`,
+              uid: profile.uid,
+              profileID: otherProfileID,
+              room_id: data.roomID,
+              messageID: data.messageID,
+              senderID: data.senderID,
+              message: data.message,
+              timestamp: data.timestamp,
+            })
+          );
+
           setCurrentChat('');
           setCurrentEditChat('');
         }
@@ -244,6 +266,17 @@ export default function Chat() {
                 (msg) => msg.messageID !== data.messageID
               ),
             }));
+
+            ws.send(
+              JSON.stringify({
+                roomID: profile.roomID,
+                type: 'message_delete',
+                uid: profile.uid,
+                profileID: otherProfileID,
+                room_id: data.roomID,
+                messageID: data.messageID,
+              })
+            );
 
             if (currentEditChat === currentChat) {
               setCurrentChat('');

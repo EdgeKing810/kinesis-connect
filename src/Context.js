@@ -11,6 +11,7 @@ function LocalContextProvider({ children }) {
   const [people, setPeople] = useState([]);
   const [myPosts, setMyPosts] = useState([]);
   const [feedPosts, setFeedPosts] = useState([]);
+  const [chat, setChat] = useState({});
 
   const APIURL = 'https://api.connect.kinesis.games';
   const UPLOADSURL = 'https://uploads.connect.kinesis.games';
@@ -122,6 +123,8 @@ function LocalContextProvider({ children }) {
         setFeedPosts,
         people,
         setPeople,
+        chat,
+        setChat,
       }}
     >
       {children}
