@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Redirect, Switch, Route, useHistory } from 'react-router-dom';
 
+import axios from 'axios';
+
 import NavBar from './Components/NavBar';
 
 import LoginForm from './Screens/LoginForm';
@@ -14,7 +16,7 @@ import Chat from './Screens/Chat';
 import { LocalContext } from './Context';
 
 export default function App() {
-  const { profile, setProfile, setPeople, setChat, ws } = useContext(
+  const { APIURL, profile, setProfile, setPeople, setChat, ws } = useContext(
     LocalContext
   );
   const history = useHistory();
@@ -154,17 +156,50 @@ export default function App() {
         break;
 
       case 'relation':
-        console.log(entityData);
+        let updatedProfile = {};
 
         setProfile((prev) => {
-          let updatedProfile = { ...prev };
+          updatedProfile = { ...prev };
 
-          if (entityData.profileID === profile.uid) {
+          if (entityData.profileID.toString() === prev.uid.toString()) {
             // Current User -> entityData.profileID
             // User requesting -> entityData.uid
 
-            if (entityData.operation === 'block' && entityData.bool) {
-              setPeople((pre) => pre.filter((p) => p.uid !== entityData.uid));
+            if (entityData.operation === 'block') {
+              if (entityData.bool) {
+                setPeople((pre) =>
+                  pre.filter((p) => p.profileID !== entityData.uid)
+                );
+              } else {
+                const { jwt } = JSON.parse(localStorage.getItem('_userData'));
+
+                const data = {
+                  uid: prev.uid,
+                  profileID: prev.uid,
+                };
+
+                axios
+                  .post(`${APIURL}/api/profile/fetch`, data, {
+                    headers: { Authorization: `Bearer ${jwt}` },
+                  })
+                  .then((res) => {
+                    console.log(`res: ${JSON.stringify(res.data)}`);
+                    axios
+                      .post(`${APIURL}/api/profiles/fetch`, data, {
+                        headers: { Authorization: `Bearer ${jwt}` },
+                      })
+                      .then((response) => {
+                        if (response.data.error === 0) {
+                          setPeople([
+                            ...response.data.users,
+                            { ...res.data, profileID: res.data.uid },
+                          ]);
+                        } else {
+                          setPeople([{ ...res.data, profileID: res.data.uid }]);
+                        }
+                      });
+                  });
+              }
             }
 
             updatedProfile.followers =
@@ -175,20 +210,24 @@ export default function App() {
                   )
                 : entityData.bool // follow
                 ? [...updatedProfile.followers, { uid: entityData.uid }]
-                : [...prev.followers];
+                : [...updatedProfile.followers];
 
             updatedProfile.following =
               entityData.operation === 'block' // (un)block
-                ? prev.following.filter((p) => p.uid !== entityData.uid)
-                : [...prev.following];
+                ? updatedProfile.following.filter(
+                    (p) => p.uid !== entityData.uid
+                  )
+                : [...updatedProfile.following];
           } else {
             // Current User -> entityData.uid
             // User beng requested -> entityData.profileID
 
             updatedProfile.followers =
               entityData.operation === 'block' // (un)block
-                ? prev.followers.filter((p) => p.uid !== entityData.profileID)
-                : [...prev.followers];
+                ? updatedProfile.followers.filter(
+                    (p) => p.uid !== entityData.profileID
+                  )
+                : [...updatedProfile.followers];
 
             updatedProfile.following =
               entityData.operation === 'block' || // (un)block
@@ -201,14 +240,16 @@ export default function App() {
                     (f) => f.uid === entityData.profileID
                   )
                 ? [...updatedProfile.following, { uid: entityData.profileID }]
-                : [...prev.following];
+                : [...updatedProfile.following];
 
             updatedProfile.blocked =
               entityData.operation === 'block' // (un)block
                 ? entityData.bool
-                  ? [...prev.blocked, { uid: entityData.profileID }]
-                  : prev.blocked.filter((p) => p.uid !== entityData.profileID)
-                : [...prev.blocked];
+                  ? [...updatedProfile.blocked, { uid: entityData.profileID }]
+                  : updatedProfile.blocked.filter(
+                      (p) => p.uid !== entityData.profileID
+                    )
+                : [...updatedProfile.blocked];
           }
 
           return updatedProfile;
