@@ -74,6 +74,7 @@ export default function UserProfile() {
       comments={post.comments}
       keyname={`${post.postID}-profile`}
       personal={false}
+      ws={ws}
     />
   ));
 

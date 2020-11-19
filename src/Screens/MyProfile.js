@@ -293,6 +293,7 @@ export default function MyProfile() {
       comments={post.comments}
       keyname={`${post.postID}-myp`}
       personal={true}
+      ws={ws}
     />
   ));
 

@@ -9,7 +9,9 @@ import tmpAvatar from '../Assets/images/avatar_tmp.png';
 export default function Feed() {
   const [error, setError] = useState('Loading...');
 
-  const { UPLOADSURL, profile, people, feedPosts } = useContext(LocalContext);
+  const { UPLOADSURL, profile, people, feedPosts, ws } = useContext(
+    LocalContext
+  );
   const history = useHistory();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function Feed() {
         keyname={`${post.postID}-feed`}
         personal={false}
         key={`${post.postID}-feed`}
+        ws={ws}
       />
     );
   });

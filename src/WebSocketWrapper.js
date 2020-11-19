@@ -6,10 +6,27 @@ import axios from 'axios';
 import { LocalContext } from './Context';
 
 export default function WebSocketWrapper({ children }) {
-  const { APIURL, profile, setProfile, setPeople, setChat, ws } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    profile,
+    setProfile,
+    setPeople,
+    setMyPosts,
+    setFeedPosts,
+    setChat,
+    ws,
+  } = useContext(LocalContext);
   const history = useHistory();
+
+  const getUID = () => {
+    let uid;
+    setProfile((prev) => {
+      uid = prev.uid;
+      return prev;
+    });
+
+    return uid;
+  };
 
   const handleWebSockets = ({ data }) => {
     const dataObj = JSON.parse(data);
@@ -173,7 +190,6 @@ export default function WebSocketWrapper({ children }) {
                     headers: { Authorization: `Bearer ${jwt}` },
                   })
                   .then((res) => {
-                    console.log(`res: ${JSON.stringify(res.data)}`);
                     axios
                       .post(`${APIURL}/api/profiles/fetch`, data, {
                         headers: { Authorization: `Bearer ${jwt}` },
@@ -186,6 +202,18 @@ export default function WebSocketWrapper({ children }) {
                           ]);
                         } else {
                           setPeople([{ ...res.data, profileID: res.data.uid }]);
+                        }
+                      });
+
+                    axios
+                      .post(`${APIURL}/api/feed/fetch`, data, {
+                        headers: { Authorization: `Bearer ${jwt}` },
+                      })
+                      .then((response) => {
+                        if (response.data.error === 0) {
+                          setFeedPosts([...response.data.posts]);
+                        } else {
+                          setFeedPosts([]);
                         }
                       });
                   });
@@ -244,6 +272,121 @@ export default function WebSocketWrapper({ children }) {
 
           return updatedProfile;
         });
+        break;
+
+      case 'post_new':
+        if (entityData.uid === getUID()) {
+          setMyPosts((prev) => {
+            if (!prev.find((p) => p.postID === entityData.postID)) {
+              return [...prev, { ...entityData }];
+            } else {
+              return [...prev];
+            }
+          });
+        } else {
+          setFeedPosts((prev) => {
+            if (!prev.find((p) => p.postID === entityData.postID)) {
+              return [...prev, { ...entityData }];
+            } else {
+              return [...prev];
+            }
+          });
+        }
+        break;
+
+      case 'post_edit':
+        if (entityData.uid === getUID()) {
+          setMyPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                return entityData;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        } else {
+          setFeedPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                return entityData;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        }
+        break;
+
+      case 'post_delete':
+        if (entityData.uid === getUID()) {
+          setMyPosts((prev) =>
+            prev.filter((p) => p.postID !== entityData.postID)
+          );
+        } else {
+          setFeedPosts((prev) =>
+            prev.filter((p) => p.postID !== entityData.postID)
+          );
+        }
+        break;
+
+      case 'post_react':
+        console.log(entityData);
+        if (entityData.profileID === getUID()) {
+          setMyPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let updatedPost = { ...p };
+                if (updatedPost.reacts.find((r) => r.uid === entityData.uid)) {
+                  if (!entityData.like) {
+                    updatedPost.reacts = updatedPost.reacts.filter(
+                      (r) => r.uid !== entityData.uid
+                    );
+                  }
+                } else {
+                  if (entityData.like) {
+                    updatedPost.reacts = [
+                      ...updatedPost.reacts,
+                      { uid: entityData.uid },
+                    ];
+                  }
+                }
+                return updatedPost;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        } else {
+          setFeedPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let updatedPost = { ...p };
+                if (updatedPost.reacts.find((r) => r.uid === entityData.uid)) {
+                  if (!entityData.like) {
+                    updatedPost.reacts = updatedPost.reacts.filter(
+                      (r) => r.uid !== entityData.uid
+                    );
+                  }
+                } else {
+                  if (entityData.like) {
+                    updatedPost.reacts = [
+                      ...updatedPost.reacts,
+                      { uid: entityData.uid },
+                    ];
+                  }
+                }
+                return updatedPost;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        }
         break;
 
       default:

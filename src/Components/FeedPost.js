@@ -21,6 +21,7 @@ export default function FeedPost({
   comments,
   keyname,
   personal,
+  ws,
 }) {
   const convertDate = (date) => {
     const oldDate = new Date(date);
@@ -68,6 +69,17 @@ export default function FeedPost({
       `${APIURL}/api/post/react`,
       { ...data },
       { headers: { Authorization: `Bearer ${profile.jwt}` } }
+    );
+
+    ws.send(
+      JSON.stringify({
+        roomID: profile.roomID,
+        type: `post_react`,
+        uid: uid,
+        profileID: data.profileID,
+        postID: data.postID,
+        like: !liked,
+      })
     );
 
     if (personal) {
@@ -144,6 +156,15 @@ export default function FeedPost({
         )
         .then((res) => {
           alert(res.data.message);
+
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: `post_delete`,
+              uid: uid,
+              postID: data.postID,
+            })
+          );
 
           if (res.data.error === 0) {
             if (personal) {
@@ -491,7 +512,7 @@ export default function FeedPost({
 
             <button
               className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-sm text-xs tracking-wider font-open ${
-                reacts.length <= 0
+                !reacts || reacts.length <= 0
                   ? 'opacity-50 bg-gray-600'
                   : showCommentReacts === commentID &&
                     showCommentReacts.length > 0
@@ -499,7 +520,7 @@ export default function FeedPost({
                   : 'bg-gray-600 hover:bg-gray-400 focus:bg-gray-400'
               } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale text-blue-900`}
               onClick={() =>
-                reacts.length <= 0
+                !reacts || reacts.length <= 0
                   ? null
                   : setShowCommentReacts((prev) =>
                       prev === commentID && prev.length > 0
@@ -652,14 +673,16 @@ export default function FeedPost({
       <div className="w-full flex mt-4">
         <button
           className={`w-1/3 p-1 sm:text-lg text-md tracking-wider font-open ${
-            reacts.length <= 0
+            !reacts || reacts.length <= 0
               ? 'opacity-50 bg-gray-600'
               : showReacts
               ? 'bg-gray-400'
               : 'bg-gray-600 hover:bg-gray-400 focus:bg-gray-400'
           } flex justify-center items-center rounded flex justify-center items-center font-bold tracking-wider font-rale text-blue-900`}
           onClick={() =>
-            reacts.length <= 0 ? null : setShowReacts((prev) => !prev)
+            !reacts || reacts.length <= 0
+              ? null
+              : setShowReacts((prev) => !prev)
           }
         >
           Likes: {reacts.length}
@@ -719,7 +742,9 @@ export default function FeedPost({
             setShowComment((prev) => !prev);
           }}
         >
-          {showComment ? 'Hide Comments' : `Comments (${comments.length})`}{' '}
+          {showComment
+            ? 'Hide Comments'
+            : `Comments (${comments ? comments.length : 0})`}{' '}
           <div
             className={`ml-2 text-md ri-message-3-${
               showComment ? 'fill' : 'line'

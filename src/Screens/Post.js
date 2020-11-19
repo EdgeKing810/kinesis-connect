@@ -14,7 +14,7 @@ export default function Post() {
   const edit = postID !== undefined;
 
   const history = useHistory();
-  const { APIURL, profile, myPosts, setMyPosts } = useContext(LocalContext);
+  const { APIURL, profile, myPosts, setMyPosts, ws } = useContext(LocalContext);
 
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
@@ -74,6 +74,19 @@ export default function Post() {
           alert(`Post ${edit ? 'edited' : 'created'} successfully!`);
 
           setPostContent('');
+
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: `post_${edit ? 'edit' : 'new'}`,
+              uid: profile.uid,
+              postID: data.postID,
+              content: data.content,
+              timestamp: data.timestamp,
+              reacts: data.reacts ? data.reacts : [],
+              comments: data.comments ? data.comments : [],
+            })
+          );
 
           if (!edit) {
             setMyPosts((prev) => [...prev, data]);
