@@ -333,7 +333,6 @@ export default function WebSocketWrapper({ children }) {
         break;
 
       case 'post_react':
-        console.log(entityData);
         if (entityData.profileID === getUID()) {
           setMyPosts((prev) => {
             let updatedPosts = prev.map((p) => {
@@ -379,6 +378,215 @@ export default function WebSocketWrapper({ children }) {
                     ];
                   }
                 }
+                return updatedPost;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        }
+        break;
+
+      case 'comment_new':
+        if (entityData.profileID === getUID()) {
+          setMyPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                if (
+                  !post.comments.find(
+                    (c) => c.commentID === entityData.commentID
+                  )
+                ) {
+                  post.comments = [...post.comments, { ...entityData }];
+                } else {
+                  post.comments = [...post.comments];
+                }
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        } else {
+          setFeedPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                if (
+                  !post.comments.find(
+                    (c) => c.commentID === entityData.commentID
+                  )
+                ) {
+                  post.comments = [...post.comments, { ...entityData }];
+                } else {
+                  post.comments = [...post.comments];
+                }
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        }
+        break;
+
+      case 'comment_edit':
+        if (entityData.profileID === getUID()) {
+          setMyPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                post.comments = post.comments.map((c) => {
+                  if (c.commentID === entityData.commentID) {
+                    return entityData;
+                  } else {
+                    return c;
+                  }
+                });
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        } else {
+          setFeedPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                post.comments = post.comments.map((c) => {
+                  if (c.commentID === entityData.commentID) {
+                    return entityData;
+                  } else {
+                    return c;
+                  }
+                });
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        }
+        break;
+
+      case 'comment_delete':
+        if (entityData.profileID === getUID()) {
+          setMyPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                post.comments = post.comments.filter(
+                  (c) => c.commentID !== entityData.commentID
+                );
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        } else {
+          setFeedPosts((prev) =>
+            prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let post = { ...p };
+
+                post.comments = post.comments.filter(
+                  (c) => c.commentID !== entityData.commentID
+                );
+
+                return post;
+              } else {
+                return p;
+              }
+            })
+          );
+        }
+        break;
+
+      case 'comment_react':
+        console.log(entityData);
+        if (entityData.profileID === getUID()) {
+          setMyPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let updatedPost = { ...p };
+
+                updatedPost.comments = updatedPost.comments.map((c) => {
+                  if (c.commentID === entityData.commentID) {
+                    let comment = { ...c };
+
+                    if (comment.reacts.find((r) => r.uid === entityData.uid)) {
+                      if (!entityData.like) {
+                        comment.reacts = comment.reacts.filter(
+                          (r) => r.uid !== entityData.uid
+                        );
+                      }
+                    } else {
+                      if (entityData.like) {
+                        comment.reacts = [
+                          ...comment.reacts,
+                          { uid: entityData.uid },
+                        ];
+                      }
+                    }
+
+                    return comment;
+                  } else {
+                    return c;
+                  }
+                });
+
+                return updatedPost;
+              } else {
+                return p;
+              }
+            });
+            return updatedPosts;
+          });
+        } else {
+          setFeedPosts((prev) => {
+            let updatedPosts = prev.map((p) => {
+              if (p.postID === entityData.postID) {
+                let updatedPost = { ...p };
+
+                updatedPost.comments = updatedPost.comments.map((c) => {
+                  if (c.commentID === entityData.commentID) {
+                    let comment = { ...c };
+
+                    if (comment.reacts.find((r) => r.uid === entityData.uid)) {
+                      if (!entityData.like) {
+                        comment.reacts = comment.reacts.filter(
+                          (r) => r.uid !== entityData.uid
+                        );
+                      }
+                    } else {
+                      if (entityData.like) {
+                        comment.reacts = [
+                          ...comment.reacts,
+                          { uid: entityData.uid },
+                        ];
+                      }
+                    }
+
+                    return comment;
+                  } else {
+                    return c;
+                  }
+                });
+
                 return updatedPost;
               } else {
                 return p;

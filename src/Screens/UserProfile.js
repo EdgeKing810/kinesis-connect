@@ -63,7 +63,8 @@ export default function UserProfile() {
       profileID={profileID}
       username={currentProfile.username}
       profile_pic={
-        currentProfile.profile_pic
+        currentProfile.profile_pic !== undefined &&
+        currentProfile.profile_pic.length > 3
           ? `${UPLOADSURL}/${currentProfile.profile_pic}`
           : tmpAvatar
       }
@@ -92,7 +93,7 @@ export default function UserProfile() {
           <img
             src={`${
               currentProfile.profile_pic !== undefined &&
-              currentProfile.profile_pic.length > 1
+              currentProfile.profile_pic.length > 3
                 ? `${UPLOADSURL}/${currentProfile.profile_pic}`
                 : tmpAvatar
             }`}

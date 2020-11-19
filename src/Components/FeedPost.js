@@ -65,22 +65,24 @@ export default function FeedPost({
       like: liked ? 'false' : 'true',
     };
 
-    axios.post(
-      `${APIURL}/api/post/react`,
-      { ...data },
-      { headers: { Authorization: `Bearer ${profile.jwt}` } }
-    );
-
-    ws.send(
-      JSON.stringify({
-        roomID: profile.roomID,
-        type: `post_react`,
-        uid: uid,
-        profileID: data.profileID,
-        postID: data.postID,
-        like: !liked,
-      })
-    );
+    axios
+      .post(
+        `${APIURL}/api/post/react`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      )
+      .then(() => {
+        ws.send(
+          JSON.stringify({
+            roomID: profile.roomID,
+            type: `post_react`,
+            uid: uid,
+            profileID: data.profileID,
+            postID: data.postID,
+            like: !liked,
+          })
+        );
+      });
 
     if (personal) {
       setMyPosts((prev) =>
@@ -263,18 +265,34 @@ export default function FeedPost({
       );
     }
 
-    axios.post(
-      `${APIURL}/api/post/comment/${
-        isEditingComment.length > 0 ? 'edit' : 'add'
-      }`,
-      { ...data },
-      { headers: { Authorization: `Bearer ${profile.jwt}` } }
-    );
+    axios
+      .post(
+        `${APIURL}/api/post/comment/${
+          isEditingComment.length > 0 ? 'edit' : 'add'
+        }`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      )
+      .then(() => {
+        ws.send(
+          JSON.stringify({
+            roomID: profile.roomID,
+            type: `comment_${isEditingComment.length > 0 ? 'edit' : 'new'}`,
+            uid: uid,
+            profileID: data.profileID,
+            postID: data.postID,
+            commentID: data.commentID,
+            comment: data.comment,
+            timestamp: data.timestamp,
+            reacts: data.reacts ? data.reacts : [],
+          })
+        );
+      });
 
     if (isEditingComment.length > 0) {
       setIsEditingComment('');
-      setComment('');
     }
+    setComment('');
   };
 
   const reactComment = (e, commentID, like) => {
@@ -354,11 +372,25 @@ export default function FeedPost({
       );
     }
 
-    axios.post(
-      `${APIURL}/api/post/comment/react`,
-      { ...data },
-      { headers: { Authorization: `Bearer ${profile.jwt}` } }
-    );
+    axios
+      .post(
+        `${APIURL}/api/post/comment/react`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${profile.jwt}` } }
+      )
+      .then(() => {
+        ws.send(
+          JSON.stringify({
+            roomID: profile.roomID,
+            type: `comment_react`,
+            uid: uid,
+            profileID: data.profileID,
+            postID: data.postID,
+            commentID: data.commentID,
+            like: data.like === 'true',
+          })
+        );
+      });
   };
 
   const deleteComment = (e, commentID) => {
@@ -412,11 +444,24 @@ export default function FeedPost({
         );
       }
 
-      axios.post(
-        `${APIURL}/api/post/comment/delete`,
-        { ...data },
-        { headers: { Authorization: `Bearer ${profile.jwt}` } }
-      );
+      axios
+        .post(
+          `${APIURL}/api/post/comment/delete`,
+          { ...data },
+          { headers: { Authorization: `Bearer ${profile.jwt}` } }
+        )
+        .then(() => {
+          ws.send(
+            JSON.stringify({
+              roomID: profile.roomID,
+              type: `comment_delete`,
+              uid: uid,
+              profileID: data.profileID,
+              postID: data.postID,
+              commentID: data.commentID,
+            })
+          );
+        });
     }
   };
 
@@ -453,7 +498,7 @@ export default function FeedPost({
         <div className="w-1/6 flex justify-center items-center">
           <img
             src={
-              currentPerson.profile_pic.length > 0
+              currentPerson.profile_pic.length > 3
                 ? `${UPLOADSURL}/${currentPerson.profile_pic}`
                 : tmpAvatar
             }
