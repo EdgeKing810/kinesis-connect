@@ -69,16 +69,16 @@ export default function Discover() {
 
     return (
       <div
-        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center px-2 mr-4 my-2 w-64 py-2 h-auto"
+        className="bg-blue-900 flex-none rounded-lg flex flex-col items-center p-2 my-2 mr-2 w-64 h-auto"
         key={`${id}-${profileID}`}
       >
         <div className="w-full text-center text-blue-300 sm:text-xl text-lg tracking-wide font-open mt-2">
-          {name}
+          {name.length > 15 ? `${name.substring(0, 15)}...` : name}
         </div>
 
         <img
           src={
-            profile_pic !== undefined && profile_pic.length > 1
+            profile_pic !== undefined && profile_pic.length > 3
               ? `${UPLOADSURL}/${profile_pic}`
               : tmpAvatar
           }
@@ -87,7 +87,7 @@ export default function Discover() {
         />
 
         <div className="w-full text-center text-green-300 sm:text-xl text-lg font-rale tracking-wider sm:mb-0 mb-1 font-bold">
-          @{username}
+          @{username.length > 12 ? `${name.substring(0, 12)}...` : username}
         </div>
 
         <hr />
@@ -137,7 +137,7 @@ export default function Discover() {
           {error}
         </div>
       ) : (
-        <div className="sm:w-2/3 w-11/12 mx-auto mb-4">
+        <div className="sm:w-2/3 w-full mx-auto mb-4 px-1">
           <div className="font-bold tracking-wider font-open text-gray-400 sm:text-3xl text-xl mt-4 mb-1">
             Users you may know ({peopleYouMayKnow.length})
           </div>

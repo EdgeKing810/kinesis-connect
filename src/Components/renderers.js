@@ -38,24 +38,24 @@ const listItem = (props) => {
 
 const code = (props) => {
   return (
-    <div
+    <span
       className="text-blue-300 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100 sm:text-md text-sm"
       style={{ whiteSpace: 'pre-line' }}
     >
       {props.node.value}
-    </div>
+    </span>
   );
 };
 
 const image = (props) => {
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <span className="w-full flex flex-col justify-center items-center">
       <img
         src={props.src}
         alt={props.alt}
         className="sm:max-w-sm max-w-xs object-scale-down rounded p-1 border-2 border-blue-400"
       />
-    </div>
+    </span>
   );
 };
 

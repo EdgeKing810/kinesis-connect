@@ -294,6 +294,7 @@ export default function MyProfile() {
       reacts={post.reacts}
       comments={post.comments}
       keyname={`${post.postID}-myp`}
+      key={`${post.postID}-myp`}
       personal={true}
       ws={ws}
     />

@@ -37,7 +37,8 @@ export default function Feed() {
         profileID={post.uid}
         username={currentUser.username}
         profile_pic={
-          currentUser.profile_pic
+          currentUser.profile_pic !== undefined &&
+          currentUser.profile_pic.length > 3
             ? `${UPLOADSURL}/${currentUser.profile_pic}`
             : tmpAvatar
         }

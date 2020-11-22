@@ -50,7 +50,7 @@ export default function NavBar() {
       </div>
 
       <div
-        className={`w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-50 transform ${
+        className={`w-4/5 bg-gray-700 h-full flex flex-col items-center px-2 z-50 border-r-2 border-blue-400 transform ${
           showMenu
             ? 'translate-x-0 ease-out duration-1000 transition-medium'
             : '-translate-x-screen ease-in duration-1000 transition-mediums'

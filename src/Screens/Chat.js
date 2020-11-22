@@ -45,6 +45,7 @@ export default function Chat() {
   }, []);
 
   const messagesEndRef = useRef(null);
+  const chatBoxRef = useRef(null);
 
   const convertDate = (date) => {
     const oldDate = new Date(date);
@@ -72,13 +73,16 @@ export default function Chat() {
       })
       .then((res) => {
         if (res.data.error !== 0) {
-          console.log(res.data.message);
           setChat({ messages: [] });
         } else {
           setChat(res.data);
           setOtherProfileID(
             res.data.members.find((m) => m.uid !== profile.uid).uid
           );
+
+          if (chatBoxRef.current) {
+            chatBoxRef.current.focus();
+          }
 
           setTimeout(() => {
             if (messagesEndRef.current) {
@@ -172,6 +176,12 @@ export default function Chat() {
         }
       });
   };
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const submitMessage = (e) => {
     e.preventDefault();
@@ -521,15 +531,23 @@ export default function Chat() {
 
                 <form
                   className="w-full sm:h-1/6 h-1/3 flex sm:flex-row flex-col justify-around items-center"
-                  onSubmit={(e) =>
-                    currentChat.length > 0 ? submitMessage(e) : null
-                  }
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (currentChat.length > 0) submitMessage(e);
+                  }}
                 >
                   <textarea
                     name="chat_box"
                     placeholder="Type something..."
                     value={currentChat}
+                    ref={chatBoxRef}
                     onChange={(e) => setCurrentChat(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13 && e.shiftKey === false) {
+                        e.preventDefault();
+                        if (e.target.value.length > 0) submitMessage(e);
+                      }
+                    }}
                     className="max-h-sm sm:w-3/4 w-11/12 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 sm:mt-0 mt-2 sm:text-lg text-xs"
                   />
 

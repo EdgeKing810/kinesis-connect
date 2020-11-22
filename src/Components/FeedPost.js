@@ -498,7 +498,8 @@ export default function FeedPost({
         <div className="w-1/6 flex justify-center items-center">
           <img
             src={
-              currentPerson.profile_pic.length > 3
+              currentPerson.profile_pic.length !== undefined &&
+              profile_pic.length > 3
                 ? `${UPLOADSURL}/${currentPerson.profile_pic}`
                 : tmpAvatar
             }
@@ -521,13 +522,15 @@ export default function FeedPost({
           <div className="text-blue-200 sm:text-sm text-xs border-b border-gray-800 mb-2">
             {convertDate(timestamp).split(' ').slice(0, 5).join(' ')}
           </div>
-          <div className="text-gray-200 sm:text-sm text-xs">{comment}</div>
+          <div className="text-gray-200 sm:text-sm text-xs">
+            <Parser content={comment} />
+          </div>
 
           <div className="pt-1 w-full bg-gray-800 mt-4 mb-2"></div>
 
-          <div className="w-full flex sm:flex-row flex-col sm:justify-between sm:items-start pr-2 my-2">
+          <div className="w-full flex flex-row justify-between items-start pr-2 my-2">
             <button
-              className={`sm:w-1/5 w-3/4 p-1 sm:text-md text-sm bg-${
+              className={`w-1/5 p-1 sm:text-lg text-xs bg-${
                 reacts !== undefined && reacts.some((r) => r.uid === userID)
                   ? 'blue'
                   : 'gray'
@@ -542,12 +545,8 @@ export default function FeedPost({
                 )
               }
             >
-              Like
-              {reacts !== undefined && reacts.some((r) => r.uid === userID)
-                ? 'd'
-                : ''}
               <div
-                className={`ml-2 text-md ri-thumb-up-${
+                className={`ml-2 sm:text-lg text-xs ri-thumb-up-${
                   reacts !== undefined && reacts.some((r) => r.uid === userID)
                     ? 'fill'
                     : 'line'
@@ -556,7 +555,7 @@ export default function FeedPost({
             </button>
 
             <button
-              className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-sm text-xs tracking-wider font-open ${
+              className={`w-1/4 p-1 sm:text-lg text-xs tracking-wider font-open ${
                 !reacts || reacts.length <= 0
                   ? 'opacity-50 bg-gray-600'
                   : showCommentReacts === commentID &&
@@ -579,7 +578,7 @@ export default function FeedPost({
 
             {userID === uid ? (
               <button
-                className={`sm:w-1/5 w-3/4 p-1 sm:mt-0 mt-2 sm:text-md text-sm tracking-wider font-open bg-${
+                className={`w-1/5 p-1 sm:text-lg text-xs tracking-wider font-open bg-${
                   isEditingComment === commentID ? 'blue' : 'gray'
                 }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
                 onClick={() => {
@@ -592,7 +591,7 @@ export default function FeedPost({
                   }
                 }}
               >
-                {isEditingComment === commentID ? 'Cancel' : 'Edit Comment'}
+                {isEditingComment === commentID ? 'Cancel' : 'Edit'}
               </button>
             ) : (
               ''
@@ -600,10 +599,10 @@ export default function FeedPost({
 
             {userID === uid ? (
               <button
-                className={`sm:w-1/5 w-3/4 sm:mt-0 mt-2 p-1 sm:text-md text-sm bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
+                className={`w-1/5 p-1 sm:text-lg text-xs bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
                 onClick={(e) => deleteComment(e, commentID)}
               >
-                Delete Comment
+                Delete
               </button>
             ) : (
               ''
@@ -613,7 +612,7 @@ export default function FeedPost({
           {showCommentReacts === commentID &&
           showCommentReacts.length > 0 &&
           people !== undefined ? (
-            <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-sm text-xs flex mt-2">
+            <div className="w-full p-2 bg-gray-800 mt-1 rounded-lg sm:text-lg text-xs flex">
               {/* {commentReacts.join(', ')} */}
 
               {commentReacts.map((cr, i) => (
@@ -648,12 +647,16 @@ export default function FeedPost({
 
   return (
     <div
-      className="w-full flex flex-col items-center p-2 bg-gray-900 sm:my-4 my-2 rounded-lg"
+      className="w-full flex flex-col items-center p-2 bg-gray-900 sm:my-4 my-2 rounded-lg shadow-lg"
       key={keyname}
     >
       <div className="flex flex-none justify-start items-center w-full sm:pl-8 py-2">
         <img
-          src={profile_pic}
+          src={
+            profile_pic !== undefined && profile_pic.length > 3
+              ? profile_pic
+              : tmpAvatar
+          }
           alt={'p.pic'}
           className="sm:w-16 w-12 sm:h-16 h-12 p-1 rounded-full border-2 border-blue-400 object-scale-down mr-2"
         />
@@ -816,6 +819,12 @@ export default function FeedPost({
               placeholder="Type Something..."
               className="sm:w-1/2 w-5/6 p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
               onChange={(e) => setComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13 && e.shiftKey === false) {
+                  e.preventDefault();
+                  if (e.target.value.length > 0) submitComment(e);
+                }
+              }}
             />
 
             <button
