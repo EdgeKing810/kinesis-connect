@@ -79,7 +79,7 @@ export default function NavBar() {
   );
 
   return (
-    <div className="w-full sm:py-4 sm:bg-gray-700 sm:mb-2 flex sm:justify-center justify-end sm:border-b-2 sm:border-blue-500 sm:pr-0 pr-4 pt-4">
+    <div className="w-full sm:bg-gray-700 sm:mb-2 flex sm:justify-center sm:items-center justify-end sm:border-b-2 sm:border-blue-500 sm:pr-0 pr-4 sm:py-4 sm:h-3/25">
       {width > 640 ? (
         navButtons
       ) : (
