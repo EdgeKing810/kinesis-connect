@@ -27,7 +27,7 @@ export default function Chat() {
   );
   const history = useHistory();
 
-  const { height } = useWindowSize();
+  const { width } = useWindowSize();
   // console.log(`Height: ${height}`);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function Chat() {
     profile.chats &&
     profile.chats.map(({ uid, name }) => (
       <button
-        className={`sm:w-43/50 w-11/12 rounded-lg flex justify-center px-2 py-4 my-1 font-open sm:text-md text-md sm:mx-0 mx-2 bg-${
+        className={`sm:w-43/50 w-11/12 rounded-lg flex justify-center px-2 py-4 my-1 font-open sm:text-md text-xs sm:mx-0 mx-2 bg-${
           name === activeRoom
             ? 'blue-600 text-gray-900 font-bold'
             : 'gray-800 text-blue-200'
@@ -342,9 +342,9 @@ export default function Chat() {
 
   const createChat = () => {
     return (
-      <div className="w-11/12 flex flex-col items-center rounded border-2 border-gray-800 py-2 my-4 py-4">
+      <div className="w-11/12 flex sm:flex-col flex-row items-center sm:justify-start justify-around rounded border-2 border-gray-800 sm:my-4 sm:py-4 py-1 px-1 my-1">
         <input
-          className="rounded-lg sm:w-1/2 w-5/6 text-gray-300 placeholder-gray-500 bg-gray-900 border-2 border-blue-600 sm:text-lg p-2"
+          className="rounded-lg sm:w-1/2 w-2/5 text-gray-300 placeholder-gray-500 bg-gray-900 border-2 border-blue-600 sm:text-lg text-xs p-2"
           name="search_user"
           value={search}
           placeholder="Message someone..."
@@ -370,13 +370,13 @@ export default function Chat() {
 
         {currentFound && currentFound.name ? (
           <button
-            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg mt-4 flex flex-col w-5/6 py-2 sm:px-4 px-2"
+            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg sm:mt-4 flex flex-col sm:w-5/6 w-1/2 py-2 sm:px-4 px-2"
             onClick={() => joinRoom({ ...currentFound })}
           >
-            <div className="sm:text-xl text-lg text-blue-300">
+            <div className="sm:text-lg text-xs text-blue-300">
               {currentFound.name}
             </div>
-            <div className="sm:text-lg text-sm text-green-300 tracking-wide">
+            <div className="sm:text-md text-xs text-green-300 tracking-wide">
               {currentFound.username}
             </div>
           </button>
@@ -452,107 +452,214 @@ export default function Chat() {
         })
       : [];
 
-  return (
-    <div className={`w-full flex flex-col items-center px-2 sm:h-43/50 h-full`}>
-      {activeRoom.length <= 0 ? (
-        <div className="font-bold tracking-widest font-rale text-gray-200 text-5xl mt-8 mb-8">
-          Chat
-        </div>
-      ) : (
-        ''
-      )}
+  const MobileChat = () => (
+    <div className="w-full mx-auto flex flex-col items-center justify-between h-43/50">
+      <div className="w-full h-full bg-gray-700 flex flex-col justify-center items-center p-2 border-2 border-gray-900 rounded-lg mt-4">
+        {activeRoom.length <= 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center border-b-2 border-t-2 border-blue-600 p-2 text-lg font-rale font-bold tracking-wide text-blue-100">
+            Select a chat to see messages.
+          </div>
+        ) : (
+          <div className={`w-full h-full flex flex-col justify-around`}>
+            <div className="w-full flex h-1/12 items-center p-2 justify-between mb-2">
+              <div className="text-blue-100 text-sm font-bold tracking-wide w-2/3">
+                {activeRoom}
+              </div>
 
-      <div className="w-full mx-auto flex justify-center items-start h-full">
-        <div className="w-1/4 h-full flex flex-col bg-gray-900 justify-between border-r-2 border-gray-700 rounded-l-lg">
-          <div className="w-full flex justify-center items-center h-1/3">
+              <button
+                className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/3 text-md"
+                onClick={() => leaveRoom()}
+              >
+                Leave Chat
+              </button>
+            </div>
+
+            <div className="w-full h-3/4 flex flex-col justify-around bg-gray-900">
+              {!chat.messages || chat.messages.length <= 0 ? (
+                <div className="w-full h-full border-2 border-red-500 p-2 text-lg font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
+                  {chat.messages && chat.messages.length <= 0
+                    ? 'No messages yet, send one!'
+                    : 'Loading...'}
+                </div>
+              ) : (
+                <div className="w-full h-full border-2 border-blue-500 py-2 px-3 overflow-y-scroll flex-initial">
+                  {chatMessages}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </div>
+
+            <form
+              className="w-full h-1/6 flex justify-around items-center -my-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (currentChat.length > 0) submitMessage(e);
+              }}
+            >
+              <textarea
+                name="chat_box"
+                placeholder="Type something..."
+                value={currentChat}
+                ref={chatBoxRef}
+                onChange={(e) => setCurrentChat(e.target.value)}
+                className="w-3/4 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 -my-2 text-sm"
+              />
+
+              <button
+                className={`text-gray-100 bg-blue-500 ${
+                  currentChat.length > 0
+                    ? 'hover:bg-blue-600 focus:bg-blue-600'
+                    : 'opacity-50'
+                } rounded-lg py-4 w-1/5 mt-0 text-sm`}
+                type="submit"
+              >
+                {currentEditChat.length > 0 ? 'Edit' : 'Send'}
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+
+      {activeRoom.length <= 0 ? (
+        <div className="w-full h-3/5 flex flex-col bg-gray-900 border-r-2 border-gray-700 rounded-lg">
+          <div className="w-full flex justify-center items-center h-1/2">
             {createChat()}
           </div>
 
-          <div className="w-full flex flex-col items-center h-2/3 p-2">
+          <div className="w-full flex flex-col items-center h-3/5 p-1">
             <div className="w-full h-full overflow-y-scroll flex flex-col items-center bg-gray-900 rounded border-2 border-yellow-500 border-opacity-50 py-2">
               {messages.length > 0 ? (
                 messages.reverse()
               ) : (
-                <div className="w-5/6 text-center rounded-lg border-2 border-blue-700 p-2 font-rale font-bold tracking-wide text-blue-100">
+                <div className="w-5/6 text-center rounded-lg text-xs border-2 border-blue-700 p-2 font-rale font-bold tracking-wide text-blue-100">
                   Chats you participate in will appear here.
                 </div>
               )}
             </div>
           </div>
         </div>
+      ) : (
+        <div className="w-full flex py-2 justify-center items-center">
+          <button
+            className="text-gray-900 bg-yellow-400 hover:bg-yellow-500 focus:bg-yellow-500 rounded-lg py-2 px-1 w-2/3 text-md"
+            onClick={() => setActiveRoom('')}
+          >
+            Message someone else
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
-        <div className="w-3/4 h-full bg-gray-700 flex flex-col justify-center items-center p-2 border-l-2 border-gray-900 rounded-r-lg">
-          {activeRoom.length <= 0 ? (
-            <div className="w-5/6 text-center border-b-2 border-t-2 border-blue-600 p-2 text-lg font-rale font-bold tracking-wide text-blue-100">
-              Select a chat to see messages.
+  return (
+    <div className={`w-full flex flex-col items-center px-2 sm:h-43/50 h-full`}>
+      {activeRoom.length <= 0 ? (
+        <div className="font-bold tracking-widest font-rale text-gray-200 text-5xl sm:my-8 sm:mb-8 my-4 -mb-4">
+          Chat
+        </div>
+      ) : (
+        ''
+      )}
+
+      {error.length > 0 ? (
+        <div className="sm:text-2xl text-lg w-5/6 mx-auto text-yellow-400 font-sans text-center mt-4">
+          {error}
+        </div>
+      ) : width > 640 ? (
+        <div className="w-full mx-auto flex justify-center items-start h-full">
+          <div className="w-1/4 h-full flex flex-col bg-gray-900 justify-between border-r-2 border-gray-700 rounded-l-lg">
+            <div className="w-full flex justify-center items-center h-1/3">
+              {createChat()}
             </div>
-          ) : (
-            <div className={`w-full h-full flex flex-col justify-around`}>
-              <div className="w-full flex h-1/12 items-center p-2 justify-between mb-2">
-                <div className="text-blue-100 text-xl font-bold tracking-wide w-4/5">
-                  {activeRoom}
-                </div>
 
-                <button
-                  className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/6 text-lg"
-                  onClick={() => leaveRoom()}
-                >
-                  Leave Chat
-                </button>
-              </div>
-
-              <div className="w-full h-3/4 flex flex-col justify-around bg-gray-900">
-                {!chat.messages || chat.messages.length <= 0 ? (
-                  <div className="w-full h-full border-2 border-red-500 p-2 text-lg font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
-                    {chat.messages && chat.messages.length <= 0
-                      ? 'No messages yet, send one!'
-                      : 'Loading...'}
-                  </div>
+            <div className="w-full flex flex-col items-center h-2/3 p-2">
+              <div className="w-full h-full overflow-y-scroll flex flex-col items-center bg-gray-900 rounded border-2 border-yellow-500 border-opacity-50 py-2">
+                {messages.length > 0 ? (
+                  messages.reverse()
                 ) : (
-                  <div className="w-full h-full border-2 border-blue-500 py-2 px-3 overflow-y-scroll flex-initial">
-                    {chatMessages}
-                    <div ref={messagesEndRef} />
+                  <div className="w-5/6 text-center rounded-lg border-2 border-blue-700 p-2 font-rale font-bold tracking-wide text-blue-100">
+                    Chats you participate in will appear here.
                   </div>
                 )}
               </div>
-
-              <form
-                className="w-full h-1/6 flex justify-around items-center"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (currentChat.length > 0) submitMessage(e);
-                }}
-              >
-                <textarea
-                  name="chat_box"
-                  placeholder="Type something..."
-                  value={currentChat}
-                  ref={chatBoxRef}
-                  onChange={(e) => setCurrentChat(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13 && e.shiftKey === false) {
-                      e.preventDefault();
-                      if (e.target.value.length > 0) submitMessage(e);
-                    }
-                  }}
-                  className="w-3/4 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 text-lg"
-                />
-
-                <button
-                  className={`text-gray-100 bg-blue-500 ${
-                    currentChat.length > 0
-                      ? 'hover:bg-blue-600 focus:bg-blue-600'
-                      : 'opacity-50'
-                  } rounded-lg py-4 w-1/5 mt-0`}
-                  type="submit"
-                >
-                  {currentEditChat.length > 0 ? 'Edit' : 'Send'}
-                </button>
-              </form>
             </div>
-          )}
+          </div>
+
+          <div className="w-3/4 h-full bg-gray-700 flex flex-col justify-center items-center p-2 border-l-2 border-gray-900 rounded-r-lg">
+            {activeRoom.length <= 0 ? (
+              <div className="w-5/6 text-center border-b-2 border-t-2 border-blue-600 p-2 text-lg font-rale font-bold tracking-wide text-blue-100">
+                Select a chat to see messages.
+              </div>
+            ) : (
+              <div className={`w-full h-full flex flex-col justify-around`}>
+                <div className="w-full flex h-1/12 items-center p-2 justify-between mb-2">
+                  <div className="text-blue-100 text-xl font-bold tracking-wide w-4/5">
+                    {activeRoom}
+                  </div>
+
+                  <button
+                    className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/6 text-lg"
+                    onClick={() => leaveRoom()}
+                  >
+                    Leave Chat
+                  </button>
+                </div>
+
+                <div className="w-full h-3/4 flex flex-col justify-around bg-gray-900">
+                  {!chat.messages || chat.messages.length <= 0 ? (
+                    <div className="w-full h-full border-2 border-red-500 p-2 text-lg font-rale font-bold tracking-wide text-blue-100 flex justify-center items-center">
+                      {chat.messages && chat.messages.length <= 0
+                        ? 'No messages yet, send one!'
+                        : 'Loading...'}
+                    </div>
+                  ) : (
+                    <div className="w-full h-full border-2 border-blue-500 py-2 px-3 overflow-y-scroll flex-initial">
+                      {chatMessages}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
+                </div>
+
+                <form
+                  className="w-full h-1/6 flex justify-around items-center"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (currentChat.length > 0) submitMessage(e);
+                  }}
+                >
+                  <textarea
+                    name="chat_box"
+                    placeholder="Type something..."
+                    value={currentChat}
+                    ref={chatBoxRef}
+                    onChange={(e) => setCurrentChat(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13 && e.shiftKey === false) {
+                        e.preventDefault();
+                        if (e.target.value.length > 0) submitMessage(e);
+                      }
+                    }}
+                    className="w-3/4 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 text-lg"
+                  />
+
+                  <button
+                    className={`text-gray-100 bg-blue-500 ${
+                      currentChat.length > 0
+                        ? 'hover:bg-blue-600 focus:bg-blue-600'
+                        : 'opacity-50'
+                    } rounded-lg py-4 w-1/5 mt-0`}
+                    type="submit"
+                  >
+                    {currentEditChat.length > 0 ? 'Edit' : 'Send'}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        MobileChat()
+      )}
     </div>
   );
 }
