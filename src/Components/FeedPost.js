@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 
 import axios from 'axios';
 import { v4 } from 'uuid';
@@ -822,7 +823,9 @@ export default function FeedPost({
         <div className="w-full mt-4 mb-2">
           <div className="pt-1 w-full bg-gray-800 mb-4"></div>
 
-          {comments.map((c) => makeComment(c))}
+          {comments.map((c) => (
+            <LazyLoad>{makeComment(c)}</LazyLoad>
+          ))}
 
           <div className="w-11/12 mx-auto mt-2 flex sm:flex-row flex-col sm:justify-between items-center">
             <div className="sm:w-1/5 w-2/5 flex justify-center items-center sm:text-md text-sm font-rale sm:mb-0 mb-2 tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">

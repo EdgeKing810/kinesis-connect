@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 
 import axios from 'axios';
 
@@ -279,25 +280,27 @@ export default function MyProfile() {
   };
 
   const formattedPosts = myPosts.map((post) => (
-    <FeedPost
-      uid={profile.uid}
-      profileID={profile.uid}
-      username={profile.username}
-      profile_pic={
-        profile.profile_pic !== undefined && profile.profile_pic.length > 3
-          ? `${UPLOADSURL}/${profile.profile_pic}`
-          : tmpAvatar
-      }
-      postID={post.postID}
-      content={post.content}
-      timestamp={post.timestamp}
-      reacts={post.reacts}
-      comments={post.comments}
-      keyname={`${post.postID}-myp`}
-      key={`${post.postID}-myp`}
-      personal={true}
-      ws={ws}
-    />
+    <LazyLoad key={`${post.postID}-myp`}>
+      <FeedPost
+        uid={profile.uid}
+        profileID={profile.uid}
+        username={profile.username}
+        profile_pic={
+          profile.profile_pic !== undefined && profile.profile_pic.length > 3
+            ? `${UPLOADSURL}/${profile.profile_pic}`
+            : tmpAvatar
+        }
+        postID={post.postID}
+        content={post.content}
+        timestamp={post.timestamp}
+        reacts={post.reacts}
+        comments={post.comments}
+        keyname={`${post.postID}-myp`}
+        key={`${post.postID}-myp`}
+        personal={true}
+        ws={ws}
+      />
+    </LazyLoad>
   ));
 
   return (
@@ -464,7 +467,11 @@ export default function MyProfile() {
                 Create new post
               </button>
 
-              {myPosts.length > 0 ? formattedPosts.reverse() : 'No posts yet.'}
+              <div className="w-full">
+                {myPosts.length > 0
+                  ? formattedPosts.reverse()
+                  : 'No posts yet.'}
+              </div>
             </div>
           )}
         </div>

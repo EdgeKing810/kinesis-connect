@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 
 import { LocalContext } from '../Context';
 import FeedPost from '../Components/FeedPost';
@@ -32,26 +33,28 @@ export default function Feed() {
     const currentUser = people.find((p) => p.profileID === post.uid);
 
     return (
-      <FeedPost
-        uid={profile.uid}
-        profileID={post.uid}
-        username={currentUser.username}
-        profile_pic={
-          currentUser.profile_pic !== undefined &&
-          currentUser.profile_pic.length > 3
-            ? `${UPLOADSURL}/${currentUser.profile_pic}`
-            : tmpAvatar
-        }
-        postID={post.postID}
-        content={post.content}
-        timestamp={post.timestamp}
-        reacts={post.reacts}
-        comments={post.comments}
-        keyname={`${post.postID}-feed`}
-        personal={false}
-        key={`${post.postID}-feed`}
-        ws={ws}
-      />
+      <LazyLoad key={`${post.postID}-feed`}>
+        <FeedPost
+          uid={profile.uid}
+          profileID={post.uid}
+          username={currentUser.username}
+          profile_pic={
+            currentUser.profile_pic !== undefined &&
+            currentUser.profile_pic.length > 3
+              ? `${UPLOADSURL}/${currentUser.profile_pic}`
+              : tmpAvatar
+          }
+          postID={post.postID}
+          content={post.content}
+          timestamp={post.timestamp}
+          reacts={post.reacts}
+          comments={post.comments}
+          keyname={`${post.postID}-feed`}
+          personal={false}
+          key={`${post.postID}-feed`}
+          ws={ws}
+        />
+      </LazyLoad>
     );
   });
 

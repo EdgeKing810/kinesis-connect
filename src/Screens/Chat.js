@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import { LocalContext } from '../Context';
 import { Parser } from '../Components/renderers';
 import useWindowSize from '../Components/useWindowSize';
+import LazyLoad from 'react-lazyload';
 
 export default function Chat() {
   const [error, setError] = useState('Loading...');
@@ -104,7 +105,7 @@ export default function Chat() {
     profile.chats &&
     profile.chats.map(({ uid, name }) => (
       <button
-        className={`sm:w-43/50 w-11/12 rounded-lg flex justify-center px-2 py-4 my-1 font-open sm:text-md text-xs sm:mx-0 mx-2 bg-${
+        className={`sm:w-43/50 w-11/12 rounded-lg flex justify-center px-2 py-4 my-1 font-open sm:text-lg text-xs sm:mx-0 mx-2 bg-${
           name === activeRoom
             ? 'blue-600 text-gray-900 font-bold'
             : 'gray-800 text-blue-200'
@@ -400,61 +401,66 @@ export default function Chat() {
           const isCurrentUser = msg.senderID === profile.uid;
 
           return (
-            <div
-              className={`w-full my-1 flex-none flex ${
-                isCurrentUser ? 'justify-end' : 'justify-start'
-              }`}
-              key={msg.messageID}
-            >
-              {isCurrentUser ? (
-                <div className={`flex items-center justify-center mx-1`}>
-                  <button
-                    className={`${
-                      currentEditChat === msg.messageID
-                        ? 'ri-close-circle-line hover:ri-close-circle-fill focus:ri-close-circle-fill'
-                        : 'ri-pencil-line hover:ri-pencil-fill focus:ri-pencil-fill'
-                    } px-2 flex justify-center items-center hover:text-yellow-400 focus:text-yellow-400 text-gray-300 sm:text-xl text-md`}
-                    onClick={() => {
-                      if (currentEditChat !== msg.messageID) {
-                        setCurrentEditChat(msg.messageID);
-                        setCurrentChat(msg.message);
-                      } else {
-                        setCurrentEditChat('');
-                        setCurrentChat('');
-                      }
-                    }}
-                  ></button>
-                  <button
-                    className={`ri-delete-bin-5-line hover:ri-delete-bin-5-fill focus:ri-delete-bin-5-fill px-2 flex justify-center items-center hover:text-red-400 focus:text-red-400 text-gray-300 sm:text-xl text-md`}
-                    onClick={(e) => deleteMessage(e, msg.messageID)}
-                  ></button>
-                </div>
-              ) : (
-                ''
-              )}
+            <LazyLoad key={msg.messageID}>
               <div
-                className={`sm:w-2/5 w-4/5 font-rale sm:text-lg text-sm tracking-wide rounded-lg p-2 text-gray-900 bg-${
-                  isCurrentUser ? 'green' : 'blue'
-                }-400`}
+                className={`w-full my-1 flex-none flex ${
+                  isCurrentUser ? 'justify-end' : 'justify-start'
+                }`}
+                key={msg.messageID}
               >
+                {isCurrentUser ? (
+                  <div className={`flex items-center justify-center mx-1`}>
+                    <button
+                      className={`${
+                        currentEditChat === msg.messageID
+                          ? 'ri-close-circle-line hover:ri-close-circle-fill focus:ri-close-circle-fill'
+                          : 'ri-pencil-line hover:ri-pencil-fill focus:ri-pencil-fill'
+                      } px-2 flex justify-center items-center hover:text-yellow-400 focus:text-yellow-400 text-gray-300 sm:text-xl text-md`}
+                      onClick={() => {
+                        if (currentEditChat !== msg.messageID) {
+                          setCurrentEditChat(msg.messageID);
+                          setCurrentChat(msg.message);
+                        } else {
+                          setCurrentEditChat('');
+                          setCurrentChat('');
+                        }
+                      }}
+                    ></button>
+                    <button
+                      className={`ri-delete-bin-5-line hover:ri-delete-bin-5-fill focus:ri-delete-bin-5-fill px-2 flex justify-center items-center hover:text-red-400 focus:text-red-400 text-gray-300 sm:text-xl text-md`}
+                      onClick={(e) => deleteMessage(e, msg.messageID)}
+                    ></button>
+                  </div>
+                ) : (
+                  ''
+                )}
                 <div
-                  className={`text-${
-                    isCurrentUser ? 'right' : 'left'
-                  } bg-gray-900 rounded p-1`}
-                  style={{ whiteSpace: 'pre-line' }}
+                  className={`sm:w-2/5 w-4/5 font-rale sm:text-lg text-sm tracking-wide rounded-lg p-2 text-gray-900 bg-${
+                    isCurrentUser ? 'green' : 'blue'
+                  }-400`}
                 >
-                  <Parser content={msg.message} />
-                </div>
+                  <div
+                    className={`text-${
+                      isCurrentUser ? 'right' : 'left'
+                    } bg-gray-900 rounded p-1`}
+                    style={{ whiteSpace: 'pre-line' }}
+                  >
+                    <Parser content={msg.message} />
+                  </div>
 
-                <div
-                  className={`mt-1 text-xs font-sans text-${
-                    isCurrentUser ? 'right' : 'left'
-                  }`}
-                >
-                  {convertDate(msg.timestamp).split(' ').slice(0, 5).join(' ')}
+                  <div
+                    className={`mt-1 text-xs font-sans text-${
+                      isCurrentUser ? 'right' : 'left'
+                    }`}
+                  >
+                    {convertDate(msg.timestamp)
+                      .split(' ')
+                      .slice(0, 5)
+                      .join(' ')}
+                  </div>
                 </div>
               </div>
-            </div>
+            </LazyLoad>
           );
         })
       : [];

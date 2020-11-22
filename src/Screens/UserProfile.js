@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 
 import { LocalContext } from '../Context';
 import FeedPost from '../Components/FeedPost';
@@ -58,25 +59,28 @@ export default function UserProfile() {
   }, []);
 
   const formattedPosts = userPosts.map((post) => (
-    <FeedPost
-      uid={profile.uid}
-      profileID={profileID}
-      username={currentProfile.username}
-      profile_pic={
-        currentProfile.profile_pic !== undefined &&
-        currentProfile.profile_pic.length > 3
-          ? `${UPLOADSURL}/${currentProfile.profile_pic}`
-          : tmpAvatar
-      }
-      postID={post.postID}
-      content={post.content}
-      timestamp={post.timestamp}
-      reacts={post.reacts}
-      comments={post.comments}
-      keyname={`${post.postID}-profile`}
-      personal={false}
-      ws={ws}
-    />
+    <LazyLoad key={`${post.postID}-profile`}>
+      <FeedPost
+        uid={profile.uid}
+        profileID={profileID}
+        username={currentProfile.username}
+        profile_pic={
+          currentProfile.profile_pic !== undefined &&
+          currentProfile.profile_pic.length > 3
+            ? `${UPLOADSURL}/${currentProfile.profile_pic}`
+            : tmpAvatar
+        }
+        postID={post.postID}
+        content={post.content}
+        timestamp={post.timestamp}
+        reacts={post.reacts}
+        comments={post.comments}
+        keyname={`${post.postID}-profile`}
+        key={`${post.postID}-profile`}
+        personal={false}
+        ws={ws}
+      />
+    </LazyLoad>
   ));
 
   return (
