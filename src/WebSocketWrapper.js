@@ -8,7 +8,6 @@ import { LocalContext } from './Context';
 export default function WebSocketWrapper({ children }) {
   const {
     APIURL,
-    profile,
     setProfile,
     setPeople,
     setMyPosts,
@@ -34,8 +33,10 @@ export default function WebSocketWrapper({ children }) {
 
     switch (dataObj.type) {
       case 'profile_change':
-        if (dataObj.uid === profile.uid) {
-          setProfile((prev) => {
+        console.log(dataObj);
+
+        setProfile((prev) => {
+          if (dataObj.uid === prev.uid) {
             entityData = { ...prev };
 
             entityData.uid = dataObj.uid;
@@ -45,8 +46,10 @@ export default function WebSocketWrapper({ children }) {
             entityData.bio = dataObj.bio;
 
             return entityData;
-          });
-        }
+          } else {
+            return prev;
+          }
+        });
 
         setPeople((prev) => {
           let updatedPeople = [];
