@@ -33,8 +33,6 @@ export default function WebSocketWrapper({ children }) {
 
     switch (dataObj.type) {
       case 'profile_change':
-        console.log(dataObj);
-
         setProfile((prev) => {
           if (dataObj.uid === prev.uid) {
             entityData = { ...prev };
@@ -520,7 +518,6 @@ export default function WebSocketWrapper({ children }) {
         break;
 
       case 'comment_react':
-        console.log(entityData);
         if (entityData.profileID === getUID()) {
           setMyPosts((prev) => {
             let updatedPosts = prev.map((p) => {
