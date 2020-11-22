@@ -404,6 +404,7 @@ module.exports = {
     }),
     maxHeight: {
       none: 'none',
+      xxs: '16rem',
       xs: '20rem',
       sm: '24rem',
       md: '28rem',
@@ -419,6 +420,7 @@ module.exports = {
     },
     maxWidth: (theme, { breakpoints }) => ({
       none: 'none',
+      xxs: '16rem',
       xs: '20rem',
       sm: '24rem',
       md: '28rem',
@@ -530,6 +532,7 @@ module.exports = {
       '7/12': '58.333333%',
       '8/12': '66.666667%',
       '9/12': '75%',
+      '9/20': '45%',
       '10/12': '83.333333%',
       '11/12': '91.666667%',
       '49/100': '49%',

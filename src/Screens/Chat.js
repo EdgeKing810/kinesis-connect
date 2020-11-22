@@ -22,9 +22,16 @@ export default function Chat() {
 
   const [otherProfileID, setOtherProfileID] = useState('');
 
-  const { APIURL, profile, setProfile, people, ws, chat, setChat } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    UPLOADSURL,
+    profile,
+    setProfile,
+    people,
+    ws,
+    chat,
+    setChat,
+  } = useContext(LocalContext);
   const history = useHistory();
 
   const { width } = useWindowSize();
@@ -452,6 +459,25 @@ export default function Chat() {
         })
       : [];
 
+  const uploadImage = (e) => {
+    if (e.target.files[0]) {
+      if (e.target.files[0].size > 5000000) {
+        alert('File too large!');
+      } else {
+        e.preventDefault();
+
+        const data = new FormData();
+        data.append('file', e.target.files[0]);
+
+        axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
+          setCurrentChat(
+            (prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`
+          );
+        });
+      }
+    }
+  };
+
   const MobileChat = () => (
     <div className="w-full mx-auto flex flex-col items-center justify-between h-43/50">
       <div className="w-full h-full bg-gray-700 flex flex-col justify-center items-center p-2 border-2 border-gray-900 rounded-lg mt-4">
@@ -502,19 +528,30 @@ export default function Chat() {
                 value={currentChat}
                 ref={chatBoxRef}
                 onChange={(e) => setCurrentChat(e.target.value)}
-                className="w-3/4 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 -my-2 text-sm"
+                className="w-7/10 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 -my-2 text-sm"
               />
 
-              <button
-                className={`text-gray-100 bg-blue-500 ${
-                  currentChat.length > 0
-                    ? 'hover:bg-blue-600 focus:bg-blue-600'
-                    : 'opacity-50'
-                } rounded-lg py-4 w-1/5 mt-0 text-sm`}
-                type="submit"
-              >
-                {currentEditChat.length > 0 ? 'Edit' : 'Send'}
-              </button>
+              <div className="w-1/4 flex flex-col justify-around mt-2">
+                <button
+                  className={`text-gray-100 bg-blue-500 ${
+                    currentChat.length > 0
+                      ? 'hover:bg-blue-600 focus:bg-blue-600'
+                      : 'opacity-50'
+                  } rounded-lg py-2 w-full text-sm mt-0`}
+                  type="submit"
+                >
+                  {currentEditChat.length > 0 ? 'Edit' : 'Send'}
+                </button>
+
+                <input
+                  className={`p-2 w-full text-xs font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
+                  type="file"
+                  onChange={(e) => {
+                    e.persist();
+                    uploadImage(e);
+                  }}
+                />
+              </div>
             </form>
           </div>
         )}
@@ -642,16 +679,27 @@ export default function Chat() {
                     className="w-3/4 p-1 rounded placeholder-gray-700 text-gray-900 bg-blue-100 text-lg"
                   />
 
-                  <button
-                    className={`text-gray-100 bg-blue-500 ${
-                      currentChat.length > 0
-                        ? 'hover:bg-blue-600 focus:bg-blue-600'
-                        : 'opacity-50'
-                    } rounded-lg py-4 w-1/5 mt-0`}
-                    type="submit"
-                  >
-                    {currentEditChat.length > 0 ? 'Edit' : 'Send'}
-                  </button>
+                  <div className="w-1/5 flex flex-col justify-around mt-2">
+                    <button
+                      className={`text-gray-100 bg-blue-500 ${
+                        currentChat.length > 0
+                          ? 'hover:bg-blue-600 focus:bg-blue-600'
+                          : 'opacity-50'
+                      } rounded-lg py-4 w-full mt-0`}
+                      type="submit"
+                    >
+                      {currentEditChat.length > 0 ? 'Edit' : 'Send'}
+                    </button>
+
+                    <input
+                      className={`p-2 w-full text-md font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
+                      type="file"
+                      onChange={(e) => {
+                        e.persist();
+                        uploadImage(e);
+                      }}
+                    />
+                  </div>
                 </form>
               </div>
             )}

@@ -53,7 +53,7 @@ const image = (props) => {
       <img
         src={props.src}
         alt={props.alt}
-        className="sm:max-w-sm sm:max-h-sm max-w-xs max-h-xs object-scale-down rounded p-1 border-2 border-blue-400"
+        className="sm:max-w-sm sm:max-h-sm max-w-xxs max-h-xxs object-scale-down rounded p-1 border-2 border-blue-400"
       />
     </span>
   );

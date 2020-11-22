@@ -465,6 +465,23 @@ export default function FeedPost({
     }
   };
 
+  const uploadImage = (e) => {
+    if (e.target.files[0]) {
+      if (e.target.files[0].size > 5000000) {
+        alert('File too large!');
+      } else {
+        e.preventDefault();
+
+        const data = new FormData();
+        data.append('file', e.target.files[0]);
+
+        axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
+          setComment((prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`);
+        });
+      }
+    }
+  };
+
   const makeComment = ({ uid, commentID, comment, timestamp, reacts }) => {
     let currentPerson = {
       profileID: '',
@@ -504,7 +521,7 @@ export default function FeedPost({
                 : tmpAvatar
             }
             alt={'p.pic-comment'}
-            className="sm:w-16 w-12 sm:h-16 h-12 rounded-full object-scale-down mr-2 border-2 border-blue-400 p-1"
+            className="sm:w-20 w-12 sm:h-20 h-12 rounded-full object-scale-down mr-2 border-2 border-blue-400 p-1"
           />
         </div>
 
@@ -658,7 +675,7 @@ export default function FeedPost({
               : tmpAvatar
           }
           alt={'p.pic'}
-          className="sm:w-16 w-12 sm:h-16 h-12 p-1 rounded-full border-2 border-blue-400 object-scale-down mr-2"
+          className="sm:w-24 w-16 sm:h-24 h-16 p-1 rounded-full border-2 border-blue-400 object-scale-down mr-2"
         />
 
         <div className="h-full w-full flex flex-col items-start ml-2">
@@ -807,17 +824,17 @@ export default function FeedPost({
 
           {comments.map((c) => makeComment(c))}
 
-          <div className="w-11/12 mx-auto mt-4 flex sm:flex-row flex-col sm:justify-between items-center">
+          <div className="w-11/12 mx-auto mt-2 flex sm:flex-row flex-col sm:justify-between items-center">
             <div className="sm:w-1/5 w-2/5 flex justify-center items-center sm:text-md text-sm font-rale sm:mb-0 mb-2 tracking-wider text-blue-300 border-2 border-blue-900 p-1 rounded-lg">
               {profile.username}
             </div>
 
-            <input
+            <textarea
               type="text"
               name="commentBox"
               value={comment}
               placeholder="Type Something..."
-              className="sm:w-1/2 w-5/6 p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
+              className="sm:w-1/2 w-full p-2 text-gray-100 placeholder-gray-500 bg-gray-700 sm:text-sm text-xs rounded-lg"
               onChange={(e) => setComment(e.target.value)}
               onKeyDown={(e) => {
                 if (e.keyCode === 13 && e.shiftKey === false) {
@@ -827,16 +844,27 @@ export default function FeedPost({
               }}
             />
 
-            <button
-              className={`p-1 sm:text-md text-sm sm:w-1/5 w-1/2 sm:mt-0 mt-2 bg-gray-800 ${
-                comment.length > 0
-                  ? 'hover:bg-blue-900 focus:bg-blue-900'
-                  : 'opacity-50'
-              } rounded-lg`}
-              onClick={(e) => (comment.length > 0 ? submitComment(e) : null)}
-            >
-              {isEditingComment.length > 0 ? 'Update' : 'Comment'}
-            </button>
+            <div className="sm:w-1/5 w-full flex sm:flex-col flex-row justify-around">
+              <button
+                className={`p-1 sm:text-md text-sm sm:w-full w-9/20 sm:mt-0 mt-2 bg-gray-800 ${
+                  comment.length > 0
+                    ? 'hover:bg-blue-900 focus:bg-blue-900'
+                    : 'opacity-50'
+                } rounded-lg`}
+                onClick={(e) => (comment.length > 0 ? submitComment(e) : null)}
+              >
+                {isEditingComment.length > 0 ? 'Update' : 'Comment'}
+              </button>
+
+              <input
+                className={`p-1 sm:w-full w-9/20 sm:text-md text-sm font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
+                type="file"
+                onChange={(e) => {
+                  e.persist();
+                  uploadImage(e);
+                }}
+              />
+            </div>
           </div>
         </div>
       ) : (
