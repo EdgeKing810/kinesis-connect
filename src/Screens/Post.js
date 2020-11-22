@@ -14,7 +14,9 @@ export default function Post() {
   const edit = postID !== undefined;
 
   const history = useHistory();
-  const { APIURL, profile, myPosts, setMyPosts, ws } = useContext(LocalContext);
+  const { APIURL, UPLOADSURL, profile, myPosts, setMyPosts, ws } = useContext(
+    LocalContext
+  );
 
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
@@ -40,6 +42,25 @@ export default function Post() {
     }
     // eslint-disable-next-line
   }, []);
+
+  const uploadImage = (e) => {
+    if (e.target.files[0]) {
+      if (e.target.files[0].size > 5000000) {
+        alert('File too large!');
+      } else {
+        e.preventDefault();
+
+        const data = new FormData();
+        data.append('file', e.target.files[0]);
+
+        axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
+          setPostContent(
+            (prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`
+          );
+        });
+      }
+    }
+  };
 
   const submitPost = (e) => {
     e.preventDefault();
@@ -140,6 +161,15 @@ export default function Post() {
             >
               {edit ? 'Update' : 'Create'}
             </button>
+
+            <input
+              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 rounded-lg text-gray-300 sm:mt-0 mt-2 overflow-hidden`}
+              type="file"
+              onChange={(e) => {
+                e.persist();
+                uploadImage(e);
+              }}
+            />
 
             <button
               className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-red-500 focus:bg-red-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
