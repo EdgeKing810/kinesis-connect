@@ -516,7 +516,8 @@ export default function FeedPost({
         <div className="w-1/6 flex justify-center items-center">
           <img
             src={
-              currentPerson.profile_pic !== undefined && profile_pic.length > 3
+              currentPerson.profile_pic !== undefined &&
+              currentPerson.profile_pic.length > 3
                 ? `${UPLOADSURL}/${currentPerson.profile_pic}`
                 : tmpAvatar
             }
