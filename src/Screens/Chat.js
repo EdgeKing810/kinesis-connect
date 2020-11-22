@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import LazyLoad from 'react-lazyload';
 
 import axios from 'axios';
 import { v4 } from 'uuid';
@@ -7,7 +8,6 @@ import { v4 } from 'uuid';
 import { LocalContext } from '../Context';
 import { Parser } from '../Components/renderers';
 import useWindowSize from '../Components/useWindowSize';
-import LazyLoad from 'react-lazyload';
 
 export default function Chat() {
   const [error, setError] = useState('Loading...');
@@ -352,7 +352,7 @@ export default function Chat() {
     return (
       <div className="w-11/12 flex sm:flex-col flex-row items-center sm:justify-start justify-around rounded border-2 border-gray-800 sm:my-4 sm:py-4 py-1 px-1 my-1">
         <input
-          className="rounded-lg sm:w-1/2 w-2/5 text-gray-300 placeholder-gray-500 bg-gray-900 border-2 border-blue-600 sm:text-lg text-xs p-2"
+          className="rounded-lg sm:w-2/3 w-2/5 text-gray-300 placeholder-gray-500 bg-gray-900 border-2 border-blue-600 sm:text-lg text-xs p-2"
           name="search_user"
           value={search}
           placeholder="Message someone..."
