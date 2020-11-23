@@ -21,7 +21,7 @@ export default function NavBar() {
 
   const navButtons = buttonsToMake.map(({ path, icon }, i) => (
     <button
-      className="sm:w-20 sm:h-20 w-16 h-16 mx-2"
+      className="w-16 h-16 mx-2"
       key={`nav-${i}`}
       onClick={() => (pathname === path ? null : history.push(path))}
     >

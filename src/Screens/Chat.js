@@ -522,7 +522,7 @@ export default function Chat() {
             </div>
 
             <form
-              className="w-full h-1/6 flex justify-around items-center -my-2"
+              className="w-full h-1/12 flex justify-around items-center -my-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (currentChat.length > 0) submitMessage(e);
@@ -543,7 +543,7 @@ export default function Chat() {
                     currentChat.length > 0
                       ? 'hover:bg-blue-600 focus:bg-blue-600'
                       : 'opacity-50'
-                  } rounded-lg py-2 w-full text-sm mt-0`}
+                  } rounded-lg py-1 w-full text-sm mt-0`}
                   type="submit"
                 >
                   {currentEditChat.length > 0 ? 'Edit' : 'Send'}
