@@ -478,6 +478,12 @@ export default function FeedPost({
 
         axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
           setComment((prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`);
+
+          axios.post(
+            `${APIURL}/api/links/create`,
+            { uid: profile.uid, link: res.data.url, linkID: v4() },
+            { headers: { Authorization: `Bearer ${profile.jwt}` } }
+          );
         });
       }
     }
