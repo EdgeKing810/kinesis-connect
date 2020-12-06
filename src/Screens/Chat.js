@@ -8,6 +8,7 @@ import { v4 } from 'uuid';
 import { LocalContext } from '../Context';
 import { Parser } from '../Components/renderers';
 import useWindowSize from '../Components/useWindowSize';
+import { useAlert } from 'react-alert';
 
 export default function Chat() {
   const [error, setError] = useState('Loading...');
@@ -34,6 +35,7 @@ export default function Chat() {
     setChat,
   } = useContext(LocalContext);
   const history = useHistory();
+  const alert = useAlert();
 
   const { width } = useWindowSize();
   // console.log(`Height: ${height}`);
@@ -155,7 +157,7 @@ export default function Chat() {
       })
       .then((res) => {
         if (res.data.error !== 0) {
-          alert(res.data.message);
+          alert.error(res.data.message);
         } else {
           let updatedProfile = { ...profile };
           updatedProfile.chats = [
@@ -221,7 +223,7 @@ export default function Chat() {
       })
       .then((res) => {
         if (res.data.error !== 0) {
-          alert(res.data.message);
+          alert.error(res.data.message);
         } else {
           setChat((prev) => ({
             room: prev.room,
@@ -275,7 +277,7 @@ export default function Chat() {
         })
         .then((res) => {
           if (res.data.error !== 0) {
-            alert(res.data.message);
+            alert.error(res.data.message);
           } else {
             setChat((prev) => ({
               room: prev.room,
@@ -318,7 +320,7 @@ export default function Chat() {
         })
         .then((res) => {
           if (res.data.error !== 0) {
-            alert(res.data.message);
+            alert.error(res.data.message);
           } else {
             let updatedProfile = { ...profile };
             updatedProfile.chats = updatedProfile.chats.filter(
@@ -468,7 +470,7 @@ export default function Chat() {
   const uploadImage = (e) => {
     if (e.target.files[0]) {
       if (e.target.files[0].size > 5000000) {
-        alert('File too large!');
+        alert.error('File too large!');
       } else {
         e.preventDefault();
 
@@ -528,7 +530,7 @@ export default function Chat() {
             </div>
 
             <form
-              className="w-full h-1/12 flex justify-around items-center -my-2"
+              className="w-full h-1/10 flex justify-around items-center -my-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (currentChat.length > 0) submitMessage(e);
@@ -556,7 +558,7 @@ export default function Chat() {
                 </button>
 
                 <input
-                  className={`p-2 w-full text-xs font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
+                  className={`p-1 w-full text-xs font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
                   type="file"
                   onChange={(e) => {
                     e.persist();

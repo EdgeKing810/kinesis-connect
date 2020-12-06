@@ -636,7 +636,7 @@ export default function FeedPost({
           {showCommentReacts === commentID &&
           showCommentReacts.length > 0 &&
           people !== undefined ? (
-            <div className="w-full p-2 bg-gray-800 mt-1 rounded-lg sm:text-lg text-xs flex">
+            <div className="w-full p-2 bg-gray-800 mt-1 rounded-lg sm:text-lg text-xs flex flex-wrap">
               {/* {commentReacts.join(', ')} */}
 
               {commentReacts.map((cr, i) => (
@@ -773,7 +773,7 @@ export default function FeedPost({
       </div>
 
       {showReacts && reacts.length > 0 && people !== undefined ? (
-        <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-md text-sm flex mt-4">
+        <div className="w-full p-2 bg-gray-800 mt-2 rounded-lg sm:text-md text-sm flex flex-wrap mt-4">
           {/* {postReacts.join(', ')} */}
 
           {postReacts.map((pr, i) => (

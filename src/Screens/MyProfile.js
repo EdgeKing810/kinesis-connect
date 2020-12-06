@@ -8,6 +8,7 @@ import { LocalContext } from '../Context';
 
 import tmpAvatar from '../Assets/images/avatar_tmp.png';
 import FeedPost from '../Components/FeedPost';
+import { useAlert } from 'react-alert';
 
 export default function MyProfile() {
   const [error, setError] = useState('Loading...');
@@ -19,6 +20,7 @@ export default function MyProfile() {
   const [file, setFile] = useState(null);
 
   const history = useHistory();
+  const alert = useAlert();
   const {
     APIURL,
     UPLOADSURL,
@@ -132,7 +134,7 @@ export default function MyProfile() {
       })
       .then((res) => {
         if (res.data.error !== 0) {
-          alert(res.data.message);
+          alert.error(res.data.message);
         } else {
           let updatedProfile = { ...profile };
           updatedProfile[key] = modifiedValues[index];
@@ -156,7 +158,7 @@ export default function MyProfile() {
           );
 
           setProfile(updatedProfile);
-          alert('Successful!');
+          alert.success('Successful!');
         }
       });
   };
@@ -164,7 +166,7 @@ export default function MyProfile() {
   const handleUploadImage = (e) => {
     if (e.target.files[0]) {
       if (e.target.files[0].size > 5000000) {
-        alert('File too large!');
+        alert.error('File too large!');
       } else {
         setFile(e.target.files[0]);
       }
@@ -188,9 +190,9 @@ export default function MyProfile() {
         )
         .then((response) => {
           if (response.data.error !== 0) {
-            alert(response.data.message);
+            alert.error(response.data.message);
           } else {
-            alert('Profile Pic Updated!');
+            alert.success('Profile Pic Updated!');
 
             const updatedProfile = { ...profile };
             updatedProfile.profile_pic = res.data.url;
@@ -224,9 +226,9 @@ export default function MyProfile() {
         )
         .then((res) => {
           if (res.data.error !== 0) {
-            alert(res.data.message);
+            alert.error(res.data.message);
           } else {
-            alert('Account successfully deleted');
+            alert.success('Account successfully deleted.');
 
             ws.send(
               JSON.stringify({
@@ -254,9 +256,9 @@ export default function MyProfile() {
       )
       .then((response) => {
         if (response.data.error !== 0) {
-          alert(response.data.message);
+          alert.error(response.data.message);
         } else {
-          alert('Profile Pic Removed!');
+          alert.success('Profile Pic Removed!');
 
           const updatedProfile = { ...profile };
           updatedProfile.profile_pic = '';

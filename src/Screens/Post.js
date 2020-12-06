@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useAlert } from 'react-alert';
 
 import axios from 'axios';
 import { v4 } from 'uuid';
@@ -14,6 +15,7 @@ export default function Post() {
   const edit = postID !== undefined;
 
   const history = useHistory();
+  const alert = useAlert();
   const { APIURL, UPLOADSURL, profile, myPosts, setMyPosts, ws } = useContext(
     LocalContext
   );
@@ -46,7 +48,7 @@ export default function Post() {
   const uploadImage = (e) => {
     if (e.target.files[0]) {
       if (e.target.files[0].size > 5000000) {
-        alert('File too large!');
+        alert.error('File too large!');
       } else {
         e.preventDefault();
 
@@ -96,9 +98,9 @@ export default function Post() {
       })
       .then((res) => {
         if (res.data.error !== 0) {
-          alert(res.data.message);
+          alert.error(res.data.message);
         } else {
-          alert(`Post ${edit ? 'edited' : 'created'} successfully!`);
+          alert.success(`Post ${edit ? 'edited' : 'created'} successfully!`);
 
           setPostContent('');
 

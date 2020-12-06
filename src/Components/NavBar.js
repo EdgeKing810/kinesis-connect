@@ -19,9 +19,10 @@ export default function NavBar() {
     { name: 'My Profile', path: '/profile', icon: 'account-box' },
   ];
 
-  const navButtons = buttonsToMake.map(({ path, icon }, i) => (
+  const navButtons = buttonsToMake.map(({ name, path, icon }, i) => (
     <button
       className="w-16 h-16 mx-2"
+      title={name}
       key={`nav-${i}`}
       onClick={() => (pathname === path ? null : history.push(path))}
     >
@@ -38,7 +39,7 @@ export default function NavBar() {
   ));
 
   const sidebarMenu = (
-    <div className="w-screen h-screen fixed flex -mr-4 z-50 opacity-100">
+    <div className="w-screen h-screen fixed flex z-50 opacity-100">
       <div className="w-full flex justify-end fixed pt-4">
         <button className="h-12 w-12 fixed" onClick={() => setShowMenu(false)}>
           <div
@@ -56,7 +57,7 @@ export default function NavBar() {
             : '-translate-x-screen ease-in duration-1000 transition-mediums'
         }`}
       >
-        <div className="text-2xl font-bold mb-2 mt-8 tracking-widest text-blue-300 w-full text-center flex justify-center">
+        <div className="text-2xl font-bold mb-2 mt-8 -mr-4 tracking-widest text-blue-300 w-full text-center flex justify-center">
           Navigation
         </div>
 
