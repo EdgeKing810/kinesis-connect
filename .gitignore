@@ -24,3 +24,7 @@ yarn-error.log*
 
 public/styles.css
 src/Screens/TmpChat.js
+
+cordova/node_modules
+cordova/platforms/android
+cordova/www
