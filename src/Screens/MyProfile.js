@@ -216,34 +216,34 @@ export default function MyProfile() {
     });
   };
 
-  const deleteAccount = (e) => {
-    if (window.confirm('Are you sure you want to delete your account?')) {
-      axios
-        .post(
-          `${APIURL}/api/user/delete`,
-          { uid: profile.uid, password: password },
-          { headers: { Authorization: `Bearer ${profile.jwt}` } }
-        )
-        .then((res) => {
-          if (res.data.error !== 0) {
-            alert.error(res.data.message);
-          } else {
-            alert.success('Account successfully deleted.');
+  // const deleteAccount = (e) => {
+  //   if (window.confirm('Are you sure you want to delete your account?')) {
+  //     axios
+  //       .post(
+  //         `${APIURL}/api/user/delete`,
+  //         { uid: profile.uid, password: password },
+  //         { headers: { Authorization: `Bearer ${profile.jwt}` } }
+  //       )
+  //       .then((res) => {
+  //         if (res.data.error !== 0) {
+  //           alert.error(res.data.message);
+  //         } else {
+  //           alert.success('Account successfully deleted.');
 
-            ws.send(
-              JSON.stringify({
-                roomID: profile.roomID,
-                type: 'account_delete',
-                uid: profile.uid,
-              })
-            );
+  //           ws.send(
+  //             JSON.stringify({
+  //               roomID: profile.roomID,
+  //               type: 'account_delete',
+  //               uid: profile.uid,
+  //             })
+  //           );
 
-            history.push('/');
-            localStorage.clear();
-          }
-        });
-    }
-  };
+  //           history.push('/');
+  //           localStorage.clear();
+  //         }
+  //       });
+  //   }
+  // };
 
   const clearProfilePic = (e) => {
     e.preventDefault();
@@ -440,7 +440,10 @@ export default function MyProfile() {
                       : 'opacity-50'
                   } rounded-lg text-gray-300`}
                   onClick={(e) =>
-                    password.length > 0 ? deleteAccount(e) : null
+                    // password.length > 0 ? deleteAccount(e) : null
+                    password.length > 0
+                      ? alert.error('This is currently prohibited.')
+                      : null
                   }
                 >
                   Delete Account
