@@ -1,12 +1,17 @@
 import React from 'react';
 
 import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 const htmlParser = require('react-markdown/plugins/html-parser');
 
 const heading = (props) => {
   return (
-    <div className="font-bold tracking-wider sm:text-3xl text-xl text-gray-200 sm:my-4 my-2">
+    <div
+      className={`font-bold tracking-wider text-${
+        6 - props.level
+      }xl text-gray-200 sm:my-4 my-2`}
+    >
       {props.children}
     </div>
   );
@@ -29,7 +34,7 @@ const text = (props) => {
 };
 
 const list = (props) => {
-  return <ul className="list-disc pl-8">{props.children}</ul>;
+  return <ul className="list-disc pl-8 my-4">{props.children}</ul>;
 };
 
 const listItem = (props) => {
@@ -38,12 +43,12 @@ const listItem = (props) => {
 
 const code = (props) => {
   return (
-    <span
-      className="text-blue-300 font-mono p-2 bg-gray-700 rounded my-2 p-2 border-2 border-blue-100 sm:text-md text-sm"
-      style={{ whiteSpace: 'pre-line' }}
+    <div
+      className="text-blue-300 font-mono p-1 bg-gray-900 rounded-lg border-2 border-gray-500 text-sm tracking-wider my-2"
+      style={{ whiteSpace: 'pre' }}
     >
       {props.node.value}
-    </span>
+    </div>
   );
 };
 
@@ -59,6 +64,16 @@ const image = (props) => {
   );
 };
 
+const blockquote = (props) => {
+  return (
+    <div className="rounded py-1 px-2 bg-gray-800 w-full">
+      <div className="w-full border-l-4 border-gray-100 pl-2">
+        {props.children}
+      </div>
+    </div>
+  );
+};
+
 const renderers = {
   heading: heading,
   link: link,
@@ -67,6 +82,7 @@ const renderers = {
   listItem: listItem,
   code: code,
   image: image,
+  blockquote: blockquote,
 };
 
 // eslint-disable-next-line
@@ -81,8 +97,10 @@ export const Parser = ({ content }) => (
   <ReactMarkdown
     source={content}
     renderers={renderers}
-    // escapeHtml={false}
-    // astPlugins={[parseHtml]}
+    escapeHtml={false}
+    astPlugins={[parseHtml]}
     parserOptions={{ commonmark: true }}
+    plugins={[gfm]}
   />
 );
+
