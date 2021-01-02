@@ -165,7 +165,7 @@ export default function MyProfile() {
 
   const handleUploadImage = (e) => {
     if (e.target.files[0]) {
-      if (e.target.files[0].size > 5000000) {
+      if (e.target.files[0].size > 10485760) {
         alert.error('File too large!');
       } else {
         setFile(e.target.files[0]);
@@ -396,6 +396,7 @@ export default function MyProfile() {
                 <input
                   type="file"
                   name="profile_pic"
+                  accept=".jpg,.jpeg,.png,.svg,.gif,.bmp"
                   className={classes.input}
                   onChange={(e) => {
                     e.persist();

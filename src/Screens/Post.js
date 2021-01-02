@@ -47,7 +47,7 @@ export default function Post() {
 
   const uploadImage = (e) => {
     if (e.target.files[0]) {
-      if (e.target.files[0].size > 5000000) {
+      if (e.target.files[0].size > 10485760) {
         alert.error('File too large!');
       } else {
         e.preventDefault();
@@ -173,6 +173,7 @@ export default function Post() {
             <input
               className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 rounded-lg text-gray-300 sm:mt-0 mt-2 overflow-hidden`}
               type="file"
+              accept=".jpg,.jpeg,.png,.svg,.gif,.bmp"
               onChange={(e) => {
                 e.persist();
                 uploadImage(e);

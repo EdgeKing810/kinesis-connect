@@ -469,7 +469,7 @@ export default function Chat() {
 
   const uploadImage = (e) => {
     if (e.target.files[0]) {
-      if (e.target.files[0].size > 5000000) {
+      if (e.target.files[0].size > 10485760) {
         alert.error('File too large!');
       } else {
         e.preventDefault();
@@ -560,6 +560,7 @@ export default function Chat() {
                 <input
                   className={`p-1 w-full text-xs font-bold tracking-wide font-open bg-blue-900 rounded-lg text-gray-300 mt-2 overflow-hidden`}
                   type="file"
+                  accept=".jpg,.jpeg,.png,.svg,.gif,.bmp"
                   onChange={(e) => {
                     e.persist();
                     uploadImage(e);
