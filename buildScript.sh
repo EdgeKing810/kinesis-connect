@@ -4,4 +4,4 @@ git pull origin master
 npm i
 npm run-script build
 chown -R root:www-data .
-systemctl reload apache2
+systemctl reload nginx
