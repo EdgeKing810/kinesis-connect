@@ -15,6 +15,7 @@ function LocalContextProvider({ children }) {
 
   const APIURL = 'https://api.connect.kinesis.games';
   const UPLOADSURL = 'https://uploads.connect.kinesis.games';
+  const UPLOADERURL = 'https://backend.kinesis.games';
   const SOCKETURL = 'wss://ws.connect.kinesis.games';
 
   const ws = new WebSocket(SOCKETURL);
@@ -111,6 +112,7 @@ function LocalContextProvider({ children }) {
       value={{
         APIURL,
         UPLOADSURL,
+        UPLOADERURL,
         SOCKETURL,
         ws,
         loggedInUser,

@@ -49,6 +49,7 @@ export default function FeedPost({
   const {
     APIURL,
     UPLOADSURL,
+    UPLOADERURL,
     profile,
     setMyPosts,
     setFeedPosts,
@@ -468,7 +469,7 @@ export default function FeedPost({
 
   const uploadImage = (e) => {
     if (e.target.files[0]) {
-      if (e.target.files[0].size > 5000000) {
+      if (e.target.files[0].size > 10485760) {
         alert('File too large!');
       } else {
         e.preventDefault();
@@ -476,12 +477,12 @@ export default function FeedPost({
         const data = new FormData();
         data.append('file', e.target.files[0]);
 
-        axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
-          setComment((prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`);
+        axios.post(`${UPLOADERURL}/api/upload`, data).then((res) => {
+          setComment((prev) => `${prev}\n![](${UPLOADSURL}/${res.data.path})`);
 
           axios.post(
             `${APIURL}/api/links/create`,
-            { uid: profile.uid, link: res.data.url, linkID: v4() },
+            { uid: profile.uid, link: res.data.path, linkID: v4() },
             { headers: { Authorization: `Bearer ${profile.jwt}` } }
           );
         });

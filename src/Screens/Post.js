@@ -16,9 +16,15 @@ export default function Post() {
 
   const history = useHistory();
   const alert = useAlert();
-  const { APIURL, UPLOADSURL, profile, myPosts, setMyPosts, ws } = useContext(
-    LocalContext
-  );
+  const {
+    APIURL,
+    UPLOADSURL,
+    UPLOADERURL,
+    profile,
+    myPosts,
+    setMyPosts,
+    ws,
+  } = useContext(LocalContext);
 
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
@@ -55,14 +61,14 @@ export default function Post() {
         const data = new FormData();
         data.append('file', e.target.files[0]);
 
-        axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
+        axios.post(`${UPLOADERURL}/api/upload`, data).then((res) => {
           setPostContent(
-            (prev) => `${prev}\n![](${UPLOADSURL}/${res.data.url})`
+            (prev) => `${prev}\n![](${UPLOADSURL}/${res.data.path})`
           );
 
           axios.post(
             `${APIURL}/api/links/create`,
-            { uid: profile.uid, link: res.data.url, linkID: v4() },
+            { uid: profile.uid, link: res.data.path, linkID: v4() },
             { headers: { Authorization: `Bearer ${profile.jwt}` } }
           );
         });

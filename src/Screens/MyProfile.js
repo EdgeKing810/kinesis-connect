@@ -24,6 +24,7 @@ export default function MyProfile() {
   const {
     APIURL,
     UPLOADSURL,
+    UPLOADERURL,
     setLoggedInUser,
     profile,
     setProfile,
@@ -181,11 +182,11 @@ export default function MyProfile() {
 
     setFile(null);
 
-    axios.post(`${APIURL}/api/user/upload`, data).then((res) => {
+    axios.post(`${UPLOADERURL}/api/upload`, data).then((res) => {
       axios
         .post(
           `${APIURL}/api/profile/pic`,
-          { uid: profile.uid, profile_pic_url: res.data.url },
+          { uid: profile.uid, profile_pic_url: res.data.path },
           { headers: { Authorization: `Bearer ${profile.jwt}` } }
         )
         .then((response) => {
@@ -195,7 +196,7 @@ export default function MyProfile() {
             alert.success('Profile Pic Updated!');
 
             const updatedProfile = { ...profile };
-            updatedProfile.profile_pic = res.data.url;
+            updatedProfile.profile_pic = res.data.path;
 
             ws.send(
               JSON.stringify({
@@ -206,7 +207,7 @@ export default function MyProfile() {
                 name: profile.name,
                 username: profile.username,
                 bio: profile.bio,
-                profile_pic: res.data.url,
+                profile_pic: res.data.path,
               })
             );
 
