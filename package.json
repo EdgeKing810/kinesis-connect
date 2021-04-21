@@ -23,9 +23,9 @@
     "uuid": "^8.3.1"
   },
   "scripts": {
-    "build:css": "NODE_ENV=production npx tailwindcss build public/tailwind.css -o public/styles.css",
+    "build:css": "npx tailwindcss build public/tailwind.css -o public/styles.css",
     "start": "npm run build:css && react-scripts start",
-    "build": "npm run build:css && react-scripts build",
+    "build": "NODE_ENV=production npm run build:css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
