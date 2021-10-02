@@ -9,15 +9,8 @@ import tmpAvatar from '../Assets/images/avatar_tmp.png';
 export default function Discover() {
   const [error, setError] = useState('Loading...');
 
-  const {
-    APIURL,
-    UPLOADSURL,
-    profile,
-    setProfile,
-    people,
-    setFeedPosts,
-    ws,
-  } = useContext(LocalContext);
+  const { APIURL, UPLOADSURL, profile, setProfile, people, setFeedPosts, ws } =
+    useContext(LocalContext);
   const history = useHistory();
 
   useEffect(() => {
@@ -93,7 +86,7 @@ export default function Discover() {
         <hr />
 
         <button
-          className="w-full p-1 my-1 rounded uppercase tracking-wide sm:text-lg text-center bg-blue-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200"
+          className="w-full p-1 my-1 rounded uppercase tracking-wide sm:text-lg text-center bg-blue-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200 transition ease-in-out duration-300"
           onClick={() => history.push(`/profile/${profileID}`)}
         >
           Visit Profile
@@ -102,7 +95,7 @@ export default function Discover() {
         <button
           className={`w-full p-1 my-1 rounded uppercase tracking-wide sm:text-lg text-center bg-${
             bool ? 'red' : 'blue'
-          }-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200`}
+          }-700 hover:bg-gray-900 focus:bg-gray-900 text-blue-200 transition ease-in-out duration-300`}
           onClick={() =>
             userAction(
               profileID,

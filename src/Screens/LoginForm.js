@@ -424,7 +424,7 @@ export default function LoginForm() {
             loginInputs.every((v) => v.length > 0)
               ? 'hover:bg-blue-600 focus:bg-blue-600'
               : 'opacity-50'
-          } text-gray-300 sm:w-1/3 w-full mt-4 mb-2`}
+          } text-gray-300 sm:w-1/3 w-full mt-4 mb-2 transition ease-in-out duration-300`}
         >
           Let's Go!
         </button>
@@ -432,7 +432,7 @@ export default function LoginForm() {
       <div className="sm:text-lg text-md text-gray-400">
         Don't already have an account?{' '}
         <button
-          className="underline text-blue-400 sm:mb-0 mb-4"
+          className="underline text-blue-400 sm:mb-0 mb-4 transition ease-in-out duration-300"
           onClick={() => setIsRegistering(true)}
         >
           Create One Now!
@@ -506,7 +506,7 @@ export default function LoginForm() {
             validity.every((v) => v)
               ? 'hover:bg-blue-600 focus:bg-blue-600'
               : 'opacity-50'
-          } text-gray-300 sm:w-1/3 w-full my-4`}
+          } text-gray-300 sm:w-1/3 w-full my-4 transition ease-in-out duration-300`}
         >
           Create!
         </button>
@@ -514,7 +514,7 @@ export default function LoginForm() {
       <div className="sm:text-lg text-md text-gray-400">
         Already have an account?{' '}
         <button
-          className="underline text-blue-400 sm:mb-0 mb-4"
+          className="underline text-blue-400 sm:mb-0 mb-4 transition ease-in-out duration-300"
           onClick={() => setIsRegistering(false)}
         >
           Login Now!

@@ -381,7 +381,7 @@ export default function Chat() {
 
         {currentFound && currentFound.name ? (
           <button
-            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg sm:mt-4 flex flex-col sm:w-5/6 w-1/2 py-2 sm:px-4 px-2"
+            className="rounded-lg bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 text-gray-300 sm:text-lg sm:mt-4 flex flex-col sm:w-5/6 w-1/2 py-2 sm:px-4 px-2 transition ease-in-out duration-300"
             onClick={() => joinRoom({ ...currentFound })}
           >
             <div className="sm:text-lg text-xs text-blue-300">
@@ -414,7 +414,7 @@ export default function Chat() {
                 {isCurrentUser ? (
                   <div className={`flex items-center justify-center mx-1`}>
                     <button
-                      className={`${
+                      className={`transition ease-in-out duration-300 ${
                         currentEditChat === msg.messageID
                           ? 'ri-close-circle-line hover:ri-close-circle-fill focus:ri-close-circle-fill'
                           : 'ri-pencil-line hover:ri-pencil-fill focus:ri-pencil-fill'
@@ -430,7 +430,7 @@ export default function Chat() {
                       }}
                     ></button>
                     <button
-                      className={`ri-delete-bin-5-line hover:ri-delete-bin-5-fill focus:ri-delete-bin-5-fill px-2 flex justify-center items-center hover:text-red-400 focus:text-red-400 text-gray-300 sm:text-xl text-md`}
+                      className={`transition ease-in-out duration-300 ri-delete-bin-5-line hover:ri-delete-bin-5-fill focus:ri-delete-bin-5-fill px-2 flex justify-center items-center hover:text-red-400 focus:text-red-400 text-gray-300 sm:text-xl text-md`}
                       onClick={(e) => deleteMessage(e, msg.messageID)}
                     ></button>
                   </div>
@@ -440,7 +440,7 @@ export default function Chat() {
                 <div
                   className={`sm:w-2/5 w-4/5 font-rale sm:text-lg text-sm tracking-wide rounded-lg p-2 text-gray-900 bg-${
                     isCurrentUser ? 'green' : 'blue'
-                  }-400`}
+                  }-400 transition ease-in-out duration-300`}
                 >
                   <div
                     className={`text-${
@@ -508,7 +508,7 @@ export default function Chat() {
               </div>
 
               <button
-                className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/3 text-md"
+                className="transition ease-in-out duration-300 text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/3 text-md"
                 onClick={() => leaveRoom()}
               >
                 Leave Chat
@@ -548,7 +548,7 @@ export default function Chat() {
 
               <div className="w-1/4 flex flex-col justify-around mt-2">
                 <button
-                  className={`text-gray-100 bg-blue-500 ${
+                  className={`transition ease-in-out duration-300 text-gray-100 bg-blue-500 ${
                     currentChat.length > 0
                       ? 'hover:bg-blue-600 focus:bg-blue-600'
                       : 'opacity-50'
@@ -594,7 +594,7 @@ export default function Chat() {
       ) : (
         <div className="w-full flex py-2 justify-center items-center">
           <button
-            className="text-gray-900 bg-yellow-400 hover:bg-yellow-500 focus:bg-yellow-500 rounded-lg py-2 px-1 w-2/3 text-md"
+            className="transition ease-in-out duration-300 text-gray-900 bg-yellow-400 hover:bg-yellow-500 focus:bg-yellow-500 rounded-lg py-2 px-1 w-2/3 text-md"
             onClick={() => setActiveRoom('')}
           >
             Message someone else
@@ -651,7 +651,7 @@ export default function Chat() {
                   </div>
 
                   <button
-                    className="text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/6 text-lg"
+                    className="transition ease-in-out duration-300 text-gray-100 bg-red-500 hover:bg-red-600 focus:bg-red-600 rounded-lg py-2 px-1 w-1/6 text-lg"
                     onClick={() => leaveRoom()}
                   >
                     Leave Chat
@@ -697,7 +697,7 @@ export default function Chat() {
 
                   <div className="w-1/5 flex flex-col justify-around mt-2">
                     <button
-                      className={`text-gray-100 bg-blue-500 ${
+                      className={`transition ease-in-out duration-300 text-gray-100 bg-blue-500 ${
                         currentChat.length > 0
                           ? 'hover:bg-blue-600 focus:bg-blue-600'
                           : 'opacity-50'

@@ -87,7 +87,7 @@ export default function MyProfile() {
       />
 
       <button
-        className={`sm:ml-4 sm:w-1/5 w-3/5 p-2 bg-gray-900 ${
+        className={`sm:ml-4 sm:w-1/5 w-3/5 p-2 bg-gray-900 transition ease-in-out duration-300 ${
           password.length > 0 && modifiedValues[index].length > 0
             ? 'hover:bg-blue-600 focus:bg-blue-600'
             : 'opacity-50'
@@ -342,14 +342,14 @@ export default function MyProfile() {
               </div>
               <div className="w-full flex sm:flex-row flex-col sm:justify-center sm:items-start items-center">
                 <button
-                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-gray-700 focus:bg-gray-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:mr-2"
+                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-gray-700 focus:bg-gray-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:mr-2 transition ease-in-out duration-300"
                   onClick={() => setIsModifying(true)}
                 >
                   Modify Profile
                 </button>
 
                 <button
-                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-red-700 focus:bg-red-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:my-0 my-2 sm:ml-2"
+                  className="sm:w-1/4 w-4/5 py-4 rounded bg-gray-900 hover:bg-red-700 focus:bg-red-700 font-bold tracking-wide text-gray-300 sm:text-xl sm:my-0 my-2 sm:ml-2 transition ease-in-out duration-300"
                   onClick={() => {
                     setLoggedInUser({});
                     setProfile({});
@@ -408,7 +408,7 @@ export default function MyProfile() {
                 />
 
                 <button
-                  className={`sm:ml-4 sm:w-1/5 w-3/5 p-2 bg-gray-900 ${
+                  className={`sm:ml-4 sm:w-1/5 w-3/5 p-2 bg-gray-900 transition ease-in-out duration-300 ${
                     file ? 'hover:bg-blue-600 focus:bg-blue-600' : 'opacity-50'
                   } rounded-lg font-bold tracking-wide sm:text-lg text-md text-gray-200 sm:mt-0 mt-2`}
                   onClick={(e) => (file ? changeProfilePic(e) : null)}
@@ -424,7 +424,7 @@ export default function MyProfile() {
                     profile.profile_pic.length > 0
                       ? 'hover:bg-yellow-600 focus:bg-yellow-600'
                       : 'opacity-50'
-                  } rounded-lg text-gray-300`}
+                  } rounded-lg text-gray-300 transition ease-in-out duration-300`}
                   onClick={(e) =>
                     profile.profile_pic !== undefined &&
                     profile.profile_pic.length > 0
@@ -440,7 +440,7 @@ export default function MyProfile() {
                     password.length > 0
                       ? 'hover:bg-red-600 focus:bg-red-600'
                       : 'opacity-50'
-                  } rounded-lg text-gray-300`}
+                  } rounded-lg text-gray-300 transition ease-in-out duration-300`}
                   onClick={(e) =>
                     // password.length > 0 ? deleteAccount(e) : null
                     password.length > 0
@@ -455,7 +455,7 @@ export default function MyProfile() {
               <div className="w-full pt-1 my-2 bg-gray-900 rounded"></div>
 
               <button
-                className="p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-600 focus:bg-green-600 rounded-lg text-gray-300"
+                className="p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-green-600 focus:bg-green-600 rounded-lg text-gray-300 transition ease-in-out duration-300"
                 onClick={() => setIsModifying(false)}
               >
                 Done
@@ -466,7 +466,7 @@ export default function MyProfile() {
           {!isModifying && (
             <div className="text-blue-200 sm:text-xl text-md tracking-wide sm:w-4/5 w-full font-open text-center mx-auto mt-2 flex flex-col items-center mb-8">
               <button
-                className="sm:w-1/2 w-5/6 py-4 rounded bg-gray-900 hover:bg-blue-500 focus:bg-blue-500 font-bold tracking-wide text-gray-300 sm:text-xl mb-4"
+                className="sm:w-1/2 w-5/6 py-4 rounded bg-gray-900 hover:bg-blue-500 focus:bg-blue-500 font-bold tracking-wide text-gray-300 sm:text-xl mb-4 transition ease-in-out duration-300"
                 onClick={() => {
                   history.push('/post/create');
                 }}

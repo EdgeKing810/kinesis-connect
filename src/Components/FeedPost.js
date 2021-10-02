@@ -535,7 +535,7 @@ export default function FeedPost({
 
         <div className="flex flex-col items-start w-3/4 sm:ml-0 ml-2">
           <button
-            className="font-bold tracking-wider sm:text-md text-sm mb-1 hover:underline focus:underline"
+            className="font-bold tracking-wider sm:text-md text-sm mb-1 hover:underline focus:underline transition ease-in-out duration-300"
             onClick={() =>
               currentPerson.profileID === userID
                 ? history.push(`/profile/`)
@@ -555,7 +555,7 @@ export default function FeedPost({
 
           <div className="w-full flex flex-row justify-between items-start pr-2 my-2">
             <button
-              className={`w-1/5 p-1 sm:text-lg text-xs bg-${
+              className={`w-1/5 p-1 sm:text-lg text-xs transition ease-in-out duration-300 bg-${
                 reacts !== undefined && reacts.some((r) => r.uid === userID)
                   ? 'blue'
                   : 'gray'
@@ -580,7 +580,7 @@ export default function FeedPost({
             </button>
 
             <button
-              className={`w-1/4 p-1 sm:text-lg text-xs tracking-wider font-open ${
+              className={`w-1/4 p-1 sm:text-lg text-xs tracking-wider transition ease-in-out duration-300 font-open ${
                 !reacts || reacts.length <= 0
                   ? 'opacity-50 bg-gray-600'
                   : showCommentReacts === commentID &&
@@ -603,7 +603,7 @@ export default function FeedPost({
 
             {userID === uid ? (
               <button
-                className={`w-1/5 p-1 sm:text-lg text-xs tracking-wider font-open bg-${
+                className={`w-1/5 p-1 sm:text-lg text-xs tracking-wider font-open transition ease-in-out duration-300 bg-${
                   isEditingComment === commentID ? 'blue' : 'gray'
                 }-800 hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
                 onClick={() => {
@@ -624,7 +624,7 @@ export default function FeedPost({
 
             {userID === uid ? (
               <button
-                className={`w-1/5 p-1 sm:text-lg text-xs bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
+                className={`w-1/5 p-1 sm:text-lg text-xs transition ease-in-out duration-300 bg-gray-800 tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded`}
                 onClick={(e) => deleteComment(e, commentID)}
               >
                 Delete
@@ -644,7 +644,7 @@ export default function FeedPost({
                 <div key={`comm-${cr}-${i}`}>
                   <button
                     onClick={() => history.push(`/profile/${cr.profileID}`)}
-                    className="underline hover:text-blue-400 focus:text-blue-400 pr-1"
+                    className="underline hover:text-blue-400 focus:text-blue-400 pr-1 transition ease-in-out duration-300"
                   >
                     {cr.username}
                     {i !== commentReacts.length - 1 ? ', ' : ''}
@@ -688,7 +688,7 @@ export default function FeedPost({
 
         <div className="h-full w-full flex flex-col items-start ml-2">
           <button
-            className="sm:text-xl text-lg bg-blue-900 p-1 rounded underline hover:bg-blue-800 focus:bg-blue-800"
+            className="sm:text-xl text-lg bg-blue-900 p-1 rounded underline hover:bg-blue-800 focus:bg-blue-800 transition ease-in-out duration-300"
             onClick={() =>
               userID === profileID
                 ? history.push(`/profile/`)
@@ -709,13 +709,13 @@ export default function FeedPost({
         <div className="w-full">
           <div className="w-full flex justify-around py-1">
             <button
-              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-blue-700 focus:bg-blue-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
+              className="transition ease-in-out duration-300 w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-blue-700 focus:bg-blue-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
               onClick={() => history.push(`/post/edit/${postID}`)}
             >
               Edit Post
             </button>
             <button
-              className="w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
+              className="transition ease-in-out duration-300 w-2/5 sm:text-lg text-sm tracking-wider font-open hover:bg-red-700 focus:bg-red-700 flex justify-center items-center rounded py-1 text-blue-200 font-bold bg-gray-800"
               onClick={() => deletePost()}
             >
               Delete Post
@@ -745,7 +745,7 @@ export default function FeedPost({
 
       <div className="w-full flex mt-4">
         <button
-          className={`w-1/3 p-1 sm:text-lg text-md tracking-wider font-open ${
+          className={`w-1/3 p-1 sm:text-lg text-md tracking-wider font-open transition ease-in-out duration-300 ${
             !reacts || reacts.length <= 0
               ? 'opacity-50 bg-gray-600'
               : showReacts
@@ -781,7 +781,7 @@ export default function FeedPost({
             <div key={`postr-${pr}-${i}`}>
               <button
                 onClick={() => history.push(`/profile/${pr.profileID}`)}
-                className="underline hover:text-blue-400 focus:text-blue-400 pr-1"
+                className="underline hover:text-blue-400 focus:text-blue-400 pr-1 transition ease-in-out duration-300"
               >
                 {pr.username}
                 {i !== postReacts.length - 1 ? ', ' : ''}
@@ -799,7 +799,7 @@ export default function FeedPost({
         <button
           className={`w-49/100 p-2 sm:text-xl text-sm bg-${
             liked ? 'blue' : 'gray'
-          }-900 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+          }-900 tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded transition ease-in-out duration-300`}
           onClick={() => likePost()}
         >
           Like{liked ? 'd' : ''}
@@ -810,7 +810,7 @@ export default function FeedPost({
         <button
           className={`w-49/100 p-2 sm:text-xl text-sm ${
             showComment ? 'bg-blue-900' : ''
-          } tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded`}
+          } tracking-wider font-open hover:bg-gray-700 focus:bg-gray-700 flex justify-center items-center rounded transition ease-in-out duration-300`}
           onClick={() => {
             setShowComment((prev) => !prev);
           }}
@@ -856,7 +856,7 @@ export default function FeedPost({
 
             <div className="sm:w-1/5 w-full flex sm:flex-col flex-row justify-around">
               <button
-                className={`p-1 sm:text-md text-sm sm:w-full w-9/20 sm:mt-0 mt-2 bg-gray-800 ${
+                className={`p-1 sm:text-md text-sm sm:w-full w-9/20 sm:mt-0 mt-2 bg-gray-800 transition ease-in-out duration-300 ${
                   comment.length > 0
                     ? 'hover:bg-blue-900 focus:bg-blue-900'
                     : 'opacity-50'

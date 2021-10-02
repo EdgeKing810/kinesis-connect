@@ -21,7 +21,7 @@ export default function NavBar() {
 
   const navButtons = buttonsToMake.map(({ name, path, icon }, i) => (
     <button
-      className="w-16 h-16 mx-2"
+      className="w-16 h-16 mx-2 transition ease-in-out duration-300"
       title={name}
       key={`nav-${i}`}
       onClick={() => (pathname === path ? null : history.push(path))}
@@ -41,7 +41,10 @@ export default function NavBar() {
   const sidebarMenu = (
     <div className="w-screen h-screen fixed flex z-50 opacity-100">
       <div className="w-full flex justify-end fixed pt-4">
-        <button className="h-12 w-12 fixed" onClick={() => setShowMenu(false)}>
+        <button
+          className="h-12 w-12 fixed transition ease-in-out duration-300"
+          onClick={() => setShowMenu(false)}
+        >
           <div
             className={`ri-menu-line p-2 text-2xl font-bold flex justify-center items-center rounded ${
               showMenu ? 'bg-blue-400' : 'bg-gray-400'
@@ -64,7 +67,7 @@ export default function NavBar() {
         <div className="w-full h-full flex flex-col items-center pl-4">
           {buttonsToMake.map(({ path, name }, i) => (
             <button
-              className={`w-11/12 h-12 py-2 mb-2 text-lg ${
+              className={`w-11/12 h-12 py-2 mb-2 transition ease-in-out duration-300 text-lg ${
                 pathname === path ? 'bg-blue-500' : 'bg-gray-900'
               } text-bold tracking-wider text-gray-100 rounded text-center`}
               key={`nav-${i}`}
@@ -89,7 +92,7 @@ export default function NavBar() {
         <button
           className={`h-12 w-12 mt-4 fixed ${
             showMenu ? 'opacity-0' : 'opacity-100'
-          }`}
+          } transition ease-in-out duration-300`}
           onClick={() => setShowMenu((prev) => !prev)}
         >
           <div className="ri-menu-line p-2 text-2xl font-bold flex justify-center items-center rounded bg-gray-400 text-gray-900 opacity-50 w-full h-full" />
