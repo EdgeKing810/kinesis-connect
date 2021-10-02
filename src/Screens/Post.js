@@ -16,15 +16,8 @@ export default function Post() {
 
   const history = useHistory();
   const alert = useAlert();
-  const {
-    APIURL,
-    UPLOADSURL,
-    UPLOADERURL,
-    profile,
-    myPosts,
-    setMyPosts,
-    ws,
-  } = useContext(LocalContext);
+  const { APIURL, UPLOADSURL, UPLOADERURL, profile, myPosts, setMyPosts, ws } =
+    useContext(LocalContext);
 
   let content, reacts, comments;
   if (edit && myPosts.length > 0) {
@@ -170,7 +163,7 @@ export default function Post() {
                 postContent.length > 0
                   ? 'hover:bg-blue-500 focus:bg-blue-500'
                   : 'opacity-50 z-0'
-              } rounded-lg text-gray-300`}
+              } rounded-lg text-gray-300 transition ease-in-out duration-300`}
               onClick={(e) => (postContent.length > 0 ? submitPost(e) : null)}
             >
               {edit ? 'Update' : 'Create'}
@@ -187,7 +180,7 @@ export default function Post() {
             />
 
             <button
-              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-red-500 focus:bg-red-500 rounded-lg text-gray-300 sm:mt-0 mt-2`}
+              className={`p-2 sm:w-1/4 w-4/5 sm:text-xl text-lg font-bold tracking-wide font-open bg-gray-900 hover:bg-red-500 focus:bg-red-500 rounded-lg text-gray-300 sm:mt-0 mt-2 transition ease-in-out duration-300`}
               onClick={() => {
                 setPostContent('');
                 history.push('/profile');

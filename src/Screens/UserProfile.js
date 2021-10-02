@@ -129,7 +129,9 @@ export default function UserProfile() {
                   isFollowing ? '900' : '700'
                 } text-gray-200 hover:bg-blue-${
                   isFollowing ? '700' : '900'
-                } focus:bg-blue-${isFollowing ? '700' : '900'} sm:mb-0 mb-2`}
+                } focus:bg-blue-${
+                  isFollowing ? '700' : '900'
+                } sm:mb-0 mb-2 transition ease-in-out duration-300`}
                 onClick={() =>
                   userAction(
                     profileID,
@@ -153,7 +155,9 @@ export default function UserProfile() {
                 isBlocked ? '900' : '700'
               } text-gray-200 hover:bg-red-${
                 isBlocked ? '700' : '900'
-              } focus:bg-red-${isBlocked ? '700' : '900'}`}
+              } focus:bg-red-${
+                isBlocked ? '700' : '900'
+              } transition ease-in-out duration-300`}
               onClick={() =>
                 userAction(
                   profileID,
